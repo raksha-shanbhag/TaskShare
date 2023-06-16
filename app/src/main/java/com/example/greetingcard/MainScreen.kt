@@ -24,6 +24,12 @@ fun MainScreen() {
     }
 }
 
+/*
+To build bottom navigation bar I followed along to two tutorials:
+https://www.youtube.com/watch?v=gg-KBGH9T8s&t=98s
+https://www.youtube.com/watch?v=tt3dYmqJTrw
+*/
+
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
