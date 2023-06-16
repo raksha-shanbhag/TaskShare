@@ -1,77 +1,174 @@
 package com.example.greetingcard
 
 import android.annotation.SuppressLint
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.greetingcard.navigation.AppNavGraph
+import com.example.greetingcard.navigation.RootScreen
+
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+
+
+/*
+followed these tutorials to do the nested navigation and bottom bar
+https://medium.com/@engr.waseemabbas8/implement-nested-navigation-with-bottom-navigation-bar-in-android-jetpack-compose-7cd0efbe08ad
+https://www.youtube.com/watch?v=gg-KBGH9T8s&t=98s
+https://www.youtube.com/watch?v=tt3dYmqJTrw
+
+ */
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-
+    val currentSelectedScreen by navController.currentScreenAsState()
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController)}
+        topBar = {},
+        bottomBar = {
+            BottomNavBar(navController = navController, currentSelectedScreen = currentSelectedScreen)
+        }
     ) {
-        Navigation(navController = navController)
+
+        AppNavGraph(navController = navController)
+
     }
 }
 
-/*
-To build bottom navigation bar I followed along to two tutorials:
-https://www.youtube.com/watch?v=gg-KBGH9T8s&t=98s
-https://www.youtube.com/watch?v=tt3dYmqJTrw
-*/
-
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
-    val items = listOf(
-        BottomNavigationItems.Home,
-        BottomNavigationItems.MyTasks,
-        BottomNavigationItems.AddTask,
-        BottomNavigationItems.Notifications,
-        BottomNavigationItems.Profile
-    )
+private fun BottomNavBar(
+    navController: NavController,
+    currentSelectedScreen: RootScreen
+) {
+    BottomNavigation(backgroundColor = colorResource(id = R.color.primary_blue) ,
+        contentColor = Color.White) {
+        BottomNavigationItem(
+            selected = currentSelectedScreen == RootScreen.Home,
+            onClick = { navController.navigateToRootScreen(RootScreen.Home) },
+            alwaysShowLabel = true,
+            label = {
+                Text(text = "Groups", fontSize = 9.sp)
+            },
+            icon = { Icon(painterResource(id = R.drawable.ic_home), "Home")
+            },
+            selectedContentColor = Color.White,
+            unselectedContentColor = colorResource(id = R.color.icon_blue)
+        )
+        BottomNavigationItem(
+            selected = currentSelectedScreen == RootScreen.MyTasks,
+            onClick = { navController.navigateToRootScreen(RootScreen.MyTasks) },
+            alwaysShowLabel = true,
+            label = {
+                Text(text = "My Tasks", fontSize = 9.sp)
+            },
+            icon = {
+                Icon(painterResource(id =  R.drawable.ic_task), "Tasks")
+            },
+            selectedContentColor = Color.White,
+            unselectedContentColor = colorResource(id = R.color.icon_blue)
+        )
+        BottomNavigationItem(
+            selected = currentSelectedScreen == RootScreen.AddTask,
+            onClick = { navController.navigateToRootScreen(RootScreen.AddTask) },
+            alwaysShowLabel = true,
+            label = {
+                Text(text = "Add Task", fontSize = 9.sp)
+            },
+            icon = { Icon(painterResource(id =  R.drawable.ic_add_circle), "Add")
 
-    BottomNavigation(
-        backgroundColor = colorResource(id = R.color.primary_blue) ,
-        contentColor = Color.White
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        items.forEach { item ->
-            BottomNavigationItem(
-                icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
-                label = {
-                    Text(
-                        text = item.title,
-                        fontSize = 9.sp
-                    )
-                },
-                selectedContentColor = Color.White,
-                unselectedContentColor = colorResource(id = R.color.icon_blue),
-                alwaysShowLabel = true,
-                selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
+            },
+            selectedContentColor = Color.White,
+            unselectedContentColor = colorResource(id = R.color.icon_blue)
+        )
+        BottomNavigationItem(
+            selected = currentSelectedScreen == RootScreen.Activity,
+            onClick = { navController.navigateToRootScreen(RootScreen.Activity) },
+            alwaysShowLabel = true,
+            label = {
+                Text(text = "Activity", fontSize = 9.sp)
+            },
+            icon = { Icon(painterResource(id =  R.drawable.ic_notifications), "Activity")
+            },
+            selectedContentColor = Color.White,
+            unselectedContentColor = colorResource(id = R.color.icon_blue)
+        )
+        BottomNavigationItem(
+            selected = currentSelectedScreen == RootScreen.Profile,
+            onClick = { navController.navigateToRootScreen(RootScreen.Profile) },
+            alwaysShowLabel = true,
+            label = {
+                Text(text = "Profile", fontSize = 9.sp)
+            },
+            icon = {
+                Icon(painterResource(id =  R.drawable.ic_account_circle), "Profile")
+            },
+            selectedContentColor = Color.White,
+            unselectedContentColor = colorResource(id = R.color.icon_blue)
+        )
+    }
+}
 
-                        navController.graph.startDestinationRoute?.let { screen_route ->
-                            popUpTo(screen_route) {
-                                saveState = true
-                            }
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+@Stable
+@Composable
+private fun NavController.currentScreenAsState(): State<RootScreen> {
+    val selectedItem = remember { mutableStateOf<RootScreen>(RootScreen.Home) }
+    DisposableEffect(key1 = this) {
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            when {
+                destination.hierarchy.any { it.route == RootScreen.Home.route } -> {
+                    selectedItem.value = RootScreen.Home
                 }
-            )
+                destination.hierarchy.any { it.route == RootScreen.MyTasks.route } -> {
+                    selectedItem.value = RootScreen.MyTasks
+                }
+                destination.hierarchy.any { it.route == RootScreen.AddTask.route } -> {
+                    selectedItem.value = RootScreen.AddTask
+                }
+                destination.hierarchy.any { it.route == RootScreen.Activity.route } -> {
+                    selectedItem.value = RootScreen.Activity
+                }
+                destination.hierarchy.any { it.route == RootScreen.Profile.route } -> {
+                    selectedItem.value = RootScreen.Profile
+                }
+            }
+
+        }
+        addOnDestinationChangedListener(listener)
+        onDispose {
+            removeOnDestinationChangedListener(listener)
+        }
+    }
+    return selectedItem
+}
+
+private fun NavController.navigateToRootScreen(rootScreen: RootScreen) {
+    navigate(rootScreen.route) {
+        launchSingleTop = true
+        restoreState = true
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
         }
     }
 }
+

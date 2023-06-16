@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun MyTasksScreen(showDetail: () -> Unit) {
+fun ViewGroupScreen(onBack: () -> Unit,) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -24,18 +24,21 @@ fun MyTasksScreen(showDetail: () -> Unit) {
     ) {
         Column() {
             Text(
-                text = "My Tasks",
+                text = "view group",
                 fontSize = MaterialTheme.typography.h3.fontSize,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
-
-            Button(onClick = showDetail) {
-                Text("view task")
+            Button(onClick = onBack) {
+                Text("back")
             }
-
+        }
         }
 
-    }
 }
 
+//@Composable
+//@Preview
+//fun ViewGroupScreenPreview() {
+//   ViewGroupScreen()
+//}
