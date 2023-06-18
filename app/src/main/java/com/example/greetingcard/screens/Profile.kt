@@ -25,7 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -47,8 +49,9 @@ fun ProfileScreen() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(325.dp)
+                .size(335.dp)
                 .background(Color.White)
+                //.shadow(elevation = 2.dp, clip = true)
         )
         Box(
             modifier = Modifier
@@ -166,6 +169,7 @@ fun ProfileDescription(name: String, email: String, bio: String,
             letterSpacing = letterSpacing,
             lineHeight = lineHeight
         )
+        Spacer(modifier = Modifier.height(7.dp))
         Text(
             text = bio,
             letterSpacing = letterSpacing,
