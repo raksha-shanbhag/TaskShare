@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,17 +37,37 @@ import com.example.greetingcard.R
 
 @Composable
 fun ProfileScreen() {
-    Column(
+    val primaryBlue = colorResource(id = R.color.primary_blue)
+    val backgroundBlue = colorResource(id = R.color.background_blue)
+    Box (
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        TopBar(modifier = Modifier.padding(10.dp))
-        Spacer(modifier = Modifier.height(40.dp))
-        ProfileSection()
+            .background(backgroundBlue)
+            ){
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(325.dp)
+                .background(Color.White)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(200.dp)
+                .background(primaryBlue)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                //.background(Color.White)
+                .verticalScroll(rememberScrollState())
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TopBar(modifier = Modifier.padding(20.dp))
+            Spacer(modifier = Modifier.height(50.dp))
+            ProfileSection()
+        }
     }
 }
 
@@ -61,7 +82,7 @@ fun TopBar(modifier: Modifier = Modifier) {
     ) {
         Icon(imageVector = Icons.Default.ArrowBack,
             contentDescription = "Back",
-            tint = Color.Black,
+            tint = Color.White,
             modifier = Modifier.size(24.dp),
         )
     }
@@ -74,8 +95,7 @@ fun TopBar(modifier: Modifier = Modifier) {
 fun ProfileSection(modifier: Modifier = Modifier) {
 
     // Profile picture placeholder
-    val image_pfp = painterResource(R.drawable.ic_account_circle)
-    val color = colorResource(id = R.color.primary_blue)
+    val imagePfp = painterResource(R.drawable.ic_account_circle)
 
     Column(modifier = modifier
         .fillMaxWidth()
@@ -86,7 +106,7 @@ fun ProfileSection(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
         ) {
-            ProfileImage(image = image_pfp,
+            ProfileImage(image = imagePfp,
             modifier = Modifier
                 .size(150.dp)
                 .weight(5f)     // Pfp will take up 50% of row's width
@@ -102,18 +122,20 @@ fun ProfileSection(modifier: Modifier = Modifier) {
 // Creates a circle profile picture.
 @Composable
 fun ProfileImage(image: Painter, modifier: Modifier) {
+    val primaryBlue = colorResource(id = R.color.primary_blue)
     Image(
         painter = image,
         contentDescription = null,
         modifier = modifier
             .aspectRatio(1f, matchHeightConstraintsFirst = true)
             .border(
-                width = 1.dp,
-                color = Color.LightGray,
+                width = 2.dp,
+                color = Color.White,
                 shape = CircleShape
             )
             .padding(3.dp)
             .clip(CircleShape)      // Makes profile picture round
+            .background(primaryBlue)
     )
 }
 
