@@ -20,6 +20,8 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -51,12 +54,16 @@ fun CreateGroupScreen(onBack: () -> Unit) {
         mutableStateOf(listOf<String>())
     }
 
-    Scaffold( topBar = {TopAppBar(backgroundColor = colorResource(id = R.color.primary_blue), title = {Text(text="Create Group")}, contentColor = Color.White, navigationIcon = {
-        IconButton(
-        onClick = onBack ) {
-            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
-        }
-    })}, content = {
+    Scaffold( topBar = {
+        CenterAlignedTopAppBar(
+        title = { Text(text = "Create Group", color = Color.White, fontSize = 30.sp) },
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
+            navigationIcon = {
+                IconButton(
+                    onClick = onBack ) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "", tint = Color.White)
+                }}
+    )}, content = {
         Box(
             modifier = Modifier
                 .fillMaxSize()
