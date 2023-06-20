@@ -103,7 +103,7 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                         modifier = Modifier
                             .padding(2.dp, 0.dp, 0.dp, 5.dp))
                     Text(text = "Roommates",
-                        color = colorResource(id = R.color.dark_blue),
+                        color = colorResource(id = R.color.banner_blue),
                         modifier = Modifier
                             .background(colorResource(id = R.color.white), RoundedCornerShape(3.dp))
                             .padding(10.dp, 2.dp)
