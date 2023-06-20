@@ -68,12 +68,18 @@ fun MyTasksScreen(showDetail: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Column() {
-            Row(modifier) {
+            Row(modifier = Modifier
+                .background(colorResource(id = R.color.banner_blue))
+                .padding(5.dp, 2.dp)
+                ) {
                 Text(
-                    text = "Tasks Remaining: "
+                    text = "Tasks Remaining: ",
+                    color = colorResource(id = R.color.white)
                 )
                 Text(
-                    text = "0"
+                    text = "0",
+                    color = colorResource(id = R.color.banner_blue),
+                    modifier = Modifier.background(colorResource(id = R.color.white), RoundedCornerShape(20.dp))
                 )
             }
             Row(){
