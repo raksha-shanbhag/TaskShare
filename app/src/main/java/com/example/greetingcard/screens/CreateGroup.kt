@@ -5,11 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -17,8 +23,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -67,29 +76,41 @@ fun CreateGroupScreen(onBack: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
+                .background(Color.White).padding(0.dp, 50.dp, 0.dp, 0.dp),
+            contentAlignment = Alignment.TopStart
         ) {
-            Column (verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
-                TextField(value = groupName, onValueChange = {text -> groupName = text},  label = {Text("Group Name")})
+                TextField(value = groupName, onValueChange = {text -> groupName = text},  label = {Text("Group Name")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
 
-                TextField(value = groupDescription, onValueChange = {text -> groupDescription = text}, label = {Text("Group Description")})
+                TextField(value = groupDescription, onValueChange = {text -> groupDescription = text}, label = {Text("Group Description")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
 
-                TextField(value = member, onValueChange = {text -> member = text}, label = {Text("Add Members")})
+                TextField(value = member, onValueChange = {text -> member = text}, label = {Text("Group Member Email")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
 
                 LazyColumn() {
                     items(groupMembers) { currentGroup ->
                         Text(text = currentGroup)
                     }
                 }
-
                 Button(onClick = {
                     groupMembers = groupMembers + member
                     member = ""
-                }) {
-                    Text("add group member")
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.banner_blue),
+                        contentColor = Color.White),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text("Add Group Member")
+                    }
+
                 }
+
 
             }
 
