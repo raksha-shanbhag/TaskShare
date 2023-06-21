@@ -30,12 +30,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.UI.Views.ViewModels.GroupViewModel
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ViewGroupScreen(onBack: () -> Unit,) {
-
+    val viewModel = viewModel(GroupViewModel::class.java)
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "View Group", color = Color.White, fontSize = 30.sp) },
@@ -55,7 +57,7 @@ fun ViewGroupScreen(onBack: () -> Unit,) {
         ) {
             Column() {
                 Text(
-                    text = "view group",
+                    text = viewModel.state.value.groupName,
                     fontSize = MaterialTheme.typography.h3.fontSize,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
