@@ -5,7 +5,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class SubTask(taskRef: Task, subTaskId: String, ref: CollectionReference) {
+class TSSubTask(taskRef: TSTask, subTaskId: String, ref: CollectionReference) {
     private val TAG = "SubTask"
     private val task = taskRef
     private val id = subTaskId

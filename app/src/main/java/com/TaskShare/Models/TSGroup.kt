@@ -5,11 +5,11 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class Group(groupId: String) {
+class TSGroup(groupId: String) {
     private val TAG = "Group"
     private val id = groupId
-    private var users: HashSet<User> = hashSetOf()
-    private var tasks: HashSet<Task> = hashSetOf()
+    private var users: HashSet<TSUser> = hashSetOf()
+    private var tasks: HashSet<TSTask> = hashSetOf()
 
     fun getId(): String {
         return id
@@ -44,7 +44,7 @@ class Group(groupId: String) {
             }
     }
 
-    fun getUsers(refresh: Boolean = false): HashSet<User> {
+    fun getUsers(refresh: Boolean = false): HashSet<TSUser> {
         if (refresh) {
             get()
         }
@@ -85,7 +85,7 @@ class Group(groupId: String) {
                 userIds.plus(result.get("Users"))
 
                 for (userId in userIds) {
-                    users.plus(User(userId))
+                    users.plus(TSUser(userId))
                 }
             }
             .addOnFailureListener { exception ->
@@ -96,7 +96,7 @@ class Group(groupId: String) {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    tasks.plus(Task(this, document.id, ref.collection("Tasks")))
+                    tasks.plus(TSTask(this, document.id, ref.collection("Tasks")))
                 }
             }
             .addOnFailureListener { exception ->

@@ -5,11 +5,11 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class User(userId: String) {
+class TSUser(userId: String) {
     private val TAG = "User"
     private val id = userId
-    private var groups: HashSet<Group> = hashSetOf()
-    private var tasks: HashSet<SubTask> = hashSetOf()
+    private var groups: HashSet<TSGroup> = hashSetOf()
+    private var tasks: HashSet<TSSubTask> = hashSetOf()
 
     fun getId(): String {
         return id
@@ -45,7 +45,7 @@ class User(userId: String) {
             }
     }
 
-    fun getGroups(refresh: Boolean = false): Set<Group> {
+    fun getGroups(refresh: Boolean = false): Set<TSGroup> {
         if (refresh) {
             get()
         }
@@ -53,7 +53,7 @@ class User(userId: String) {
         return groups;
     }
 
-    fun getTasks(refresh: Boolean = false): Set<SubTask> {
+    fun getTasks(refresh: Boolean = false): Set<TSSubTask> {
         if (refresh) {
             get()
         }
@@ -61,7 +61,7 @@ class User(userId: String) {
         return tasks;
     }
 
-    fun updateGroup(group: Group, add: Boolean = true): Boolean {
+    fun updateGroup(group: TSGroup, add: Boolean = true): Boolean {
         val db = Firebase.firestore
         val dbRef = db.collection("Users").document(id)
 
@@ -98,7 +98,7 @@ class User(userId: String) {
                 groupIds.plus(result.get("Groups"))
 
                 for (groupId in groupIds) {
-                    groups.plus(Group(groupId))
+                    groups.plus(TSGroup(groupId))
                 }
             }
             .addOnFailureListener { exception ->
