@@ -2,6 +2,7 @@ package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,7 +76,8 @@ fun RenderStatus(status: String){
 }
 
 @Composable
-fun RenderTaskCard(task_name: String, group_name: String, status: String, end_date: String){
+fun RenderTaskCard(task_name: String, group_name: String, status: String, end_date: String, showDetail: () -> Unit){
+//    Button(onClick = showDetail){
     Row(
         modifier = Modifier
             .background(
@@ -83,6 +85,9 @@ fun RenderTaskCard(task_name: String, group_name: String, status: String, end_da
                 RoundedCornerShape(10.dp)
             )
             .fillMaxWidth()
+            .clickable(
+                onClick = showDetail
+            )
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -142,6 +147,7 @@ fun RenderTaskCard(task_name: String, group_name: String, status: String, end_da
         }
 
     }
+//    }
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -169,7 +175,7 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                         modifier = Modifier
                         .background(colorResource(id = R.color.banner_blue), RoundedCornerShape(4.dp))
                         .fillMaxWidth()
-                        .padding(5.dp, 2.dp)
+                        .padding(15.dp, 10.dp)
 
                         ) {
                         Text(
@@ -180,7 +186,7 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                         Text(
                             color = colorResource(id = R.color.banner_blue),
                             modifier = Modifier
-                                .padding(10.dp)
+                                .padding(10.dp, 0.dp)
                                 .drawBehind {
                                     drawCircle(
                                         color = Color.White,
@@ -200,13 +206,13 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                             fontSize = mid_font_size.sp)
                     }
 //                    TASK CARD
-                    RenderTaskCard("Clean Counters and Cry", "Roommates", "todo", "10/05/2023")
+                    RenderTaskCard("Clean Counters and Cry", "Roommates", "todo", "10/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
-                    RenderTaskCard("Clean Counters and Sing", "Roommates", "inprogress", "10/05/2023")
+                    RenderTaskCard("Clean Counters and Sing", "Roommates", "inprogress", "10/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
-                    RenderTaskCard("Take out trash", "Roommates", "done", "12/05/2023")
+                    RenderTaskCard("Take out trash", "Roommates", "done", "12/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
-                    RenderTaskCard("Take out meee", "Roommates", "todo", "11/05/2023")
+                    RenderTaskCard("Take out meee", "Roommates", "todo", "11/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
                 }
             }

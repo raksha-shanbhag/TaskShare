@@ -8,5 +8,6 @@
 | 2023/06/19 | 2        | styling task card                                                         |
 | 2023/06/19 | 1        | dynamic task progress color and text update                               |
 | 2023/06/20 | 1        | planning endpoints, changing directory structure to MVVM                  |
-| 2023/06/20 | 3        | finished styling "my tasks" page                                            |
+| 2023/06/20 | 3        | finished styling "my tasks" page                                          |
+| 2023/06/21 | 1.5      | set up navigation to task detail and finished styling task name section   |
 
