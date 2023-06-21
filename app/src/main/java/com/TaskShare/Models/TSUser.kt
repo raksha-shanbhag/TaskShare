@@ -17,7 +17,7 @@ class TSUser(userId: String) {
 
     fun create() {
         val db = Firebase.firestore
-        val docRef = db.collection("Groups").document(id)
+        val docRef = db.collection("Users").document(id)
 
         docRef.get()
             .addOnSuccessListener { document ->
