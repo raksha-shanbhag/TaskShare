@@ -1,6 +1,7 @@
 package com.TaskShare.Models
 
 import android.util.Log
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -52,6 +53,10 @@ class TSGroup(groupId: String) {
         return users
     }
 
+    fun getTaskCollection(): CollectionReference {
+        return Firebase.firestore.collection("Groups").document(id).collection("Tasks")
+    }
+
     fun updateUser(userId: String, add: Boolean = true): Boolean {
         val db = Firebase.firestore
         val dbRef = db.collection("Groups").document(id)
@@ -96,7 +101,7 @@ class TSGroup(groupId: String) {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    tasks.plus(TSTask(this, document.id, ref.collection("Tasks")))
+                    tasks.plus(TSTask(this, document.id))
                 }
             }
             .addOnFailureListener { exception ->

@@ -5,11 +5,11 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class TSTask(groupRef: TSGroup, taskId: String, ref: CollectionReference) {
+class TSTask(groupRef: TSGroup, taskId: String) {
     private val TAG = "Task"
     private val group = groupRef
     private val id = taskId
-    private val dataRef = ref.document(id)
+    private val dataRef = group.getTaskCollection().document(id)
     private var assignees: HashSet<String> = hashSetOf()
     private var subTasks: HashSet<TSSubTask> = hashSetOf()
 
@@ -36,6 +36,10 @@ class TSTask(groupRef: TSGroup, taskId: String, ref: CollectionReference) {
             }
     }
 
+    fun getSubTaskCollection(): CollectionReference {
+        return dataRef.collection("SubTasks")
+    }
+
     private fun get() {
         dataRef.get()
             .addOnSuccessListener { result ->
@@ -49,7 +53,7 @@ class TSTask(groupRef: TSGroup, taskId: String, ref: CollectionReference) {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    subTasks.plus(TSSubTask(this, document.id, dataRef.collection("SubTasks")))
+                    subTasks.plus(TSSubTask(this, document.id))
                 }
             }
             .addOnFailureListener { exception ->
