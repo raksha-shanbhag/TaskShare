@@ -45,34 +45,46 @@ var min_width_pill = 100
 var max_width_pill = 400
 var mid_font_size = 20
 var small_font_size = 18
-@Composable
-fun RenderStatus(status: String){
 
-    var text_status = ""
+
+@Composable
+fun RenderPills(text: String, bg_color: Int){
     var text_color = R.color.white
 
-    if(status == "todo"){
-        text_status = "To Do"
-        text_color = R.color.progress_red
+    if (bg_color == R.color.icon_blue || bg_color == R.color.pink){
+        text_color = R.color.black
     }
-    if(status == "inprogress"){
-        text_status = "In Progress"
-        text_color = R.color.progress_yellow
-    }
-    if(status == "done"){
-        text_status = "Done"
-        text_color = R.color.progress_green
-    }
-
-    Text(text = text_status,
-        color = colorResource(id = R.color.white),
+    Text(
+        text = text,
+        color = colorResource(id = text_color),
         fontSize = small_font_size.sp,
 
         modifier = Modifier
             .widthIn(min_width_pill.dp, max_width_pill.dp)
-            .background(colorResource(id = text_color), RoundedCornerShape(3.dp))
+            .padding(4.dp, 0.dp)
+            .background(colorResource(id = bg_color), RoundedCornerShape(3.dp))
             .padding(10.dp, 2.dp)
     )
+
+}
+@Composable
+fun RenderStatus(status: String){
+    var bg_color = R.color.white
+    var text_print = ""
+
+    if (status == "todo") {
+        text_print = "To Do"
+        bg_color = R.color.progress_red
+    }
+    if (status == "inprogress") {
+        text_print = "In Progress"
+        bg_color = R.color.progress_yellow
+    }
+    if (status == "done") {
+        text_print = "Done"
+        bg_color = R.color.progress_green
+    }
+    RenderPills(text_print, bg_color)
 }
 
 @Composable

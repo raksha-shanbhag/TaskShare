@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
@@ -73,6 +74,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         .padding(15.dp, 10.dp),
 
                 ) {
+
                     Text(
                         text = "Take Out Trash ",
                         color = colorResource(id = R.color.white),
@@ -86,8 +88,45 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                     )
                 }
                 // Task Details
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                ) {
+                    var name_wdith = 0.35f
+                    var value_width = 0.65f
+                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                        Text(text = "Assigned to", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium,modifier = Modifier.fillMaxWidth(name_wdith))
 
+                        Row(modifier = Modifier.fillMaxWidth(value_width)
+                            .wrapContentWidth()){
+                            RenderPills("You", R.color.icon_blue)
+                            RenderPills("Johnny", R.color.icon_blue)
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                        Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        Row(modifier = Modifier.fillMaxWidth(value_width)){
+                            RenderPills("Jane Doe", R.color.icon_blue)
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                        Text(text = "Group", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        Row(modifier = Modifier.fillMaxWidth(value_width)){
+                            RenderPills("Roommates", R.color.pink)
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                        Text(text = "Status", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        RenderStatus("todo")
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                        Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        RenderPills("10/05/2023", R.color.banner_blue)
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                        Text(text = "Cycle", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        RenderPills("Every Two Days", R.color.banner_blue)
+                    }
+            
                     
                 }
             }

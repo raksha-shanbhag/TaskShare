@@ -10,4 +10,5 @@
 | 2023/06/20 | 1        | planning endpoints, changing directory structure to MVVM                  |
 | 2023/06/20 | 3        | finished styling "my tasks" page                                          |
 | 2023/06/21 | 1.5      | set up navigation to task detail and finished styling task name section   |
+| 2023/06/21 | 0.67     | styling pill information under task details                               |
 
