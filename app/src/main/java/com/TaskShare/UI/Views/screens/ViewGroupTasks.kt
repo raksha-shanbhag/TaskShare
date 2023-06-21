@@ -36,11 +36,11 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ViewGroupScreen(onBack: () -> Unit) {
+fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
     val viewModel = viewModel(GroupViewModel::class.java)
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
-            title = { Text(text = "View Group", color = Color.White, fontSize = 30.sp) },
+            title = { Text(text = "Group Details", color = Color.White, fontSize = 30.sp) },
             colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
             navigationIcon = {
                 IconButton(
@@ -55,14 +55,9 @@ fun ViewGroupScreen(onBack: () -> Unit) {
                 .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
-            Column() {
-                Text(
-                    text = viewModel.state.value.groupName,
-                    fontSize = MaterialTheme.typography.h3.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
+            Button(onClick = showEdit, content =  {
+                Text(text = "edit")
+            })
         }
     })
 

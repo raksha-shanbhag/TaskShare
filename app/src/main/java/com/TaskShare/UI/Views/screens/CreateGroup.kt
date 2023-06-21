@@ -55,7 +55,7 @@ import com.example.greetingcard.R
 @Composable
 fun CreateGroupScreen(onBack: () -> Unit) {
     val viewModel = viewModel(GroupViewModel::class.java)
-    val state = viewModel.state.value
+    val state by viewModel.state
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -112,4 +112,5 @@ fun CreateGroupScreen(onBack: () -> Unit) {
     })
 
 }
+
 

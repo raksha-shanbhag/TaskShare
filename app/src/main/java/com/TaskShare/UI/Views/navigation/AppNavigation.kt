@@ -15,6 +15,7 @@ import com.example.greetingcard.screens.NotificationScreen
 import com.example.greetingcard.screens.ProfileScreen
 import com.example.greetingcard.screens.TaskDetailsScreen
 import com.example.greetingcard.screens.ViewGroupScreen
+import com.example.greetingcard.screens.ViewGroupTasksScreen
 
 
 /*
@@ -49,13 +50,14 @@ private fun NavGraphBuilder.addHomeRoute(navController: NavController) {
         showGroups(navController)
         showViewGroup(navController)
         showCreateGroup(navController)
+        showViewGroupTasks(navController)
     }
 }
 private fun NavGraphBuilder.showGroups(navController: NavController) {
     composable(route = LeafScreen.Home.route) {
         HomeScreen(
             showDetail = {
-                navController.navigate(LeafScreen.ViewGroup.route)
+                navController.navigate(LeafScreen.ViewGroupTasks.route)
             },
             showCreate = {
                 navController.navigate(LeafScreen.CreateGroup.route)
@@ -68,6 +70,20 @@ private fun NavGraphBuilder.showViewGroup(navController: NavController) {
         ViewGroupScreen(
             onBack = {
                 navController.navigateUp()
+            }
+        )
+    }
+}
+
+
+private fun NavGraphBuilder.showViewGroupTasks(navController: NavController) {
+    composable(route = LeafScreen.ViewGroupTasks.route) {
+        ViewGroupTasksScreen(
+            onBack = {
+                navController.navigateUp()
+            },
+            showEdit = {
+                navController.navigate(LeafScreen.ViewGroup.route)
             }
         )
     }
