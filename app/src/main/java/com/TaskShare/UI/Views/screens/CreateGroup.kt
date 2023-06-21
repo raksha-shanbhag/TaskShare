@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
@@ -45,34 +46,27 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.UI.Views.ViewModels.GroupViewModel
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CreateGroupScreen(onBack: () -> Unit) {
-    var groupName by remember {
-        mutableStateOf("")
-    }
-    var groupDescription by remember {
-        mutableStateOf("")
-    }
-    var member by remember {
-        mutableStateOf("")
-    }
-    var groupMembers by remember {
-        mutableStateOf(listOf<String>())
-    }
+    val viewModel = viewModel(GroupViewModel::class.java)
+    val state = viewModel.state.value
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
-        title = { Text(text = "Create Group", color = Color.White, fontSize = 30.sp) },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
+            title = { Text(text = "Create Group", color = Color.White, fontSize = 30.sp) },
+            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
             navigationIcon = {
                 IconButton(
                     onClick = onBack ) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "", tint = Color.White)
                 }}
-    )}, content = {
+        )}, content = {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -81,20 +75,20 @@ fun CreateGroupScreen(onBack: () -> Unit) {
         ) {
             Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
-                TextField(value = groupName, onValueChange = {text -> groupName = text},  label = {Text("Group Name")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
+                TextField(value = state.groupName, onValueChange = {text -> viewModel.updateGroupName(text)},  label = {Text("Group Name")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
 
-                TextField(value = groupDescription, onValueChange = {text -> groupDescription = text}, label = {Text("Group Description")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
+                TextField(value = state.groupDescription, onValueChange = {text -> viewModel.updateGroupDesc(text)}, label = {Text("Group Description")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
 
-                TextField(value = member, onValueChange = {text -> member = text}, label = {Text("Group Member Email")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
+                TextField(value = state.member, onValueChange = {text -> viewModel.updateGroupMember(text)}, label = {Text("Group Member Email")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
 
                 LazyColumn() {
-                    items(groupMembers) { currentGroup ->
-                        Text(text = currentGroup)
+                    itemsIndexed(state.groupMembers) { ind, currentGroup ->
+                        Text(text = "Member " +  (ind+1) + ": $currentGroup")
                     }
                 }
                 Button(onClick = {
-                    groupMembers = groupMembers + member
-                    member = ""
+                    viewModel.updateMembers(state.member)
+                    viewModel.updateGroupMember("")
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.banner_blue),
