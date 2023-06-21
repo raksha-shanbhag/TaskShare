@@ -7,5 +7,6 @@
 | 2023/06/19 | 1        | setting up task page with barebones information                           |
 | 2023/06/19 | 2        | styling task card                                                         |
 | 2023/06/19 | 1        | dynamic task progress color and text update                               |
-| 2023/06/19 | 2        | planning endpoints, understanding MVVM and how to incorporate into app    |
+| 2023/06/20 | 1        | planning endpoints, changing directory structure to MVVM                  |
+| 2023/06/20 | 3        | finished styling "my tasks" page                                            |
 
