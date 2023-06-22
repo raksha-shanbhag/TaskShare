@@ -1,15 +1,17 @@
 package com.TaskShare.Models
 
 import android.util.Log
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 class TSUser(userId: String) {
     private val TAG = "User"
     private val id = userId
     private var groups: HashSet<TSGroup> = hashSetOf()
-    private var tasks: HashSet<TSSubTask> = hashSetOf()
+    private var tasks: HashSet<TSSubTask>? = null
 
     fun getId(): String {
         return id
@@ -27,7 +29,7 @@ class TSUser(userId: String) {
                     var groupIds: HashSet<String> = hashSetOf()
 
                     for (group in groups) {
-                        groupIds.plus(group.getId())
+                        groupIds.add(group.getId())
                     }
 
                     val data = hashMapOf(
@@ -45,20 +47,23 @@ class TSUser(userId: String) {
             }
     }
 
-    fun getGroups(refresh: Boolean = false): Set<TSGroup> {
-        if (refresh) {
-            get()
-        }
-
+    fun getGroups(): Set<TSGroup> {
         return groups;
     }
 
-    fun getTasks(refresh: Boolean = false): Set<TSSubTask> {
-        if (refresh) {
-            get()
+    fun getTasks(): Set<TSSubTask> {
+        if (tasks != null) {
+            return tasks as HashSet<TSSubTask>
         }
 
-        return tasks;
+        var set: HashSet<TSSubTask> = hashSetOf()
+
+        for (group in groups) {
+            set.addAll(group.getSubTasksAssignedTo(id))
+        }
+
+        tasks = set
+        return set
     }
 
     fun updateGroup(group: TSGroup, add: Boolean = true): Boolean {
@@ -79,30 +84,67 @@ class TSUser(userId: String) {
                 .addOnFailureListener(failureListener)
         }
 
-        if (!group.updateUser(id, add)) {
+        if (!group.updateUser(this, add)) {
             dbRef.update("Groups", FieldValue.arrayRemove(group.getId()))
                 .addOnFailureListener(failureListener)
+        }
+
+        if (success) {
+            groups.add(group)
         }
 
         return success
     }
 
-    private fun get() {
+    fun get() {
         val db = Firebase.firestore
-        groups.clear()
-
         db.collection("Users").document(id)
             .get()
             .addOnSuccessListener { result ->
-                var groupIds: HashSet<String> = hashSetOf()
-                groupIds.plus(result.get("Groups"))
-
-                for (groupId in groupIds) {
-                    groups.plus(TSGroup(groupId))
-                }
+                set(result)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
+    }
+
+    suspend fun synchronisedGet() {
+        var result: DocumentSnapshot? = null
+        try {
+            result = Firebase.firestore.collection("Users").document(id).get().await()
+        } catch (exception: Throwable) {
+            Log.w(TAG, "Error getting documents.", exception)
+            return
+        }
+
+        if (result != null) {
+            set(result)
+        }
+    }
+
+    private fun set(result: DocumentSnapshot) {
+        var groupIds: HashSet<String> = hashSetOf()
+        groupIds.addAll(result.get("Groups") as List<String>)
+        Log.w(TAG, groupIds.toString() + "TESTING")
+
+        var set: HashSet<TSGroup> = hashSetOf()
+
+        for (groupId in groupIds) {
+            var flag = false
+
+            for (group in groups) {
+                if (group.getId() == groupId) {
+                    set.add(group)
+                    flag = true
+                    break
+                }
+            }
+
+            if (!flag) {
+                set.add(TSGroup(groupId))
+            }
+        }
+
+        groups = set
     }
 }
