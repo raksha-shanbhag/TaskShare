@@ -1,7 +1,6 @@
-package com.TaskShare.UI.Views.ViewModels
+package com.TaskShare.ViewModels
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 
 class GroupViewModel: ViewModel() {
