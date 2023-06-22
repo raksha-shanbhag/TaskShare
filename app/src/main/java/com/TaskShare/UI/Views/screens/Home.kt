@@ -3,6 +3,7 @@ package com.example.greetingcard.screens
 import android.annotation.SuppressLint
 import android.widget.Button
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,10 +12,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -32,15 +37,152 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
+
+
+@Composable
+fun RenderStatusMsg(completed: Int, total: Int) {
+    var textCol = R.color.completed_tasks
+    var statusMessage = "All tasks complete!"
+
+    if(completed != total) {
+        textCol = R.color.incomplete_tasks
+        statusMessage = "$completed/$total tasks left"
+    }
+
+    Text(text = statusMessage,
+        color = colorResource(id = textCol),
+        fontSize = small_font_size.sp,
+        modifier = Modifier
+            .padding(2.dp, 0.dp, 0.dp, 5.dp)
+    )
+}
+
+@Composable
+fun RenderTasksList(incompleteTasks: List<String>) {
+    var collapse = incompleteTasks.size > 2
+    if(collapse) {
+        var leftOver = incompleteTasks.size - 2
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            for (i in 1..2) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 8.dp)
+                            .size(8.dp)
+                            .background(Color.Black, shape = CircleShape),
+                    )
+
+                    Text(incompleteTasks[i])
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 8.dp)
+                        .size(8.dp)
+                        .background(Color.Black, shape = CircleShape),
+                )
+
+                Text("$leftOver more tasks")
+            }
+        }
+
+    } else {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            incompleteTasks.forEach() {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 8.dp)
+                            .size(8.dp)
+                            .background(Color.Black, shape = CircleShape),
+                    )
+
+                    Text("$it")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RenderGroupCard(group_name: String, tasksStatus: String,completedTasks: Int, tasksNum: Int, incompleteTasks: List<String>, showDetail: () -> Unit){
+    var bg_col = R.color.pink
+    if(tasksStatus == "done") {
+        bg_col = R.color.group_progress
+    }
+
+    Row(
+        modifier = Modifier.absolutePadding(30.dp, 0.dp, 30.dp, 0.dp)
+            .background(
+                colorResource(id = bg_col),
+                RoundedCornerShape(10.dp)
+            ).padding(10.dp)
+            .fillMaxWidth()
+            .clickable(
+                onClick = showDetail
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier
+            .padding(10.dp, 0.dp)
+            .widthIn(10.dp, 140.dp))
+        {
+            Icon(
+                painterResource(id = R.drawable.baseline_groups_24),
+                contentDescription = "Default Group Icon",
+                modifier = Modifier.size(50.dp)
+                    .background(
+                        colorResource(id = R.color.white),
+                        RoundedCornerShape(10.dp)
+                    )
+            )
+        }
+        Column(modifier = Modifier.widthIn(10.dp, 300.dp))
+        {
+            Text(text = group_name,
+                fontSize = small_font_size.sp,
+                modifier = Modifier
+                    .padding(2.dp, 0.dp, 0.dp, 5.dp)
+            )
+
+            RenderStatusMsg(completed = completedTasks, total = tasksNum)
+            RenderTasksList(incompleteTasks = incompleteTasks)
+
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Center,
+
+            ) {
+            Icon(
+                painterResource(id = R.drawable.ic_arrow),
+                contentDescription = "group detail"
+            )
+        }
+
+    }
+}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -67,7 +209,7 @@ fun HomeScreen(
                         contentColor = Color.White),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .absolutePadding(50.dp, 0.dp, 50.dp, 0.dp)
+                        .absolutePadding(30.dp, 0.dp, 30.dp, 0.dp)
                 ) {
                     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = null)
@@ -76,9 +218,25 @@ fun HomeScreen(
                     }
 
                 }
-                Button(onClick = showDetail) {
-                    Text("view group")
-                }
+                Spacer(modifier = Modifier.height(height = 10.dp))
+                RenderGroupCard(
+                    group_name = "Roomies",
+                    tasksStatus = "done",
+                    completedTasks = 5,
+                    tasksNum = 5,
+                    incompleteTasks = emptyList(),
+                    showDetail = showDetail
+                )
+
+                Spacer(modifier = Modifier.height(height = 10.dp))
+                RenderGroupCard(
+                    group_name = "Family",
+                    tasksStatus = "in_progress",
+                    completedTasks = 1,
+                    tasksNum = 2,
+                    incompleteTasks = listOf("Vaccum"),
+                    showDetail = showDetail
+                )
 
             }
 

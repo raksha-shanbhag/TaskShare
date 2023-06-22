@@ -15,4 +15,7 @@
     <color name="progress_green">#70C353</color>
     <color name="banner_blue">#225A96</color>
     <color name="pink">#FFC8DC</color>
+    <color name="group_progress">#FFE7A9</color>
+    <color name="completed_tasks">#00970F</color>
+    <color name="incomplete_tasks">#FF4747</color>
 </resources>
