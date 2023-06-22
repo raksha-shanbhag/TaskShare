@@ -35,6 +35,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +49,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.GroupViewModel
+import com.TaskShare.ViewModels.GroupViewState
+import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 
 
@@ -69,7 +75,7 @@ fun RenderStatusMsg(completed: Int, total: Int) {
 }
 
 @Composable
-fun RenderTasksList(incompleteTasks: List<String>) {
+fun RenderTasksList(incompleteTasks: List<TaskViewState>) {
     var collapse = incompleteTasks.size > 2
     if(collapse) {
         var leftOver = incompleteTasks.size - 2
@@ -85,7 +91,7 @@ fun RenderTasksList(incompleteTasks: List<String>) {
                             .background(Color.Black, shape = CircleShape),
                     )
 
-                    Text(incompleteTasks[i])
+                    Text(incompleteTasks[i].taskName)
                 }
             }
             Row(
@@ -115,7 +121,7 @@ fun RenderTasksList(incompleteTasks: List<String>) {
                             .background(Color.Black, shape = CircleShape),
                     )
 
-                    Text("$it")
+                    Text("${it.taskName}")
                 }
             }
         }
@@ -123,18 +129,20 @@ fun RenderTasksList(incompleteTasks: List<String>) {
 }
 
 @Composable
-fun RenderGroupCard(group_name: String, tasksStatus: String,completedTasks: Int, tasksNum: Int, incompleteTasks: List<String>, showDetail: () -> Unit){
+fun RenderGroupCard(group_name: String,completedTasks: Int, tasksNum: Int, incompleteTasks: List<TaskViewState>, showDetail: () -> Unit){
     var bg_col = R.color.pink
-    if(tasksStatus == "done") {
+    if(completedTasks == tasksNum) {
         bg_col = R.color.group_progress
     }
 
     Row(
-        modifier = Modifier.absolutePadding(30.dp, 0.dp, 30.dp, 0.dp)
+        modifier = Modifier
+            .absolutePadding(30.dp, 0.dp, 30.dp, 0.dp)
             .background(
                 colorResource(id = bg_col),
                 RoundedCornerShape(10.dp)
-            ).padding(10.dp)
+            )
+            .padding(10.dp)
             .fillMaxWidth()
             .clickable(
                 onClick = showDetail
@@ -148,7 +156,8 @@ fun RenderGroupCard(group_name: String, tasksStatus: String,completedTasks: Int,
             Icon(
                 painterResource(id = R.drawable.baseline_groups_24),
                 contentDescription = "Default Group Icon",
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier
+                    .size(50.dp)
                     .background(
                         colorResource(id = R.color.white),
                         RoundedCornerShape(10.dp)
@@ -188,8 +197,19 @@ fun RenderGroupCard(group_name: String, tasksStatus: String,completedTasks: Int,
 @Composable
 fun HomeScreen(
     showDetail: () -> Unit,
-    showCreate: () -> Unit
+    showCreate: () -> Unit,
 ) {
+
+    //getting data
+    val viewModel = viewModel(GroupViewModel::class.java)
+    val state by viewModel.state
+    val groupState by viewModel.groupsState
+
+    LaunchedEffect(Unit){
+        viewModel.addGroupAndTasks(GroupViewState("Roommates", "test description", "lamia", mutableListOf("Lamia", "Jaishree"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")), mutableListOf()))
+        viewModel.addGroupAndTasks(GroupViewState("Home", "test description", "lamia", mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress"))))
+    }
+
     androidx.compose.material.Scaffold(topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "My Groups", color = Color.White, fontSize = 30.sp) },
@@ -199,7 +219,7 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .absolutePadding(0.dp, 20.dp,0.dp,0.dp)
+                .absolutePadding(0.dp, 20.dp, 0.dp, 0.dp)
                 .background(Color.White),
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -219,24 +239,19 @@ fun HomeScreen(
 
                 }
                 Spacer(modifier = Modifier.height(height = 10.dp))
-                RenderGroupCard(
-                    group_name = "Roomies",
-                    tasksStatus = "done",
-                    completedTasks = 5,
-                    tasksNum = 5,
-                    incompleteTasks = emptyList(),
-                    showDetail = showDetail
-                )
+                //using data
+                groupState.groups.forEach{
 
-                Spacer(modifier = Modifier.height(height = 10.dp))
-                RenderGroupCard(
-                    group_name = "Family",
-                    tasksStatus = "in_progress",
-                    completedTasks = 1,
-                    tasksNum = 2,
-                    incompleteTasks = listOf("Vaccum"),
-                    showDetail = showDetail
-                )
+                    RenderGroupCard(
+                        group_name = it.groupName,
+                        completedTasks = it.tasks.size - it.incompleteTasks.size,
+                        tasksNum = it.tasks.size,
+                        incompleteTasks = it.incompleteTasks,
+                        showDetail = showDetail
+                    )
+
+                    Spacer(modifier = Modifier.height(height = 10.dp))
+                }
 
             }
 

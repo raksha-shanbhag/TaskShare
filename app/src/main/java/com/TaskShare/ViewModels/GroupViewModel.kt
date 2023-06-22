@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 
 class GroupViewModel: ViewModel() {
     val state = mutableStateOf(GroupViewState())
-
+    val groupsState = mutableStateOf(GroupsViewState())
     fun updateGroupName(name: String) {
         state.value = state.value.copy(groupName = name)
     }
@@ -39,6 +39,18 @@ class GroupViewModel: ViewModel() {
         currentList.add(task)
         state.value = state.value.copy(tasks = currentList)
     }
+
+    fun addGroupAndTasks(group: GroupViewState) {
+        val currentList = groupsState.value.groups
+        currentList.add(group)
+        groupsState.value = groupsState.value.copy(groups = currentList)
+    }
+
+    fun getAssigneeTasks( id: Int): Map<String, List<TaskViewState>>{
+         val currentList = groupsState.value.groups[id].tasks
+         return currentList.groupBy { it.assignee }
+
+    }
 }
 
 data class GroupViewState (
@@ -48,6 +60,10 @@ data class GroupViewState (
     val groupMembers: MutableList<String> = mutableListOf(),
     val tasks: MutableList<TaskViewState> = mutableListOf(),
     val incompleteTasks: MutableList<TaskViewState> = mutableListOf()
+)
+
+data class GroupsViewState (
+    val groups: MutableList<GroupViewState> = mutableListOf()
 )
 
 data class TaskViewState (

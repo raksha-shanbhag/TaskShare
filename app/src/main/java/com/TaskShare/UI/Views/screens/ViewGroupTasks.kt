@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -38,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.ViewModels.GroupViewModel
+import com.TaskShare.ViewModels.GroupViewState
+import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 
 var min_width_pill_g = 100
@@ -161,7 +165,26 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
+    //getting data
     val viewModel = viewModel(GroupViewModel::class.java)
+    val state by viewModel.state
+    val groupState by viewModel.groupsState
+
+
+        viewModel.addGroupAndTasks(
+            GroupViewState("Roommates", "test description", "lamia", mutableListOf("Lamia", "Jaishree"), mutableListOf(
+                TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")
+            ), mutableListOf())
+        )
+        viewModel.addGroupAndTasks(
+            GroupViewState("Home", "test description", "lamia", mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(
+                TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),
+                TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "inprogress"),
+                TaskViewState("Laundry", "Jaishree", "Lamia", "10/10/2023", "inprogress")
+            ), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")))
+        )
+
+
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Group Details", color = Color.White, fontSize = 30.sp) },
@@ -195,22 +218,21 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
                     Text(text = "Assignee",
                         fontSize = mid_font_size.sp)
                 }
-//                    TASK CARD
-                Text(text = "Assigned to You ",
-                    fontSize = MaterialTheme.typography.h6.fontSize,
-                fontWeight = FontWeight.Bold)
-                RenderTaskCardG("Clean Counters and Cry", "Lamia", "todo", "10/05/2023", showEdit)
-                Spacer(modifier = Modifier.height(height = 10.dp))
-                RenderTaskCardG("Clean Counters and Sing", "Roommates", "inprogress", "10/05/2023", showEdit)
-                Spacer(modifier = Modifier.height(height = 10.dp))
 
-                Text(text = "Assigned to Jane ",
-                    fontSize = MaterialTheme.typography.h6.fontSize,
-                    fontWeight = FontWeight.Bold)
-                RenderTaskCardG("Take out trash", "Roommates", "done", "12/05/2023", showEdit)
-                Spacer(modifier = Modifier.height(height = 10.dp))
-                RenderTaskCardG("Take out meee", "Roommates", "todo", "11/05/2023", showEdit)
-                Spacer(modifier = Modifier.height(height = 10.dp))
+                //using data
+                var assigneeTasks = viewModel.getAssigneeTasks( 1)
+                assigneeTasks.forEach{
+                    Text(text = "Assigned to ${it.key}",
+                        fontSize = MaterialTheme.typography.h6.fontSize,
+                        fontWeight = FontWeight.Bold)
+                    it.value.forEach{
+                        RenderTaskCardG(it.taskName, it.assigner, it.status, it.dueDate, showEdit)
+                        Spacer(modifier = Modifier.height(height = 10.dp))
+                    }
+                }
+
+
+
             }
 
         }
