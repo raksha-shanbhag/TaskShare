@@ -8,3 +8,7 @@
 | 2023/06/14 | 4     | Created base app with bottom navigation bar and dummy screens                           |
 | 2023/06/16 | 3     | Updated base app by adding nested navigation and more screens to match figma wireframes |
 | 2023/06/17 | 2.5   | Added create group page and top bar with needed functionality                           |
+| 2023/06/18 | 0.5   | Updated styling on create group screen                                                  |
+| 2023/06/20 | 0.5   | Added groupViewModel                                                                    |
+| 2023/06/21 | 3.0   | Added group detail view, updated nested navigation and styled home screen               |
+| 2023/06/22 | 3.0   | Styled group detail view, added logic to viewmodel                                      |
