@@ -111,7 +111,7 @@ fun RenderTasksList(incompleteTasks: List<String>) {
                     Box(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 8.dp)
-                            .size(8.dp)
+                            .size(4.dp)
                             .background(Color.Black, shape = CircleShape),
                     )
 
@@ -199,10 +199,10 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .absolutePadding(0.dp, 20.dp,0.dp,0.dp)
                 .background(Color.White),
-            contentAlignment = Alignment.Center
         ) {
-            Column() {
+            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Button(onClick = showCreate,
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.banner_blue),
@@ -211,10 +211,10 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .absolutePadding(30.dp, 0.dp, 30.dp, 0.dp)
                 ) {
-                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                    Row( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = null)
                         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text("Create New Group")
+                        Text("Create New Group", fontSize = MaterialTheme.typography.h6.fontSize)
                     }
 
                 }

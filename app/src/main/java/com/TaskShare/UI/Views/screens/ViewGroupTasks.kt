@@ -47,6 +47,8 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
             Button(onClick = showEdit, content =  {
                 Text(text = "edit")
             })
+
+
         }
     })
 

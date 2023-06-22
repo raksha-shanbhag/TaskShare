@@ -58,6 +58,7 @@ fun CreateGroupScreen(onBack: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .absolutePadding(0.dp, 20.dp,0.dp,0.dp)
                 .background(Color.White).padding(0.dp, 50.dp, 0.dp, 0.dp),
             contentAlignment = Alignment.TopStart
         ) {
