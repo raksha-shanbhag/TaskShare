@@ -1,7 +1,9 @@
 package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +69,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
+                        .padding(0.dp, 15.dp)
                         .background(
                             colorResource(id = R.color.banner_blue),
                             RoundedCornerShape(4.dp)
@@ -76,7 +80,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                 ) {
 
                     Text(
-                        text = "Take Out Trash ",
+                        text = "Take Out Trash",
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
@@ -93,41 +97,73 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                 ) {
                     var name_wdith = 0.35f
                     var value_width = 0.65f
-                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 3.dp)) {
                         Text(text = "Assigned to", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium,modifier = Modifier.fillMaxWidth(name_wdith))
 
-                        Row(modifier = Modifier.fillMaxWidth(value_width)
+                        Row(modifier = Modifier
+                            .fillMaxWidth(value_width)
                             .wrapContentWidth()){
                             RenderPills("You", R.color.icon_blue)
                             RenderPills("Johnny", R.color.icon_blue)
                         }
                     }
-                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 3.dp)) {
                         Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
                             RenderPills("Jane Doe", R.color.icon_blue)
                         }
                     }
-                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 3.dp)) {
                         Text(text = "Group", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
                             RenderPills("Roommates", R.color.pink)
                         }
                     }
-                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 3.dp)) {
                         Text(text = "Status", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         RenderStatus("todo")
                     }
-                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 3.dp)) {
                         Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         RenderPills("10/05/2023", R.color.banner_blue)
                     }
-                    Row(modifier = Modifier.fillMaxWidth().padding(0.dp, 3.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 3.dp)) {
                         Text(text = "Cycle", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         RenderPills("Every Two Days", R.color.banner_blue)
                     }
-            
-                    
+
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 10.dp)
+                        .border(
+                            BorderStroke(
+                                2.dp,
+                                SolidColor(colorResource(id = R.color.banner_blue))
+                            ), RoundedCornerShape(4.dp)
+                        )
+                        .padding(2.dp, 5.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ){
+
+                        Text (text = "Transfer Task",
+                            fontSize = small_font_size.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.fillMaxWidth(name_wdith),
+                            color = colorResource(id = R.color.banner_blue)
+                        )
+                    }
                 }
             }
         }
