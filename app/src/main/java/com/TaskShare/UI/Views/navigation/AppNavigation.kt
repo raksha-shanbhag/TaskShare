@@ -10,9 +10,11 @@ import androidx.navigation.navigation
 import com.example.greetingcard.screens.AddTaskScreen
 import com.example.greetingcard.screens.CreateGroupScreen
 import com.example.greetingcard.screens.HomeScreen
+import com.example.greetingcard.screens.LoginScreen
 import com.example.greetingcard.screens.MyTasksScreen
 import com.example.greetingcard.screens.NotificationScreen
 import com.example.greetingcard.screens.ProfileScreen
+import com.example.greetingcard.screens.SignUpScreen
 import com.example.greetingcard.screens.TaskDetailsScreen
 import com.example.greetingcard.screens.ViewGroupScreen
 import com.example.greetingcard.screens.ViewGroupTasksScreen
@@ -31,8 +33,10 @@ fun AppNavGraph(
 ) {
     NavHost(
         navController = navController,
+        //startDestination = RootScreen.Login.route
         startDestination = RootScreen.Home.route
     ) {
+        addLoginRoute(navController)
         addHomeRoute(navController)
         addMyTasksRoute(navController)
         addCreateTaskRoute(navController)
@@ -40,6 +44,44 @@ fun AppNavGraph(
         addProfileRoute(navController)
     }
 }
+
+// Log-in navigation
+private fun NavGraphBuilder.addLoginRoute(navController: NavController) {
+    navigation(
+        route = RootScreen.Login.route,
+        startDestination = LeafScreen.Login.route
+    ) {
+        showLogin(navController)
+        showSignUp(navController)
+    }
+}
+
+private fun NavGraphBuilder.showLogin(navController: NavController) {
+    composable(route = LeafScreen.Login.route) {
+        LoginScreen(
+            onLogInClick = {
+                navController.navigate(RootScreen.Home.route)
+            },
+            onSignUpClick = {
+                navController.navigate(LeafScreen.SignUp.route)
+            }
+        )
+    }
+}
+
+private fun NavGraphBuilder.showSignUp(navController: NavController) {
+    composable(route = LeafScreen.SignUp.route) {
+        SignUpScreen(
+            onLogInClick = {
+                navController.navigate(RootScreen.Login.route)
+            },
+            onSignUpClick = {
+                navController.navigate(RootScreen.Home.route)
+            }
+        )
+    }
+}
+
 
 //home navigation
 private fun NavGraphBuilder.addHomeRoute(navController: NavController) {

@@ -2,6 +2,7 @@ package com.example.greetingcard.navigation
 
 
 sealed class RootScreen(val route: String) {
+    object Login : RootScreen("login_root")
     object Home : RootScreen("home_root")
     object MyTasks : RootScreen("myTasks_root")
     object AddTask : RootScreen("addTask_root")
@@ -10,6 +11,8 @@ sealed class RootScreen(val route: String) {
 }
 
 sealed class LeafScreen(val route: String) {
+    object Login : LeafScreen("logIn")
+    object SignUp : LeafScreen("signUp")
     object Home : LeafScreen("home")
     object MyTasks : LeafScreen("myTasks")
     object AddTask : LeafScreen("addTask")
