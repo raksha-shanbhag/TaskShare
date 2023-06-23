@@ -50,7 +50,16 @@ import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLogInClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    //onForgotClick: () -> Unit
+) {
+
+    // Variables to hold the user's email and password
+    val email = remember { mutableStateOf("")}
+    val password = remember { mutableStateOf("")}
+
     val headingSize = 30.sp
 
     Box(
@@ -73,24 +82,28 @@ fun LoginScreen() {
             )
 
             Spacer(modifier = Modifier.height(30.dp))
-            RenderTextFields(stringResource(R.string.email), Icons.Default.Email)
+            RenderTextFields(stringResource(R.string.email), Icons.Default.Email) { newValue ->
+                email.value = newValue
+            }
             Spacer(modifier = Modifier.height(5.dp))
-            RenderPasswordTextField(stringResource(R.string.password), Icons.Default.Lock)
+            RenderPasswordTextField(stringResource(R.string.password), Icons.Default.Lock) { newValue ->
+                password.value = newValue
+            }
 
             Spacer(modifier = Modifier.height(50.dp))
-            LogInButton(stringResource(R.string.log_in))
+            LogInButton(stringResource(R.string.log_in), onLogInClick)
 
             Spacer(modifier = Modifier.height(15.dp))
             ClickableForgotPasswordText()
             Spacer(modifier = Modifier.height(5.dp))
-            ClickableSignUpText()
+            ClickableSignUpText(onSignUpClick)
         }
 
     }
 }
 
 @Composable
-fun ClickableSignUpText() {
+fun ClickableSignUpText(onSignUpClick: () -> Unit) {
     val firstSentenceText = "Don't have an account? "
     val signUpText = "Sign up!"
 
@@ -107,13 +120,9 @@ fun ClickableSignUpText() {
 
     // Add string into clickable text component
     // Find out which part of the text the user has clicked.
-    ClickableText(text = annotatedString, onClick = {offset->
-        annotatedString.getStringAnnotations(offset, offset)
-            .firstOrNull()?.also{ span->
-                Log.d("ClickableSignUpText", "{$span}")
-            }
-
-    })
+    ClickableText(
+        text = annotatedString,
+        onClick = {onSignUpClick()})
 }
 
 @Composable
@@ -142,8 +151,8 @@ fun ClickableForgotPasswordText() {
 }
 
 @Composable
-fun LogInButton(textValue: String) {
-    Button(onClick = { /*TODO*/ },
+fun LogInButton(textValue: String, onLogInClick: () -> Unit) {
+    Button(onClick = { onLogInClick() },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
@@ -168,5 +177,5 @@ fun LogInButton(textValue: String) {
 @Composable
 @Preview
 fun LoginScreenPreview() {
-    LoginScreen()
+    //LoginScreen()
 }

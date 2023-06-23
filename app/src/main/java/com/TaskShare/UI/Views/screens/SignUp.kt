@@ -63,7 +63,15 @@ import com.example.greetingcard.R
  */
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    onSignUpClick: () -> Unit,
+    onLogInClick: () -> Unit,
+) {
+    // Variables to hold the user's name, email and password
+    val name = remember { mutableStateOf("")}
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("")}
+
     val headingSize = 30.sp
 
     Box(
@@ -93,24 +101,30 @@ fun SignUpScreen() {
             )
 
             Spacer(modifier = Modifier.height(30.dp))
-            RenderTextFields(stringResource(R.string.name), Icons.Default.Person)
+            RenderTextFields(stringResource(R.string.name), Icons.Default.Person) { newValue ->
+                name.value = newValue
+            }
             Spacer(modifier = Modifier.height(5.dp))
-            RenderTextFields(stringResource(R.string.email), Icons.Default.Email)
+            RenderTextFields(stringResource(R.string.email), Icons.Default.Email) { newValue ->
+                email.value = newValue
+            }
             Spacer(modifier = Modifier.height(5.dp))
-            RenderPasswordTextField(stringResource(R.string.password), Icons.Default.Lock)
+            RenderPasswordTextField(stringResource(R.string.password), Icons.Default.Lock) { newValue ->
+                password.value = newValue
+            }
 
             Spacer(modifier = Modifier.height(50.dp))
-            RegisterButton(stringResource(R.string.sign_up))
+            RegisterButton(stringResource(R.string.sign_up), onSignUpClick)
 
             Spacer(modifier = Modifier.height(15.dp))
-            ClickableLoginText()
+            ClickableLoginText(onLogInClick)
         }
 
     }
 }
 
 @Composable
-fun ClickableLoginText() {
+fun ClickableLoginText(onLogInClick: () -> Unit) {
     val firstSentenceText = "Already have an account? "
     val loginText = "Log in."
 
@@ -127,16 +141,12 @@ fun ClickableLoginText() {
 
     // Add string into clickable text component
     // Find out which part of the text the user has clicked.
-    ClickableText(text = annotatedString, onClick = {offset->
-        annotatedString.getStringAnnotations(offset, offset)
-            .firstOrNull()?.also{ span->
-                Log.d("ClickableLoginText", "{$span}")
-        }
-
-    })
+    ClickableText(
+        text = annotatedString,
+        onClick = {onLogInClick() })
 }
 @Composable
-fun RenderPasswordTextField(labelValue: String, icon: ImageVector) {
+fun RenderPasswordTextField(labelValue: String, icon: ImageVector, onValueChange: (String) -> Unit) {
     val password = remember {
         mutableStateOf("")
     }
@@ -195,13 +205,14 @@ fun RenderPasswordTextField(labelValue: String, icon: ImageVector) {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         onValueChange = {
             password.value = it
+            onValueChange(it)       // Update with new value
         }
     )
 }
 
 @Composable
-fun RegisterButton(textValue: String) {
-    Button(onClick = { /*TODO*/ },
+fun RegisterButton(textValue: String, onSignUpClick: () -> Unit) {
+    Button(onClick = { onSignUpClick() },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
@@ -223,7 +234,7 @@ fun RegisterButton(textValue: String) {
     }
 }
 @Composable
-fun RenderTextFields(labelValue: String, icon: ImageVector) {
+fun RenderTextFields(labelValue: String, icon: ImageVector, onValueChange: (String) -> Unit) {
     val textValue = remember {
         mutableStateOf("")
     }
@@ -249,11 +260,15 @@ fun RenderTextFields(labelValue: String, icon: ImageVector) {
         keyboardOptions = KeyboardOptions.Default,
         onValueChange = {
             textValue.value = it
+            onValueChange(it) // Updated with new value
         }
     )
 }
 @Composable
 @Preview
 fun SignUpScreenPreview() {
-    SignUpScreen()
+    SignUpScreen(
+        onSignUpClick = { },
+        onLogInClick = { },
+    )
 }
