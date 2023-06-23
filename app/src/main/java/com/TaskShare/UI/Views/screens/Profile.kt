@@ -21,6 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,12 +80,12 @@ fun ProfileScreen() {
 fun TopBar(modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
+        horizontalArrangement = Arrangement.End,
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Icon(imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
+        Icon(imageVector = Icons.Default.Edit,//ArrowBack
+            contentDescription = "Edit",
             tint = Color.White,
             modifier = Modifier.size(24.dp),
         )

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Greeting Card</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
