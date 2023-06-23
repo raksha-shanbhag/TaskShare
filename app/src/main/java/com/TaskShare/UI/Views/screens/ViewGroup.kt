@@ -50,6 +50,8 @@ import com.example.greetingcard.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ViewGroupScreen(onBack: () -> Unit) {
+
+    //getting data
     val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
     viewModel.updateGroupName("Roommates")
@@ -121,6 +123,7 @@ fun ViewGroupScreen(onBack: () -> Unit) {
                     )
                     .padding(10.dp)) {
 
+//using data
                         items(state.groupMembers) {  currentGroup ->
                             Text(text = " $currentGroup", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
                         }
