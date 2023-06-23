@@ -30,6 +30,11 @@ class AddTaskViewModel: ViewModel() {
         currentList.add(name)
         state.value = state.value.copy(assignees = currentList)
     }
+
+    fun createTask(){
+        // validate form data
+        // call POST endpoint to send data to backend
+    }
 }
 
 // states
@@ -37,8 +42,8 @@ data class AddTaskState (
     val taskName: String ="",
     val assignTo: String ="",
     val assignees: MutableList<String> = mutableListOf(),
-    val groupName: String = "",
+    val groupName: String = "Select Group Name",
     //    how are we actually storing dates in DB?
     val deadline: String = "",
-    val cycle: String = ""
+    val cycle: String = "Select Cycle"
 )

@@ -15,4 +15,5 @@
 | 2023/06/21 | 1.5      | set up navigation to task detail and finished styling task name section         |
 | 2023/06/21 | 1.5      | styling pill information under task details                                     |
 | 2023/06/22 | 1        | view and view model for add task (dropdowns and datepicker not implemented yet) |
+| 2023/06/23 | 4        | fixing formfields in add task (added dropdowns and fixed deadline)              |
 
