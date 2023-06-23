@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -204,13 +206,13 @@ fun HomeScreen(
     val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
     val groupState by viewModel.groupsState
-
+    val scrollState = rememberScrollState()
     LaunchedEffect(Unit){
-        viewModel.addGroupAndTasks(GroupViewState("Roommates", "test description", "lamia", mutableListOf("Lamia", "Jaishree"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")), mutableListOf()))
-        viewModel.addGroupAndTasks(GroupViewState("Home", "test description", "lamia", mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress"))))
+        viewModel.addGroupAndTasks(GroupViewState("Roommates", "test description","Lamia",  mutableListOf("Lamia", "Jaishree"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")), mutableListOf()))
+        viewModel.addGroupAndTasks(GroupViewState("Home", "test description","Lamia",  mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress"))))
     }
 
-    androidx.compose.material.Scaffold(topBar = {
+    androidx.compose.material.Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "My Groups", color = Color.White, fontSize = 30.sp) },
             colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue))
@@ -220,7 +222,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .absolutePadding(0.dp, 20.dp, 0.dp, 0.dp)
-                .background(Color.White),
+                .background(Color.White)
+                .verticalScroll(state = scrollState),
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Button(onClick = showCreate,

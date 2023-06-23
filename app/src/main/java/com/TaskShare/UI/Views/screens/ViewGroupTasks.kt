@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -169,20 +172,20 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
     val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
     val groupState by viewModel.groupsState
+    val scrollState = rememberScrollState()
 
-
-        viewModel.addGroupAndTasks(
-            GroupViewState("Roommates", "test description", "lamia", mutableListOf("Lamia", "Jaishree"), mutableListOf(
-                TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")
-            ), mutableListOf())
-        )
-        viewModel.addGroupAndTasks(
-            GroupViewState("Home", "test description", "lamia", mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(
-                TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),
-                TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "inprogress"),
-                TaskViewState("Laundry", "Jaishree", "Lamia", "10/10/2023", "inprogress")
-            ), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")))
-        )
+    viewModel.addGroupAndTasks(
+        GroupViewState("Roommates", "test description","Lamia", mutableListOf("Lamia", "Jaishree"), mutableListOf(
+            TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")
+        ), mutableListOf())
+    )
+    viewModel.addGroupAndTasks(
+        GroupViewState("Home", "test description", "Lamia",mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(
+            TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),
+            TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "inprogress"),
+            TaskViewState("Laundry", "Jaishree", "Lamia", "10/10/2023", "inprogress")
+        ), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")))
+    )
 
 
     Scaffold( topBar = {
@@ -204,7 +207,8 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White),
+                .background(Color.White)
+                .verticalScroll(state = scrollState),
         ) {
 
             Column(modifier = Modifier

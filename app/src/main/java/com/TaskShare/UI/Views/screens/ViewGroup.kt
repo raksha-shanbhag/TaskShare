@@ -50,7 +50,7 @@ import com.example.greetingcard.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ViewGroupScreen(onBack: () -> Unit) {
-
+    val scrollState = rememberScrollState()
     //getting data
     val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
@@ -72,7 +72,8 @@ fun ViewGroupScreen(onBack: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White),
+                .background(Color.White)
+
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
