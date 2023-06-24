@@ -134,7 +134,7 @@ fun AddTaskScreen() {
                                 expanded = expandedGroup
                             )
                         },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
                     )
                     ExposedDropdownMenu(
                         expanded = expandedGroup,
@@ -177,7 +177,7 @@ fun AddTaskScreen() {
                                 expanded = expandedCycle
                             )
                         },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
                     )
                     ExposedDropdownMenu(
                         expanded = expandedCycle,
@@ -219,7 +219,6 @@ fun AddTaskScreen() {
                         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                         Text("Assign Another Member")
                     }
-
                 }
 
                 Button(onClick = {
@@ -233,7 +232,7 @@ fun AddTaskScreen() {
                         .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
                 ) {
                     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                        Text("Save and Create Group")
+                        Text("Save and Create Task")
                     }
 
                 }

@@ -230,7 +230,7 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold)
                     it.value.forEach{
-                        RenderTaskCardG(it.taskName, it.assigner, it.status, it.dueDate, showEdit)
+                        RenderTaskCardG(it.taskName, it.assigner, it.status, it.deadline, showEdit)
                         Spacer(modifier = Modifier.height(height = 10.dp))
                     }
                 }

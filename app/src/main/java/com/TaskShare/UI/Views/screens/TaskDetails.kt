@@ -36,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.TaskViewModel
 import com.example.greetingcard.R
 
 
@@ -43,6 +45,13 @@ import com.example.greetingcard.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun TaskDetailsScreen(onBack: () -> Unit) {
+    val viewModel = viewModel(TaskViewModel::class.java)
+
+    // REMOVE line below when integration with backend done, this is used to generate dummy data
+    viewModel.initTask("Cry Myself to Sleep", "Waterloo", "inprogress", "Jaishree", "ECE", "01/04/2024", "Daily")
+
+    // update getTaskByID to take in id so this page can be dynamically rendered
+    var task = viewModel.getTaskByID()
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Task Details", color = Color.White, fontSize = 30.sp) },
@@ -80,7 +89,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                 ) {
 
                     Text(
-                        text = "Take Out Trash",
+                        text = task.taskName,
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
@@ -105,8 +114,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         Row(modifier = Modifier
                             .fillMaxWidth(value_width)
                             .wrapContentWidth()){
-                            RenderPills("You", R.color.icon_blue)
-                            RenderPills("Johnny", R.color.icon_blue)
+                            RenderPills(task.assignee, R.color.icon_blue)
                         }
                     }
                     Row(modifier = Modifier
@@ -114,7 +122,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
-                            RenderPills("Jane Doe", R.color.icon_blue)
+                            RenderPills(task.assigner, R.color.icon_blue)
                         }
                     }
                     Row(modifier = Modifier
@@ -122,26 +130,26 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Group", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
-                            RenderPills("Roommates", R.color.pink)
+                            RenderPills(task.groupName, R.color.pink)
                         }
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Status", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderStatus("todo")
+                        RenderStatus(task.status)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderPills("10/05/2023", R.color.banner_blue)
+                        RenderPills(task.deadline, R.color.banner_blue)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Cycle", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderPills("Every Two Days", R.color.banner_blue)
+                        RenderPills(task.cycle, R.color.banner_blue)
                     }
 
                     Row(modifier = Modifier

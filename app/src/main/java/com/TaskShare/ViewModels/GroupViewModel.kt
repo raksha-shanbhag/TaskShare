@@ -65,11 +65,11 @@ data class GroupViewState (
 data class GroupsViewState (
     val groups: MutableList<GroupViewState> = mutableListOf()
 )
-
-data class TaskViewState (
-    val taskName: String ="",
-    val assignee: String = "",
-    val assigner: String = "",
-    val dueDate: String = "",
-    val status: String = ""
-)
+//
+//data class TaskViewState (
+//    val taskName: String ="",
+//    val assignee: String = "",
+//    val assigner: String = "",
+//    val dueDate: String = "",
+//    val status: String = ""
+//)

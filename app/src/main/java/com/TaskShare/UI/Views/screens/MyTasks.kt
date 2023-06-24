@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.GroupViewModel
+import com.TaskShare.ViewModels.TaskViewModel
 import com.example.greetingcard.R
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
@@ -164,6 +169,13 @@ fun RenderTaskCard(task_name: String, group_name: String, status: String, end_da
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MyTasksScreen(showDetail: () -> Unit) {
+    //getting data
+    val viewModel = viewModel(TaskViewModel::class.java)
+    val state by viewModel.state
+    val scrollState = rememberScrollState()
+
+
+
 
     Scaffold(
         topBar = {
@@ -185,9 +197,12 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                        .background(colorResource(id = R.color.banner_blue), RoundedCornerShape(4.dp))
-                        .fillMaxWidth()
-                        .padding(15.dp, 10.dp)
+                            .background(
+                                colorResource(id = R.color.banner_blue),
+                                RoundedCornerShape(4.dp)
+                            )
+                            .fillMaxWidth()
+                            .padding(15.dp, 10.dp)
 
                         ) {
                         Text(
@@ -218,8 +233,14 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                             fontSize = mid_font_size.sp)
                     }
 //                    TASK CARD
-                    RenderTaskCard("Clean Counters and Cry", "Roommates", "todo", "10/05/2023", showDetail)
-                    Spacer(modifier = Modifier.height(height = 10.dp))
+                    //using data
+                    // UNCOMMENT AND UPDATE THE BELOW WHEN BACKEND DONE
+//                    var userTasks = viewModel.getTasks()
+//                    userTasks.forEach{
+//                        RenderTaskCard(it.taskName, it.groupName, it.status, it.deadline, showDetail)
+//                        Spacer(modifier = Modifier.height(height = 10.dp))
+//                    }
+
                     RenderTaskCard("Clean Counters and Sing", "Roommates", "inprogress", "10/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
                     RenderTaskCard("Take out trash", "Roommates", "done", "12/05/2023", showDetail)
