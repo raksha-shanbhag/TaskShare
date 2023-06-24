@@ -68,7 +68,8 @@ fun SignUpScreen(
     onLogInClick: () -> Unit,
 ) {
     // Variables to hold the user's name, email and password
-    val name = remember { mutableStateOf("")}
+    val firstName = remember { mutableStateOf("")}
+    val lastName = remember { mutableStateOf("")}
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("")}
 
@@ -101,8 +102,12 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.height(30.dp))
-            RenderTextFields(stringResource(R.string.name), Icons.Default.Person) { newValue ->
-                name.value = newValue
+            RenderTextFields(stringResource(R.string.first_name), Icons.Default.Person) { newValue ->
+                firstName.value = newValue
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+            RenderTextFields(stringResource(R.string.last_name), Icons.Default.Person) { newValue ->
+                lastName.value = newValue
             }
             Spacer(modifier = Modifier.height(5.dp))
             RenderTextFields(stringResource(R.string.email), Icons.Default.Email) { newValue ->
