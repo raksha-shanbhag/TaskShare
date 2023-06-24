@@ -216,7 +216,11 @@ private fun NavGraphBuilder.addProfileRoute(navController: NavController) {
 }
 private fun NavGraphBuilder.showProfile(navController: NavController) {
     composable(route = LeafScreen.Profile.route) {
-        ProfileScreen()
+        ProfileScreen(
+            onEditClick = { },
+            onAccountPrivClick = { },
+            onLogOut = { },
+        )
     }
 }
 //end of profile navigation

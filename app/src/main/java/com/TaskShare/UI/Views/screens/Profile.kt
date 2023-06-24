@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,12 +17,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +48,12 @@ import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    //userData: UserData
+    onEditClick: () -> Unit,
+    onAccountPrivClick: () -> Unit,
+    onLogOut: () -> Unit,
+) {
     val primaryBlue = colorResource(id = R.color.primary_blue)
     val backgroundBlue = colorResource(id = R.color.background_blue)
     Box (
@@ -50,14 +64,14 @@ fun ProfileScreen() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(335.dp)
+                .size(385.dp)
                 .background(Color.White)
                 //.shadow(elevation = 2.dp, clip = true)
         )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(200.dp)
+                .size(230.dp)
                 .background(primaryBlue)
         )
         Column(
@@ -69,8 +83,27 @@ fun ProfileScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopBar(modifier = Modifier.padding(20.dp))
-            Spacer(modifier = Modifier.height(50.dp))
+
+            Spacer(modifier = Modifier.height(70.dp))
             ProfileSection()
+
+            Spacer(modifier = Modifier.height(50.dp))
+            SettingButton("Edit Profile",
+                "Edit Profile",
+                Icons.Default.Edit,
+                onEditClick)
+
+            Spacer(modifier = Modifier.height(25.dp))
+            SettingButton("Account Privacy",
+                "Account Privacy",
+                Icons.Default.Lock,
+                onAccountPrivClick)
+
+            Spacer(modifier = Modifier.height(25.dp))
+            SettingButton("Log Out",
+                "Log Out",
+                Icons.Default.ExitToApp,
+                onLogOut)
         }
     }
 }
@@ -84,11 +117,11 @@ fun TopBar(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Icon(imageVector = Icons.Default.Edit,//ArrowBack
-            contentDescription = "Edit",
+        /*Icon(imageVector = Icons.Default.Settings,//ArrowBack
+            contentDescription = "Settings",
             tint = Color.White,
             modifier = Modifier.size(24.dp),
-        )
+        )*/
     }
 }
 
@@ -112,14 +145,43 @@ fun ProfileSection(modifier: Modifier = Modifier) {
         ) {
             ProfileImage(image = imagePfp,
             modifier = Modifier
-                .size(150.dp)
+                .size(180.dp)
                 .weight(5f)     // Pfp will take up 50% of row's width
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         ProfileDescription(name = "Firstname Lastname",
             email = "example123@gmail.com",
             bio = "Short optional biography about the user.")
+    }
+}
+
+@Composable
+fun SettingButton(textValue: String, contentDesc: String, buttonIcon: ImageVector, onClick: () -> Unit) {
+    Button(onClick = { onClick },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        contentPadding = PaddingValues(10.dp),
+        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.grey_button)),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Row(modifier = Modifier
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(
+                imageVector = buttonIcon,
+                contentDescription = contentDesc,
+                modifier = Modifier.padding(8.dp),
+                tint = Color.DarkGray
+            )
+            Text(
+                text = textValue,
+                fontSize = 18.sp,
+                color = Color.DarkGray
+            )
+        }
     }
 }
 
@@ -133,7 +195,7 @@ fun ProfileImage(image: Painter, modifier: Modifier) {
         modifier = modifier
             .aspectRatio(1f, matchHeightConstraintsFirst = true)
             .border(
-                width = 2.dp,
+                width = 4.dp,
                 color = Color.White,
                 shape = CircleShape
             )
@@ -150,7 +212,6 @@ fun ProfileDescription(name: String, email: String, bio: String,
 
     val letterSpacing = 0.5.sp
     val lineHeight = 20.sp
-    val userNameSize = 25.sp
 
     Column(
         modifier = Modifier
@@ -163,7 +224,7 @@ fun ProfileDescription(name: String, email: String, bio: String,
             fontWeight = FontWeight.Bold,
             letterSpacing = letterSpacing,
             lineHeight = lineHeight,
-            fontSize = userNameSize
+            fontSize = 30.sp
         )
         Text(
             text = email,
@@ -174,7 +235,8 @@ fun ProfileDescription(name: String, email: String, bio: String,
         Text(
             text = bio,
             letterSpacing = letterSpacing,
-            lineHeight = lineHeight
+            lineHeight = lineHeight,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -182,5 +244,9 @@ fun ProfileDescription(name: String, email: String, bio: String,
 @Composable
 @Preview
 fun ProfileScreenPreview() {
-    ProfileScreen()
+    ProfileScreen(
+        onEditClick = { },
+        onAccountPrivClick = { },
+        onLogOut = { },
+    )
 }

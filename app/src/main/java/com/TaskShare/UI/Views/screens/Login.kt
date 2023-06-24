@@ -10,38 +10,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +38,7 @@ import com.example.greetingcard.R
 
 @Composable
 fun LoginScreen(
+    //state: SignInState,
     onLogInClick: () -> Unit,
     onSignUpClick: () -> Unit,
     //onForgotClick: () -> Unit
@@ -95,6 +83,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(15.dp))
             ClickableForgotPasswordText()
+
             Spacer(modifier = Modifier.height(5.dp))
             ClickableSignUpText(onSignUpClick)
         }
@@ -177,5 +166,8 @@ fun LogInButton(textValue: String, onLogInClick: () -> Unit) {
 @Composable
 @Preview
 fun LoginScreenPreview() {
-    //LoginScreen()
+    LoginScreen(
+        onLogInClick = { },
+        onSignUpClick = { },
+    )
 }

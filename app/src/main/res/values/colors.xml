@@ -19,4 +19,5 @@
     <color name="group_progress">#FFE7A9</color>
     <color name="completed_tasks">#00970F</color>
     <color name="incomplete_tasks">#FF4747</color>
+    <color name="grey_button">#D9DDE2</color>
 </resources>
