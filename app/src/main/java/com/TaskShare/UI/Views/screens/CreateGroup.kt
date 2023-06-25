@@ -64,7 +64,6 @@ fun CreateGroupScreen(onBack: () -> Unit) {
     val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
 
-
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Create Group", color = Color.White, fontSize = 30.sp) },
@@ -78,8 +77,9 @@ fun CreateGroupScreen(onBack: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .absolutePadding(0.dp, 20.dp,0.dp,0.dp)
-                .background(Color.White).padding(0.dp, 50.dp, 0.dp, 0.dp),
+                .absolutePadding(0.dp, 20.dp, 0.dp, 0.dp)
+                .background(Color.White)
+                .padding(0.dp, 50.dp, 0.dp, 0.dp),
             contentAlignment = Alignment.TopStart
         ) {
             Column ( verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -115,9 +115,10 @@ fun CreateGroupScreen(onBack: () -> Unit) {
                 }
 
                 Button(onClick = {
-                    viewModel.addGroupAndTasks(GroupViewState(groupName,groupDescription,member,groupMembers,
-                        mutableListOf(), mutableListOf()
-                    ))
+                    viewModel.createGroup(groupName, groupDescription, groupMembers)
+                    groupMembers = (mutableListOf<String>())
+                    groupName = ""
+                    groupDescription = ""
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.banner_blue),

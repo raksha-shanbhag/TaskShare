@@ -1,6 +1,7 @@
 package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -85,9 +87,9 @@ import com.example.greetingcard.R
 @Composable
 fun AddTaskScreen() {
     val viewModel = viewModel(AddTaskViewModel::class.java)
+    val groupViewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
 
-    val groupNames = arrayOf("Roommates", "4AStudy Group", "452 Group")
     val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
     val assignees = arrayOf("Jaishree", "Lamia", "Cheng")
     // state of the menu
@@ -98,7 +100,14 @@ fun AddTaskScreen() {
         mutableStateOf(false)
     }
 //    var assigneesState by remember { mutableListOf<Boolean>() }
+    var groupNames by remember {
+        mutableStateOf(mutableListOf<String>())
+    }
 
+    LaunchedEffect(Unit) {
+        groupNames = groupViewModel.getAllGroupNames()
+        Log.i("Debugging Raksha", groupNames.toString())
+    }
 
 
     Scaffold( topBar = {

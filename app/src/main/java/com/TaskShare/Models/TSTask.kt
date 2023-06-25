@@ -4,7 +4,42 @@ import android.util.Log
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+
+class TSTaskAPI() {
+    private val TAG = "TSGroupAPI"
+    private val db = Firebase.firestore
+    private val tasks = db.collection("Tasks")
+
+    // create a Task
+    fun createTask(
+        taskName: String,
+        groupId: String,
+        cycle: String,
+        deadline: String
+    ) : String {
+        var documentId: String = ""
+
+        var data = hashMapOf(
+            "taskName" to taskName,
+            "cycle" to cycle,
+            "deadline" to deadline,
+            "groupId" to groupId
+        )
+
+        tasks.add(data)
+            .addOnSuccessListener { document ->
+                documentId = document.id
+                Log.d(TAG, document.id)
+                Log.d(TAG, "DocumentSnapshot successfully written!")
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+
+        return documentId
+    }
+}
 
 class TSTask(groupRef: TSGroup, taskId: String) {
     private val TAG = "Task"

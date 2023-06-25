@@ -1,6 +1,7 @@
 package com.TaskShare.Models
 
 import android.util.Log
+import com.TaskShare.ViewModels.TaskViewState
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -9,51 +10,183 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
+data class RequestGroup(
+    val groupName: String ="",
+    val groupDescription: String = "",
+    val member: String = "",
+    val groupMembers: MutableList<String> = mutableListOf(),
+) {}
+
+data class ResponseGroup(
+    val id: String = "",
+    val groupName: String ="",
+    val groupDescription: String = "",
+    val member: String = "",
+    val groupMembers: MutableList<String> = mutableListOf(),
+    val tasks: MutableList<TaskViewState> = mutableListOf(),
+    val incompleteTasks: MutableList<TaskViewState> = mutableListOf()
+)
+class TSGroupsAPI {
+    private val TAG = "TSGroupAPI"
+    private val db = Firebase.firestore
+    private val groups = db.collection("Groups")
+    private val userApi = TSUserApi()
+
+    // API method to create a group
+    fun createGroup(
+        groupName: String,
+        groupDescription: String,
+        groupMembers: MutableList<String>
+    ) : String {
+        var documentId: String = ""
+        val newRequestGroup = RequestGroup(
+            groupName = groupName,
+            groupDescription = groupDescription,
+            groupMembers = userApi.getUserIdsFromNames(groupMembers)
+        )
+
+        Log.i("Raksha Debug", groupName)
+        groups.add(newRequestGroup)
+            .addOnSuccessListener { document ->
+                documentId = document.id
+                Log.d(TAG, document.id)
+                Log.d(TAG, "DocumentSnapshot successfully written!")
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+
+        addTasksToGroup(documentId, "Testing", "33/33/33", "None")
+        return documentId
+    }
+
+    // API method to get all the groups
+    suspend fun getAllGroups(): MutableList<ResponseGroup> {
+        var result = ArrayList<ResponseGroup>()
+
+        groups.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    var groupMembers = ArrayList<String>()
+                    groupMembers.addAll(document.get("groupMembers") as List<String>)
+
+                    var group = ResponseGroup(
+                        id = document.id,
+                        groupName = document.data["groupName"].toString(),
+                        groupDescription = document.data["groupDescription"].toString(),
+                        groupMembers = groupMembers
+                    )
+
+                    result.add(group)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
+            .await()
+
+        return result.toMutableList()
+    }
+
+    // API method to remove member
+    fun removeUserFromGroup(groupId: String, memberId: String) {
+        groups.document(groupId)
+            .update("groupMembers", FieldValue.arrayUnion(memberId))
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
+    }
+
+    // API method to add member
+    fun addMemberToGroup(groupId: String, memberEmail: String) {
+        val newUserId = userApi.getUserIdFromEmail(memberEmail)
+        groups.document(groupId)
+            .update("groupMembers", FieldValue.arrayUnion(newUserId))
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
+    }
+
+    // API to get group from Id
+    fun getGroupFromId(groupId: String): ResponseGroup {
+        var result = ResponseGroup()
+        groups.document(groupId)
+            .get()
+            .addOnSuccessListener{ document ->
+                if(document.exists()) {
+                    var groupMembers = ArrayList<String>()
+                    groupMembers.addAll(document.get("groupMembers") as List<String>)
+
+                    result = ResponseGroup(
+                        id = document.id,
+                        groupName = document.data?.get("groupName").toString(),
+                        groupDescription = document.data?.get("groupDescription").toString(),
+                        groupMembers = groupMembers
+                    )
+                }
+            }
+        return result
+    }
+
+    // API to add Tasks
+    fun addTasksToGroup(groupId: String, taskName: String, deadline: String, cycle: String) {
+        var data = hashMapOf(
+            "name" to taskName,
+            "deadline" to deadline,
+            "cycle" to cycle,
+        )
+        groups.document(groupId)
+            .collection("Tasks")
+            .document("testing")
+            .set(data)
+    }
+
+}
+
 class TSGroup(groupId: String) {
     private val TAG = "Group"
     private val id = groupId
     private var users: HashSet<TSUser> = hashSetOf()
     private var tasks: HashSet<TSTask> = hashSetOf()
+    private var name = groupId
 
     fun getId(): String {
         return id
     }
 
-    fun create() {
+    fun create(groupDescription: String) {
+        Log.i(TAG, id)
         val db = Firebase.firestore
         val docRef = db.collection("Groups").document(id)
+        var doesExist = false
 
         docRef.get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     Log.w(TAG, "Group already exists.")
-                } else {
-                    var userIds: HashSet<String> = hashSetOf()
-
-                    for (user in users) {
-                        userIds.add(user.getId())
-                    }
-
-                    val data = hashMapOf(
-                        "Users" to users.toList()
-                    )
-                    docRef.set(data)
-                        .addOnFailureListener { exception ->
-                            Log.w(TAG, "Error creating group.", exception)
-                        }
+                    doesExist = true
                 }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
-    }
 
-    fun getUsers(): HashSet<TSUser> {
-        return users
-    }
+        if (!doesExist) {
+            var userIds: HashSet<String> = hashSetOf()
+            for (user in users) {
+                userIds.add(user.getId())
+            }
 
-    fun getTasks(): HashSet<TSTask> {
-        return tasks
+            val data = hashMapOf(
+                "Users" to users.toList(),
+                "Name" to name,
+                "Description" to groupDescription
+            )
+
+            docRef.set(data)
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error creating group.", exception)
+                }
+        }
+
     }
 
     fun getTaskCollection(): CollectionReference {
@@ -116,6 +249,7 @@ class TSGroup(groupId: String) {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
+
     }
 
     suspend fun synchronisedGet() {
