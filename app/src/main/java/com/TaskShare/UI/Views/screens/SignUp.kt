@@ -166,6 +166,7 @@ fun RenderPasswordTextField(labelValue: String, icon: ImageVector, onValueChange
             .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
         label = { Text(text = labelValue) },
+        singleLine = true,
         leadingIcon = {
             Icon(
                 imageVector = icon,
@@ -249,6 +250,7 @@ fun RenderTextFields(labelValue: String, icon: ImageVector, onValueChange: (Stri
             .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
         label = { Text(text = labelValue) },
+        singleLine = true,
         leadingIcon = {
             Icon(
                 imageVector = icon,

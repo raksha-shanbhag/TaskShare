@@ -33,8 +33,8 @@ fun AppNavGraph(
 ) {
     NavHost(
         navController = navController,
-        //startDestination = RootScreen.Login.route
-        startDestination = RootScreen.Home.route
+        startDestination = RootScreen.Login.route
+        //startDestination = RootScreen.Home.route
     ) {
         addLoginRoute(navController)
         addHomeRoute(navController)

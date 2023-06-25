@@ -1,7 +1,9 @@
 package com.example.greetingcard.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,10 +16,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
-
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
     //state: SignInState,
@@ -49,16 +54,19 @@ fun LoginScreen(
     val password = remember { mutableStateOf("")}
 
     val headingSize = 30.sp
+    val scaffoldState = rememberScaffoldState()
 
-    Box(
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
+        scaffoldState = scaffoldState
     ) {
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(40.dp))
             Text(
@@ -86,7 +94,22 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(5.dp))
             ClickableSignUpText(onSignUpClick)
+
+            // Temporary
+            /*Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = { *//*TODO*//* }) {
+                
+            }*/
         }
+
+    }
+}
+
+@Composable
+fun CustomizedSnackBar(modifier: Modifier = Modifier, textValue: String) {
+    Snackbar(
+        backgroundColor = Color.Transparent
+    ) {
 
     }
 }
