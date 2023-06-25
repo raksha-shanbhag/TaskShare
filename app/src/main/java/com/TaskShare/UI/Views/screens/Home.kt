@@ -2,6 +2,7 @@ package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
 import android.widget.Button
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -207,9 +208,10 @@ fun HomeScreen(
     val state by viewModel.state
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()
-    LaunchedEffect(Unit){
-        viewModel.addGroupAndTasks(GroupViewState("Roommates", "test description","Lamia",  mutableListOf("Lamia", "Jaishree"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")), mutableListOf()))
-        viewModel.addGroupAndTasks(GroupViewState("Home", "test description","Lamia",  mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress"))))
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllGroups()
+        Log.i("Debug Raksha", groupState.toString())
     }
 
     androidx.compose.material.Scaffold( topBar = {

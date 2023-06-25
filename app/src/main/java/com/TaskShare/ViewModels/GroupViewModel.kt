@@ -1,11 +1,15 @@
 package com.TaskShare.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.TaskShare.Models.TSGroupsAPI
 
 class GroupViewModel: ViewModel() {
     val state = mutableStateOf(GroupViewState())
     val groupsState = mutableStateOf(GroupsViewState())
+    private val groupAPI = TSGroupsAPI()
+
     fun updateGroupName(name: String) {
         state.value = state.value.copy(groupName = name)
     }
@@ -40,7 +44,46 @@ class GroupViewModel: ViewModel() {
         state.value = state.value.copy(tasks = currentList)
     }
 
-    fun addGroupAndTasks(group: GroupViewState) {
+    // view model to get a new group
+    fun createGroup(groupName : String, groupDescription: String, groupMembers: MutableList<String>) {
+        Log.i("Raksha debug", groupName)
+        val groupId = groupAPI.createGroup(groupName, groupDescription, groupMembers)
+        val newGroup = GroupViewState (
+            groupName = groupName,
+            groupDescription = groupDescription,
+            id = groupId
+        )
+        appendNewGroup(newGroup)
+    }
+
+    // view model to get all groups
+    suspend fun getAllGroups() {
+        val allGroups = groupAPI.getAllGroups()
+        Log.i("Debugging Raksha old", allGroups.toString())
+        for (group in allGroups) {
+            appendNewGroup(
+                GroupViewState(
+                    id = group.id,
+                    groupName = group.groupName,
+                    groupDescription = group.groupDescription,
+                    groupMembers = group.groupMembers
+                )
+            )
+        }
+    }
+
+    suspend fun getAllGroupNames() : ArrayList<String> {
+        var groupNames = ArrayList<String>()
+        val allGroups = groupAPI.getAllGroups()
+        for (group in allGroups) {
+            groupNames.add(group.groupName)
+        }
+        Log.i("Debugging Raksha new", allGroups.toString())
+
+        return groupNames
+    }
+
+    fun appendNewGroup(group: GroupViewState) {
         val currentList = groupsState.value.groups
         currentList.add(group)
         groupsState.value = groupsState.value.copy(groups = currentList)
@@ -59,7 +102,8 @@ data class GroupViewState (
     val member: String = "",
     val groupMembers: MutableList<String> = mutableListOf(),
     val tasks: MutableList<TaskViewState> = mutableListOf(),
-    val incompleteTasks: MutableList<TaskViewState> = mutableListOf()
+    val incompleteTasks: MutableList<TaskViewState> = mutableListOf(),
+    val id: String = ""
 )
 
 data class GroupsViewState (

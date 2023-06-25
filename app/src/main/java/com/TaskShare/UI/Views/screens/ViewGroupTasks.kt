@@ -174,20 +174,6 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()
 
-    viewModel.addGroupAndTasks(
-        GroupViewState("Roommates", "test description","Lamia", mutableListOf("Lamia", "Jaishree"), mutableListOf(
-            TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done")
-        ), mutableListOf())
-    )
-    viewModel.addGroupAndTasks(
-        GroupViewState("Home", "test description", "Lamia",mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(
-            TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),
-            TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "inprogress"),
-            TaskViewState("Laundry", "Jaishree", "Lamia", "10/10/2023", "inprogress")
-        ), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")))
-    )
-
-
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Group Details", color = Color.White, fontSize = 30.sp) },
@@ -234,9 +220,6 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
                         Spacer(modifier = Modifier.height(height = 10.dp))
                     }
                 }
-
-
-
             }
 
         }

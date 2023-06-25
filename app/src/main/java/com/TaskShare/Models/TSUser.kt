@@ -7,6 +7,58 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
+
+class TSUserApi() {
+    private val TAG = "TSUserApi"
+    val db = Firebase.firestore
+    val users = db.collection("Users")
+
+    // temporary API
+    fun getUserIdFromName(username: String) : String{
+        var result = ""
+
+        users.whereEqualTo("name", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                for(document in documents) {
+                    result = document.id
+                    break
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
+
+        return result
+    }
+
+    // temporary API
+    fun getUserIdsFromNames(usernames: MutableList<String>) : MutableList<String> {
+        var result = HashSet<String>()
+        for (name in usernames) {
+            result.add(getUserIdFromName(name))
+        }
+        return result.toMutableList()
+    }
+
+    // Temporary API - get user from email (we'll just use userID)
+    fun getUserIdFromEmail(email: String): String {
+        var result = ""
+        users.whereEqualTo("email", email).get()
+            .addOnSuccessListener{documents ->
+                for(document in documents) {
+                    result = document.id
+                    break
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
+        return result
+    }
+
+}
+
 class TSUser(userId: String) {
     private val TAG = "User"
     private val id = userId
