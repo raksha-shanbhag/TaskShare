@@ -16,6 +16,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.example.greetingcard.navigation.AppNavGraph
+import com.example.greetingcard.navigation.LeafScreen
 import com.example.greetingcard.navigation.RootScreen
 
 
@@ -32,10 +33,18 @@ https://www.youtube.com/watch?v=tt3dYmqJTrw
 fun MainScreen() {
     val navController = rememberNavController()
     val currentSelectedScreen by navController.currentScreenAsState()
+
+    // Check if the screen if within the log-in or sign-up route
+    val isLoginRoute = currentSelectedScreen == RootScreen.Login
+
     Scaffold(
         topBar = {},
+
+        // Hide the bottom bar for the log-in route
         bottomBar = {
-            BottomNavBar(navController = navController, currentSelectedScreen = currentSelectedScreen)
+            if (!isLoginRoute) {
+                BottomNavBar(navController = navController, currentSelectedScreen = currentSelectedScreen)
+            }
         }
     ) {
 
@@ -124,6 +133,9 @@ private fun NavController.currentScreenAsState(): State<RootScreen> {
     DisposableEffect(key1 = this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             when {
+                destination.hierarchy.any { it.route == RootScreen.Login.route } -> {
+                    selectedItem.value = RootScreen.Login
+                }
                 destination.hierarchy.any { it.route == RootScreen.Home.route } -> {
                     selectedItem.value = RootScreen.Home
                 }

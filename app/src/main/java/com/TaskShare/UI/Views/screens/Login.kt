@@ -26,6 +26,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
+import kotlinx.coroutines.launch
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
@@ -53,8 +56,8 @@ fun LoginScreen(
     val email = remember { mutableStateOf("")}
     val password = remember { mutableStateOf("")}
 
-    val headingSize = 30.sp
     val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier
@@ -71,7 +74,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text = stringResource(R.string.log_in),
-                fontSize = headingSize,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 textAlign = TextAlign.Center
@@ -96,20 +99,20 @@ fun LoginScreen(
             ClickableSignUpText(onSignUpClick)
 
             // Temporary
-            /*Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = { *//*TODO*//* }) {
-                
+            /*Spacer(modifier = Modifier.height(50.dp))
+            Button(onClick = {
+                 scope.launch {
+                     scaffoldState.snackbarHostState.showSnackbar(
+                         "Hello!")
+                 }
+            },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Temporary Button",
+                    color = Color.White)
             }*/
+
         }
-
-    }
-}
-
-@Composable
-fun CustomizedSnackBar(modifier: Modifier = Modifier, textValue: String) {
-    Snackbar(
-        backgroundColor = Color.Transparent
-    ) {
 
     }
 }
