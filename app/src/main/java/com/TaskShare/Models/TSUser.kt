@@ -62,6 +62,11 @@ class TSUserApi() {
 class TSUser(userId: String) {
     private val TAG = "User"
     private val id = userId
+    private val firstName: HashSet<String> = hashSetOf()
+    private val lastName: HashSet<String> = hashSetOf()
+    private val email: HashSet<String> = hashSetOf()
+    private val password : HashSet<String> = hashSetOf()
+    private val phoneNumber: HashSet<String> = hashSetOf()
     private var groups: HashSet<TSGroup> = hashSetOf()
     private var tasks: HashSet<TSSubTask>? = null
 
@@ -85,7 +90,12 @@ class TSUser(userId: String) {
                     }
 
                     val data = hashMapOf(
-                        "Groups" to groups.toList(),
+                        "First_Name" to firstName.toList(),
+                        "Last_Name" to lastName.toList(),
+                        "Email" to email.toList(),
+                        "Password" to password.toList(),
+                        "Phone_Number" to phoneNumber.toList(),
+                        "Groups" to groups.toList()
                     )
                     docRef
                         .set(data)
@@ -102,6 +112,26 @@ class TSUser(userId: String) {
     fun getGroups(): Set<TSGroup> {
         return groups;
     }
+    fun setEmail(value: HashSet<String>) {
+        email.clear()
+        email.addAll(value)
+    }
+
+    fun setPassword(value: HashSet<String>) {
+        password.clear()
+        password.addAll(value)
+    }
+
+    fun setFirstName(value: HashSet<String>) {
+        firstName.clear()
+        firstName.addAll(value)
+    }
+
+    fun setLastName(value: HashSet<String>) {
+        lastName.clear()
+        lastName.addAll(value)
+    }
+
 
     fun getTasks(): Set<TSSubTask> {
         if (tasks != null) {
