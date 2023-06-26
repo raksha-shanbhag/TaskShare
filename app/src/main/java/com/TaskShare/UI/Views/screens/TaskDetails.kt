@@ -48,7 +48,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
     val viewModel = viewModel(TaskViewModel::class.java)
 
     // REMOVE line below when integration with backend done, this is used to generate dummy data
-    viewModel.initTask("Cry Myself to Sleep", "Waterloo", "inprogress", "Jaishree", "ECE", "01/04/2024", "Daily")
+    viewModel.initTask("Clean Counters", "Lamia", "inprogress", "Jaishree", "Roommates", "10/05/2023", "Daily")
 
     // update getTaskByID to take in id so this page can be dynamically rendered
     var task = viewModel.getTaskByID()

@@ -152,6 +152,7 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
             Spacer(modifier = Modifier.height(height = 5.dp))
             Text(text = end_date,
                 fontSize = MaterialTheme.typography.caption.fontSize,
+                color = colorResource(id = R.color.banner_blue),
                 modifier = Modifier
                     .widthIn(min_width_pill.dp, max_width_pill.dp)
                     .background(
@@ -181,10 +182,10 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
     )
     viewModel.addGroupAndTasks(
         GroupViewState("Home", "test description", "Lamia",mutableListOf("Lamia", "Jaishree", "Cheng"), mutableListOf(
-            TaskViewState("Trash", "Lamia", "Jaishree", "10/10/2023", "done"),
-            TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "inprogress"),
-            TaskViewState("Laundry", "Jaishree", "Lamia", "10/10/2023", "inprogress")
-        ), mutableListOf(TaskViewState("Dishes", "Lamia", "Jaishree", "10/10/2023", "in_progress")))
+            TaskViewState("Trash", "Lamia", "todo", "Cheng", "Roommates","10/10/2024"),
+            TaskViewState("Dishes", "Lamia", "todo", "Jaishree", "Roommates", "10/10/2024"),
+            TaskViewState("Laundry", "Jaishree", "done", "Lamia", "Roommates", "10/10/2024")
+        ), mutableListOf(TaskViewState("Dishes", "Lamia", "done", "Lamia", "Roommates", "10/10/2024")))
     )
 
 

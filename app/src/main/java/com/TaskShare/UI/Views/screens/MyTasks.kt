@@ -241,11 +241,11 @@ fun MyTasksScreen(showDetail: () -> Unit) {
 //                        Spacer(modifier = Modifier.height(height = 10.dp))
 //                    }
 
-                    RenderTaskCard("Clean Counters and Sing", "Roommates", "inprogress", "10/05/2023", showDetail)
+                    RenderTaskCard("Clean Counters", "Roommates", "inprogress", "10/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
                     RenderTaskCard("Take out trash", "Roommates", "done", "12/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
-                    RenderTaskCard("Take out meee", "Roommates", "todo", "11/05/2023", showDetail)
+                    RenderTaskCard("Take out recycling", "Roommates", "todo", "11/05/2023", showDetail)
                     Spacer(modifier = Modifier.height(height = 10.dp))
                 }
             }
