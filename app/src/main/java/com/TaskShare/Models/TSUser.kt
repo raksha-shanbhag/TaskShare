@@ -1,6 +1,7 @@
 package com.TaskShare.Models
 
 import android.util.Log
+import com.TaskShare.ViewModels.AddTaskState
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -60,62 +61,33 @@ class TSUserApi() {
 }
 
 class TSUser(userId: String) {
+    companion object var globalUser: TSUser? = null
     private val TAG = "User"
     private val id = userId
-    private var groups: HashSet<TSGroup> = hashSetOf()
-    private var tasks: HashSet<TSSubTask>? = null
+    private var groups: MutableList<TSGroup> = mutableListOf()
+
+    var name: String = "None"
 
     fun getId(): String {
         return id
     }
 
-    fun create() {
-        val db = Firebase.firestore
-        val docRef = db.collection("Users").document(id)
-
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    Log.w(TAG, "User already exists.")
-                } else {
-                    var groupIds: HashSet<String> = hashSetOf()
-
-                    for (group in groups) {
-                        groupIds.add(group.getId())
-                    }
-
-                    val data = hashMapOf(
-                        "Groups" to groups.toList(),
-                    )
-                    docRef
-                        .set(data)
-                        .addOnFailureListener { exception ->
-                            Log.w(TAG, "Error creating user.", exception)
-                        }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-    }
-
-    fun getGroups(): Set<TSGroup> {
+    fun getGroups(): List<TSGroup> {
         return groups;
     }
 
-    fun getTasks(): Set<TSSubTask> {
-        if (tasks != null) {
-            return tasks as HashSet<TSSubTask>
-        }
-
-        var set: HashSet<TSSubTask> = hashSetOf()
+    fun getTasks(): List<TSSubTask> {
+        var list: MutableList<TSSubTask> = mutableListOf()
 
         for (group in groups) {
-            set.addAll(group.getSubTasksAssignedTo(id))
+            list.addAll(group.getSubTasksAssignedTo(id))
         }
 
-        tasks = set
-        return set
+        return list
+    }
+
+    fun createTask(taskState: AddTaskState) {
+        // empty
     }
 
     fun updateGroup(group: TSGroup, add: Boolean = true): Boolean {
@@ -148,19 +120,19 @@ class TSUser(userId: String) {
         return success
     }
 
-    fun get() {
+    fun read() {
         val db = Firebase.firestore
         db.collection("Users").document(id)
             .get()
             .addOnSuccessListener { result ->
-                set(result)
+                readCallback(result)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
     }
 
-    suspend fun synchronisedGet() {
+    suspend fun syncRead() {
         var result: DocumentSnapshot? = null
         try {
             result = Firebase.firestore.collection("Users").document(id).get().await()
@@ -170,33 +142,63 @@ class TSUser(userId: String) {
         }
 
         if (result != null) {
-            set(result)
+            readCallback(result)
         }
     }
 
-    private fun set(result: DocumentSnapshot) {
-        var groupIds: HashSet<String> = hashSetOf()
+    fun write() {
+        val db = Firebase.firestore
+        val docRef = db.collection("Users").document(id)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    Log.w(TAG, "User already exists.")
+                } else {
+                    var groupIds: MutableList<String> = mutableListOf()
+
+                    for (group in groups) {
+                        groupIds.add(group.getId())
+                    }
+
+                    val data = hashMapOf(
+                        "Groups" to groups.toList(),
+                    )
+                    docRef
+                        .set(data)
+                        .addOnFailureListener { exception ->
+                            Log.w(TAG, "Error creating user.", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }
+
+    private fun readCallback(result: DocumentSnapshot) {
+        var groupIds: MutableList<String> = mutableListOf()
         groupIds.addAll(result.get("Groups") as List<String>)
         Log.w(TAG, groupIds.toString() + "TESTING")
 
-        var set: HashSet<TSGroup> = hashSetOf()
+        var list: MutableList<TSGroup> = mutableListOf()
 
         for (groupId in groupIds) {
             var flag = false
 
             for (group in groups) {
                 if (group.getId() == groupId) {
-                    set.add(group)
+                    list.add(group)
                     flag = true
                     break
                 }
             }
 
             if (!flag) {
-                set.add(TSGroup(groupId))
+                list.add(TSGroup(groupId))
             }
         }
 
-        groups = set
+        groups = list
     }
 }

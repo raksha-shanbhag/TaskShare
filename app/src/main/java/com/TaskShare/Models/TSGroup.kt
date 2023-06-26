@@ -1,6 +1,7 @@
 package com.TaskShare.Models
 
 import android.util.Log
+import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewState
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -62,26 +63,32 @@ class TSGroupsAPI {
     suspend fun getAllGroups(): MutableList<ResponseGroup> {
         var result = ArrayList<ResponseGroup>()
 
-        groups.get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    var groupMembers = ArrayList<String>()
-                    groupMembers.addAll(document.get("groupMembers") as List<String>)
+        var documents: QuerySnapshot? = null
 
-                    var group = ResponseGroup(
-                        id = document.id,
-                        groupName = document.data["groupName"].toString(),
-                        groupDescription = document.data["groupDescription"].toString(),
-                        groupMembers = groupMembers
-                    )
+        try {
+            documents = groups.get().await()
+        } catch (exception: Throwable) {
+            Log.w(TAG, "Error getting documents: ", exception)
+        }
 
-                    result.add(group)
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
-            .await()
+        if (documents == null) {
+            Log.w(TAG, "Error getting documents.")
+            return mutableListOf()
+        }
+
+        for (document in documents) {
+            var groupMembers = ArrayList<String>()
+            groupMembers.addAll(document.get("groupMembers") as List<String>)
+
+            var group = ResponseGroup(
+                id = document.id,
+                groupName = document.data["groupName"].toString(),
+                groupDescription = document.data["groupDescription"].toString(),
+                groupMembers = groupMembers
+            )
+
+            result.add(group)
+        }
 
         return result.toMutableList()
     }
@@ -144,15 +151,130 @@ class TSGroupsAPI {
 class TSGroup(groupId: String) {
     private val TAG = "Group"
     private val id = groupId
-    private var users: HashSet<TSUser> = hashSetOf()
-    private var tasks: HashSet<TSTask> = hashSetOf()
-    private var name = groupId
+    private var users: MutableList<TSUser> = mutableListOf()
+    private var tasks: MutableList<TSTask> = mutableListOf()
+
+    var name: String = "None"
+    var description: String = "None"
 
     fun getId(): String {
         return id
     }
 
-    fun create(groupDescription: String) {
+    fun getTaskCollection(): CollectionReference {
+        return Firebase.firestore.collection("Groups").document(id).collection("Tasks")
+    }
+
+    fun getSubTasksAssignedTo(userId: String): Set<TSSubTask> {
+        var set: HashSet<TSSubTask> = hashSetOf()
+
+        for (task in tasks) {
+            if (task.isAssignedTo(userId)) {
+                set.addAll(task.getSubTasksAssignedTo(userId))
+            }
+        }
+
+        return set
+    }
+
+    fun getState(): GroupViewState {
+        var userNames: MutableList<String> = mutableListOf()
+        var taskStates: MutableList<TaskViewState> = mutableListOf()
+        var incompleteTasks: MutableList<TaskViewState> = mutableListOf()
+
+        for (user in users) {
+            userNames.add(user.name)
+        }
+
+        for (task in tasks) {
+            for (subTask in task.subTasks) {
+                var taskState = subTask.getState()
+                taskStates.add(taskState)
+
+                if (subTask.taskStatus == TSSubTask.TSTaskStatus.TODO) {
+                    incompleteTasks.add(taskState)
+                }
+            }
+        }
+
+        return GroupViewState(
+            name,
+            description,
+            "",
+            userNames,
+            taskStates,
+            incompleteTasks,
+            id
+        )
+    }
+
+    fun updateUser(user: TSUser, add: Boolean = true): Boolean {
+        val db = Firebase.firestore
+        val dbRef = db.collection("Groups").document(id)
+
+        var success = true
+        val failureListener = { exception: Throwable ->
+            Log.w(TAG, "Error updating users in group.", exception)
+            success = false
+        }
+
+        if (add) {
+            dbRef.update("Users", FieldValue.arrayUnion(user.getId()))
+                .addOnFailureListener(failureListener)
+        } else {
+            dbRef.update("Users", FieldValue.arrayRemove(user.getId()))
+                .addOnFailureListener(failureListener)
+        }
+
+        if (success) {
+            users.add(user)
+        }
+
+        return success
+    }
+
+    fun read() {
+        val ref = Firebase.firestore.collection("Groups").document(id)
+
+        ref.get()
+            .addOnSuccessListener { result ->
+                readCallback(result)
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+
+        ref.collection("Tasks")
+            .get()
+            .addOnSuccessListener { result ->
+                readTasksCallback(result)
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+
+    }
+
+    suspend fun syncRead() {
+        val ref = Firebase.firestore.collection("Groups").document(id)
+        var result: DocumentSnapshot? = null
+        var result2: QuerySnapshot? = null
+
+        try {
+            result = ref.get().await()
+            result2 = ref.collection("Tasks").get().await()
+        } catch (exception: Throwable) {
+            Log.w(TAG, "Error getting documents.", exception)
+            return
+        }
+
+        if (result != null && result2 != null) {
+            readCallback(result)
+            readTasksCallback(result2)
+        }
+    }
+
+    fun write(groupDescription: String) {
         Log.i(TAG, id)
         val db = Firebase.firestore
         val docRef = db.collection("Groups").document(id)
@@ -186,134 +308,51 @@ class TSGroup(groupId: String) {
                     Log.w(TAG, "Error creating group.", exception)
                 }
         }
-
     }
 
-    fun getTaskCollection(): CollectionReference {
-        return Firebase.firestore.collection("Groups").document(id).collection("Tasks")
-    }
-
-    fun getSubTasksAssignedTo(userId: String): Set<TSSubTask> {
-        var set: HashSet<TSSubTask> = hashSetOf()
-
-        for (task in tasks) {
-            if (task.isAssignedTo(userId)) {
-                set.addAll(task.getSubTasksAssignedTo(userId))
-            }
-        }
-
-        return set
-    }
-
-    fun updateUser(user: TSUser, add: Boolean = true): Boolean {
-        val db = Firebase.firestore
-        val dbRef = db.collection("Groups").document(id)
-
-        var success = true
-        val failureListener = { exception: Throwable ->
-            Log.w(TAG, "Error updating users in group.", exception)
-            success = false
-        }
-
-        if (add) {
-            dbRef.update("Users", FieldValue.arrayUnion(user.getId()))
-                .addOnFailureListener(failureListener)
-        } else {
-            dbRef.update("Users", FieldValue.arrayRemove(user.getId()))
-                .addOnFailureListener(failureListener)
-        }
-
-        if (success) {
-            users.add(user)
-        }
-
-        return success
-    }
-
-    fun get() {
-        val ref = Firebase.firestore.collection("Groups").document(id)
-
-        ref.get()
-            .addOnSuccessListener { result ->
-                set(result)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-        ref.collection("Tasks")
-            .get()
-            .addOnSuccessListener { result ->
-                setTasks(result)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-    }
-
-    suspend fun synchronisedGet() {
-        val ref = Firebase.firestore.collection("Groups").document(id)
-        var result: DocumentSnapshot? = null
-        var result2: QuerySnapshot? = null
-
-        try {
-            result = ref.get().await()
-            result2 = ref.collection("Tasks").get().await()
-        } catch (exception: Throwable) {
-            Log.w(TAG, "Error getting documents.", exception)
-            return
-        }
-
-        if (result != null && result2 != null) {
-            set(result)
-            setTasks(result2)
-        }
-    }
-
-    private fun set(result: DocumentSnapshot) {
-        var userIds: HashSet<String> = hashSetOf()
+    private fun readCallback(result: DocumentSnapshot) {
+        var userIds: MutableList<String> = mutableListOf()
         userIds.addAll(result.get("Users") as List<String>)
 
-        var set: HashSet<TSUser> = hashSetOf()
+        var list: MutableList<TSUser> = mutableListOf()
 
         for (userId in userIds) {
             var flag = false
             for (user in users) {
                 if (user.getId() == userId) {
-                    set.add(user)
+                    list.add(user)
                     flag = true
                     break
                 }
             }
 
             if (!flag) {
-                set.add(TSUser(userId))
+                list.add(TSUser(userId))
             }
         }
 
-        users = set
+        users = list
     }
 
-    private fun setTasks(result: QuerySnapshot) {
-        var set: HashSet<TSTask> = hashSetOf()
+    private fun readTasksCallback(result: QuerySnapshot) {
+        var list: MutableList<TSTask> = mutableListOf()
 
         for (document in result) {
             var flag = false
 
             for (task in tasks) {
                 if (task.getId() == document.id) {
-                    set.add(task)
+                    list.add(task)
                     flag = true
                     break
                 }
             }
 
             if (!flag) {
-                set.add(TSTask(this, document.id))
+                list.add(TSTask(this, document.id))
             }
         }
 
-        tasks = set
+        tasks = list
     }
 }

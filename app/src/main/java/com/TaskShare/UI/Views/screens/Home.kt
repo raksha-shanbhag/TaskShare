@@ -209,10 +209,8 @@ fun HomeScreen(
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getAllGroups()
-        Log.i("Debug Raksha", groupState.toString())
-    }
+    viewModel.getAllGroups()
+    Log.i("Debug Raksha", groupState.toString())
 
     androidx.compose.material.Scaffold( topBar = {
         CenterAlignedTopAppBar(

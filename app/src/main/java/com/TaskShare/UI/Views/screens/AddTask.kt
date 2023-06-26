@@ -104,10 +104,8 @@ fun AddTaskScreen() {
         mutableStateOf(mutableListOf<String>())
     }
 
-    LaunchedEffect(Unit) {
-        groupNames = groupViewModel.getAllGroupNames()
-        Log.i("Debugging Raksha", groupNames.toString())
-    }
+    groupNames = groupViewModel.getAllGroupNames()
+    Log.i("Debugging Raksha", groupNames.toString())
 
 
     Scaffold( topBar = {
