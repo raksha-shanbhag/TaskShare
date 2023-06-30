@@ -173,6 +173,9 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: Gro
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()
 
+//get group with id
+    //getGroupByID(viewModel.state.value.id)
+
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Group Details", color = Color.White, fontSize = 30.sp) },
