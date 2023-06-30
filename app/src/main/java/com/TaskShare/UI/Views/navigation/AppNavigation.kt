@@ -1,12 +1,14 @@
 package com.example.greetingcard.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.TaskShare.ViewModels.GroupViewModel
 import com.example.greetingcard.screens.AddTaskScreen
 import com.example.greetingcard.screens.CreateGroupScreen
 import com.example.greetingcard.screens.HomeScreen
@@ -31,13 +33,14 @@ https://www.youtube.com/watch?v=tt3dYmqJTrw
 fun AppNavGraph(
     navController: NavHostController,
 ) {
+    val viewModel: GroupViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = RootScreen.Login.route
         //startDestination = RootScreen.Home.route
     ) {
-        addLoginRoute(navController)
-        addHomeRoute(navController)
+        addLoginRoute(navController, viewModel)
+        addHomeRoute(navController, viewModel)
         addMyTasksRoute(navController)
         addCreateTaskRoute(navController)
         addActivityRoute(navController)
@@ -46,7 +49,7 @@ fun AppNavGraph(
 }
 
 // Log-in navigation
-private fun NavGraphBuilder.addLoginRoute(navController: NavController) {
+private fun NavGraphBuilder.addLoginRoute(navController: NavController, viewModel: GroupViewModel) {
     navigation(
         route = RootScreen.Login.route,
         startDestination = LeafScreen.Login.route
@@ -84,18 +87,18 @@ private fun NavGraphBuilder.showSignUp(navController: NavController) {
 
 
 //home navigation
-private fun NavGraphBuilder.addHomeRoute(navController: NavController) {
+private fun NavGraphBuilder.addHomeRoute(navController: NavController, viewModel: GroupViewModel) {
     navigation(
         route = RootScreen.Home.route,
         startDestination = LeafScreen.Home.route
     ) {
-        showGroups(navController)
-        showViewGroup(navController)
-        showCreateGroup(navController)
-        showViewGroupTasks(navController)
+        showGroups(navController, viewModel)
+        showViewGroup(navController, viewModel)
+        showCreateGroup(navController, viewModel)
+        showViewGroupTasks(navController, viewModel)
     }
 }
-private fun NavGraphBuilder.showGroups(navController: NavController) {
+private fun NavGraphBuilder.showGroups(navController: NavController, viewModel: GroupViewModel) {
     composable(route = LeafScreen.Home.route) {
         HomeScreen(
             showDetail = {
@@ -103,22 +106,24 @@ private fun NavGraphBuilder.showGroups(navController: NavController) {
             },
             showCreate = {
                 navController.navigate(LeafScreen.CreateGroup.route)
-            }
+            },
+            viewModel
         )
     }
 }
-private fun NavGraphBuilder.showViewGroup(navController: NavController) {
+private fun NavGraphBuilder.showViewGroup(navController: NavController, viewModel: GroupViewModel) {
     composable(route = LeafScreen.ViewGroup.route) {
         ViewGroupScreen(
             onBack = {
                 navController.navigateUp()
-            }
+            },
+             viewModel
         )
     }
 }
 
 
-private fun NavGraphBuilder.showViewGroupTasks(navController: NavController) {
+private fun NavGraphBuilder.showViewGroupTasks(navController: NavController, viewModel: GroupViewModel) {
     composable(route = LeafScreen.ViewGroupTasks.route) {
         ViewGroupTasksScreen(
             onBack = {
@@ -126,17 +131,19 @@ private fun NavGraphBuilder.showViewGroupTasks(navController: NavController) {
             },
             showEdit = {
                 navController.navigate(LeafScreen.ViewGroup.route)
-            }
+            },
+            viewModel
         )
     }
 }
 
-private fun NavGraphBuilder.showCreateGroup(navController: NavController) {
+private fun NavGraphBuilder.showCreateGroup(navController: NavController, viewModel: GroupViewModel) {
     composable(route = LeafScreen.CreateGroup.route) {
         CreateGroupScreen(
             onBack = {
                 navController.navigateUp()
-            }
+            },
+            viewModel
         )
     }
 }

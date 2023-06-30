@@ -167,9 +167,8 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit) {
+fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: GroupViewModel) {
     //getting data
-    val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()

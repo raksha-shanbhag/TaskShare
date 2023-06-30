@@ -47,7 +47,7 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CreateGroupScreen(onBack: () -> Unit) {
+fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
     var groupName by remember {
         mutableStateOf("")
     }
@@ -61,7 +61,6 @@ fun CreateGroupScreen(onBack: () -> Unit) {
         mutableStateOf(mutableListOf<String>())
     }
 
-    val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
 
     Scaffold( topBar = {

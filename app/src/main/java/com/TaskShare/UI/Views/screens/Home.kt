@@ -201,10 +201,10 @@ fun RenderGroupCard(group_name: String,completedTasks: Int, tasksNum: Int, incom
 fun HomeScreen(
     showDetail: () -> Unit,
     showCreate: () -> Unit,
+    viewModel: GroupViewModel
 ) {
 
     //getting data
-    val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()

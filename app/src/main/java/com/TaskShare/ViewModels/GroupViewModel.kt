@@ -11,6 +11,12 @@ class GroupViewModel: ViewModel() {
     val groupsState = mutableStateOf(GroupsViewState())
     private val groupAPI = TSGroupsAPI()
 
+    val test = mutableStateOf("");
+
+    fun setTest(str: String) {
+        test.value = str;
+    }
+
     fun updateGroupName(name: String) {
         state.value = state.value.copy(groupName = name)
     }
@@ -27,6 +33,10 @@ class GroupViewModel: ViewModel() {
        val currentList = state.value.groupMembers
         currentList.add(name)
         state.value = state.value.copy(groupMembers = currentList)
+    }
+
+    fun updateGroupId(id: String) {
+        state.value = state.value.copy(id = id);
     }
 
     fun getIncompleteTasks() {
