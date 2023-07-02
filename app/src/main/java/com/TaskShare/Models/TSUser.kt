@@ -64,17 +64,76 @@ class TSUser(userId: String) {
     companion object var globalUser: TSUser? = null
     private val TAG = "User"
     private val id = userId
-    private var groups: MutableList<TSGroup> = mutableListOf()
-
-    var name: String = "None"
+    private val firstName: HashSet<String> = hashSetOf()
+    private val lastName: HashSet<String> = hashSetOf()
+    private val email: HashSet<String> = hashSetOf()
+    private val password : HashSet<String> = hashSetOf()
+    private val phoneNumber: HashSet<String> = hashSetOf()
+    private var groups: HashSet<TSGroup> = hashSetOf()
+    private var tasks: HashSet<TSSubTask>? = null
 
     fun getId(): String {
         return id
     }
 
-    fun getGroups(): List<TSGroup> {
+    fun create() {
+        val db = Firebase.firestore
+        val docRef = db.collection("Users").document(id)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    Log.w(TAG, "User already exists.")
+                } else {
+                    var groupIds: HashSet<String> = hashSetOf()
+
+                    for (group in groups) {
+                        groupIds.add(group.getId())
+                    }
+
+                    val data = hashMapOf(
+                        "First_Name" to firstName.toList(),
+                        "Last_Name" to lastName.toList(),
+                        "Email" to email.toList(),
+                        "Password" to password.toList(),
+                        "Phone_Number" to phoneNumber.toList(),
+                        "Groups" to groups.toList()
+                    )
+                    docRef
+                        .set(data)
+                        .addOnFailureListener { exception ->
+                            Log.w(TAG, "Error creating user.", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }
+
+    fun getGroups(): Set<TSGroup> {
         return groups;
     }
+    fun setEmail(value: HashSet<String>) {
+        email.clear()
+        email.addAll(value)
+    }
+
+    fun setPassword(value: HashSet<String>) {
+        password.clear()
+        password.addAll(value)
+    }
+
+    fun setFirstName(value: HashSet<String>) {
+        firstName.clear()
+        firstName.addAll(value)
+    }
+
+    fun setLastName(value: HashSet<String>) {
+        lastName.clear()
+        lastName.addAll(value)
+    }
+
 
     fun getTasks(): List<TSSubTask> {
         var list: MutableList<TSSubTask> = mutableListOf()

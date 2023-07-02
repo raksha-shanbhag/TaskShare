@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import com.TaskShare.UI.Views.screens.SignUpBackend
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -218,7 +219,31 @@ fun RenderPasswordTextField(labelValue: String, icon: ImageVector, onValueChange
 
 @Composable
 fun RegisterButton(textValue: String, onSignUpClick: () -> Unit) {
-    Button(onClick = { onSignUpClick() },
+    val email = remember { mutableStateOf("")}
+    val password = remember { mutableStateOf("")}
+    val firstName= remember { mutableStateOf("")}
+    val lastName= remember { mutableStateOf("")}
+    val signUpBackend = SignUpBackend()
+    Button(onClick = {
+        val emailValue = email.value
+        val passwordValue = password.value
+        val firstNameValue = firstName.value
+        val lastNameValue = lastName.value
+        if (signUpBackend.validateCredentials(emailValue, passwordValue, firstNameValue,lastNameValue)) {
+            val loginTask = signUpBackend.performSignUp(emailValue, passwordValue, firstNameValue,lastNameValue)
+            loginTask.addOnCompleteListener { task ->
+                if (task.isSuccessful && task.result == true) {
+                    // Successful login
+                    onSignUpClick()
+                } else {
+                    // Unsuccessful login
+                    //message would be field empty or password too short
+                }
+            }
+        } else {
+            //display "invalid credentials try again "
+        }
+    },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),

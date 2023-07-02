@@ -2,6 +2,7 @@ package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import com.TaskShare.UI.Views.screens.LoginBackend
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -167,7 +168,25 @@ fun ClickableForgotPasswordText() {
 
 @Composable
 fun LogInButton(textValue: String, onLogInClick: () -> Unit) {
-    Button(onClick = { onLogInClick() },
+    val email = remember { mutableStateOf("")}
+    val password = remember { mutableStateOf("")}
+    val loginBackend = LoginBackend()
+    Button(onClick = {
+        val emailValue = email.value
+        val passwordValue = password.value
+        if (loginBackend.validateCredentials(emailValue, passwordValue)) {
+            val loginTask = loginBackend.performLogin(emailValue, passwordValue)
+            loginTask.addOnCompleteListener { task ->
+                if (task.isSuccessful && task.result == true) {
+                    onLogInClick()
+                } else {
+                    //display "Login failed. Please try signing up.
+                }
+            }
+        } else {
+            //display "invalid credentials try again "
+        }
+    },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
