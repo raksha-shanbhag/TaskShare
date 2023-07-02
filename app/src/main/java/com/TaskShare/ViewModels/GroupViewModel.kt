@@ -4,11 +4,18 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.TSGroupsAPI
+import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
     val state = mutableStateOf(GroupViewState())
     val groupsState = mutableStateOf(GroupsViewState())
     private val groupAPI = TSGroupsAPI()
+
+    val test = mutableStateOf("");
+
+    fun setTest(str: String) {
+        test.value = str;
+    }
 
     fun updateGroupName(name: String) {
         state.value = state.value.copy(groupName = name)
@@ -26,6 +33,10 @@ class GroupViewModel: ViewModel() {
        val currentList = state.value.groupMembers
         currentList.add(name)
         state.value = state.value.copy(groupMembers = currentList)
+    }
+
+    fun updateGroupId(id: String) {
+        state.value = state.value.copy(id = id);
     }
 
     fun getIncompleteTasks() {
@@ -57,28 +68,34 @@ class GroupViewModel: ViewModel() {
     }
 
     // view model to get all groups
-    suspend fun getAllGroups() {
-        val allGroups = groupAPI.getAllGroups()
-        Log.i("Debugging Raksha old", allGroups.toString())
-        for (group in allGroups) {
-            appendNewGroup(
-                GroupViewState(
-                    id = group.id,
-                    groupName = group.groupName,
-                    groupDescription = group.groupDescription,
-                    groupMembers = group.groupMembers
+    fun getAllGroups() {
+        runBlocking {
+            val allGroups = groupAPI.getAllGroups()
+            Log.i("Debugging Raksha old", allGroups.toString())
+            for (group in allGroups) {
+                appendNewGroup(
+                    GroupViewState(
+                        id = group.id,
+                        groupName = group.groupName,
+                        groupDescription = group.groupDescription,
+                        groupMembers = group.groupMembers
+                    )
                 )
-            )
+            }
         }
     }
 
-    suspend fun getAllGroupNames() : ArrayList<String> {
+    fun getAllGroupNames() : ArrayList<String> {
         var groupNames = ArrayList<String>()
-        val allGroups = groupAPI.getAllGroups()
-        for (group in allGroups) {
-            groupNames.add(group.groupName)
+
+        runBlocking {
+            val allGroups = groupAPI.getAllGroups()
+            for (group in allGroups) {
+                groupNames.add(group.groupName)
+            }
+            Log.i("Debugging Raksha new", allGroups.toString())
+
         }
-        Log.i("Debugging Raksha new", allGroups.toString())
 
         return groupNames
     }

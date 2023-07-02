@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.tasks.await
+import com.TaskShare.ViewModels.TaskViewState
 
 class TSSubTask(taskRef: TSTask, subTaskId: String) {
     private val TAG = "SubTask"
@@ -15,17 +16,57 @@ class TSSubTask(taskRef: TSTask, subTaskId: String) {
     var taskStatus: TSTaskStatus = TSTaskStatus.NULL
     var startDate: Timestamp = Timestamp(0, 0)
     var endDate: Timestamp = Timestamp(0, 0)
-    var comments: HashSet<String?> = hashSetOf()
+    var comments: MutableList<String?> = mutableListOf()
 
     fun getId(): String {
         return id
     }
 
-    fun create(overwrite: Boolean = false) {
+    fun isAssignedTo(userId: String): Boolean {
+        return userId == assignee
+    }
+
+    fun getState(): TaskViewState {
+        return TaskViewState(
+            task.taskName,
+            task.assigner,
+            taskStatus.displayString,
+            assignee,
+            task.getGroup().name,
+            endDate.toString(),
+            task.cycle.toString() + " Days"
+        )
+    }
+
+    fun read() {
+        dataRef.get()
+            .addOnSuccessListener{result ->
+                readCallback(result)
+            }
+            .addOnFailureListener{exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+    }
+
+    suspend fun syncRead() {
+        var result: DocumentSnapshot? = null
+        try {
+            result = dataRef.get().await()
+        } catch (exception: Throwable) {
+            Log.w(TAG, "Error getting documents.", exception)
+            return
+        }
+
+        if (result != null) {
+            readCallback(result)
+        }
+    }
+
+    fun write(overwrite: Boolean = true) {
         dataRef.get()
             .addOnSuccessListener { document ->
                 if (document.exists() && !overwrite) {
-                    Log.w(TAG, "Group already exists.")
+                    Log.w(TAG, "SubTask already exists.")
                 } else {
                     val data = hashMapOf(
                         "Assignee" to assignee,
@@ -50,35 +91,7 @@ class TSSubTask(taskRef: TSTask, subTaskId: String) {
         dataRef.delete()
     }
 
-    fun isAssignedTo(userId: String): Boolean {
-        return userId == assignee
-    }
-
-    fun get() {
-        dataRef.get()
-            .addOnSuccessListener{result ->
-                set(result)
-            }
-            .addOnFailureListener{exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-    }
-
-    suspend fun synchronisedGet() {
-        var result: DocumentSnapshot? = null
-        try {
-            result = dataRef.get().await()
-        } catch (exception: Throwable) {
-            Log.w(TAG, "Error getting documents.", exception)
-            return
-        }
-
-        if (result != null) {
-            set(result)
-        }
-    }
-
-    private fun set(result: DocumentSnapshot) {
+    private fun readCallback(result: DocumentSnapshot) {
         comments.clear()
         assignee = result.get("Assignee") as String
         taskStatus = TSTaskStatus.fromString(result.get("Task Status") as String)

@@ -45,10 +45,9 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ViewGroupScreen(onBack: () -> Unit) {
+fun ViewGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
     val scrollState = rememberScrollState()
     //getting data
-    val viewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
 
     Scaffold( topBar = {
