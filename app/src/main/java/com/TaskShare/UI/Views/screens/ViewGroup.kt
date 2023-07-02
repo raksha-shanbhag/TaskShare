@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.ViewModels.GroupViewModel
+import com.TaskShare.ViewModels.GroupViewState
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -49,6 +50,10 @@ fun ViewGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
     val scrollState = rememberScrollState()
     //getting data
     val state by viewModel.state
+    var group = viewModel.groupsState.value.groups.find{ temp ->  temp.id == state.id}
+    if(group == null) {
+        group = GroupViewState()
+    }
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -69,7 +74,7 @@ fun ViewGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = viewModel.state.value.groupName,
+                    text = group.groupName,
                     fontSize = MaterialTheme.typography.h6.fontSize,
                     color = Color.White,
                     modifier = Modifier
@@ -83,7 +88,7 @@ fun ViewGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                 )
 
                 Text(
-                    text = viewModel.state.value.groupDescription,
+                    text = group.groupDescription,
                     fontSize = MaterialTheme.typography.subtitle1.fontSize,
                     color = Color.Black,
                     modifier = Modifier
@@ -117,8 +122,8 @@ fun ViewGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                     .padding(10.dp)) {
 
 //using data
-                        items(state.groupMembers) {  currentGroup ->
-                            Text(text = " $currentGroup", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
+                        items(group.groupMembers) {  currentMem ->
+                            Text(text = " $currentMem", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
                         }
 
                 }

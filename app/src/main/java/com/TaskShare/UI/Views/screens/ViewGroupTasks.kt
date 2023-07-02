@@ -170,11 +170,11 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
 fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: GroupViewModel) {
     //getting data
     val state by viewModel.state
-    val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()
 
 //get group with id
-   var group = groupState.groups.find{ temp ->  temp.id == state.id}
+
+   var group = viewModel.groupsState.value.groups.find{ temp ->  temp.id == state.id}
     if(group == null) {
         group = GroupViewState()
     }
