@@ -174,8 +174,10 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: Gro
     val scrollState = rememberScrollState()
 
 //get group with id
-    //getGroupByID(viewModel.state.value.id)
-
+   var group = groupState.groups.find{ temp ->  temp.id == state.id}
+    if(group == null) {
+        group = GroupViewState()
+    }
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Group Details", color = Color.White, fontSize = 30.sp) },
@@ -212,7 +214,7 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: Gro
                 }
 
                 //using data
-                var assigneeTasks = viewModel.getAssigneeTasks( 1)
+                var assigneeTasks = viewModel.getAssigneeTasks( group.id)
                 assigneeTasks.forEach{
                     Text(text = "Assigned to ${it.key}",
                         fontSize = MaterialTheme.typography.h6.fontSize,

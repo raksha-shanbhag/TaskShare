@@ -235,7 +235,7 @@ class TSGroup() {
             userEmails,
             taskStates,
             incompleteTasks,
-            ""
+            id
         )
     }
 

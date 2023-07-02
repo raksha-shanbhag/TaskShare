@@ -15,21 +15,12 @@ class GroupViewModel: ViewModel() {
     private val groupAPI = TSGroupsAPI()
 
     val test = mutableStateOf("");
-
-    fun setTest(str: String) {
-        test.value = str;
-    }
-
-    fun updateGroupName(name: String) {
-        state.value = state.value.copy(groupName = name)
-    }
-
-    fun updateGroupDesc(desc: String) {
-        state.value = state.value.copy(groupDescription = desc)
-    }
-
     fun updateGroupMember(mem: String) {
         state.value = state.value.copy(member = mem)
+    }
+
+    fun setGroupId(id: String) {
+        state.value = state.value.copy(id = id)
     }
 
     fun updateMembers(name: String) {
@@ -118,13 +109,15 @@ class GroupViewModel: ViewModel() {
         groupsState.value = groupsState.value.copy(groups = currentList)
     }
 
-    fun getAssigneeTasks( id: Int): Map<String, List<TaskViewState>>{
-        if (groupsState.value.groups.size <= id) {
-            return mapOf()
-        }
+    fun getAssigneeTasks( id: String): Map<String, List<TaskViewState>>{
 
-         val currentList = groupsState.value.groups[0].tasks
-         return currentList.groupBy { it.assignee }
+        val group = groupsState.value.groups.find { temp -> temp.id == id }
+        if(group != null){
+            val currentList = group.tasks
+            return currentList.groupBy { it.assignee }
+        }
+         return mapOf();
+
 
     }
 }
@@ -135,7 +128,7 @@ data class GroupViewState (
     val groupMembers: MutableList<String> = mutableListOf(),
     val tasks: MutableList<TaskViewState> = mutableListOf(),
     val incompleteTasks: MutableList<TaskViewState> = mutableListOf(),
-//    val id: String = "", // Used for navigation
+    val id: String = "", // Used for navigation
     val member: String = "" // Temp val for creating new groups
 )
 
