@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -42,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -91,7 +89,43 @@ fun LoginScreen(
             }
 
             Spacer(modifier = Modifier.height(50.dp))
-            LogInButton(stringResource(R.string.log_in), onLogInClick)
+
+            val loginBackend = LoginBackend()
+            Button(onClick = {
+                val emailValue = email.value
+                val passwordValue = password.value
+                if (loginBackend.validateCredentials(emailValue, passwordValue)) {
+                    val loginTask = loginBackend.performLogin(emailValue, passwordValue)
+                    loginTask.addOnCompleteListener { task ->
+                        if (task.isSuccessful && task.result == true) {
+                            onLogInClick()
+                        } else {
+                            //display "Login failed. Please try signing up.
+                        }
+                    }
+                } else {
+                    //display "invalid credentials try again "
+                }
+            },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                contentPadding = PaddingValues(10.dp),
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
+                shape = RoundedCornerShape(50.dp)
+            ) {
+                Box(modifier = Modifier
+                    .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "Log In",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(15.dp))
             ClickableForgotPasswordText()
@@ -164,48 +198,6 @@ fun ClickableForgotPasswordText() {
             }
 
     })
-}
-
-@Composable
-fun LogInButton(textValue: String, onLogInClick: () -> Unit) {
-    val email = remember { mutableStateOf("")}
-    val password = remember { mutableStateOf("")}
-    val loginBackend = LoginBackend()
-    Button(onClick = {
-        val emailValue = email.value
-        val passwordValue = password.value
-        if (loginBackend.validateCredentials(emailValue, passwordValue)) {
-            val loginTask = loginBackend.performLogin(emailValue, passwordValue)
-            loginTask.addOnCompleteListener { task ->
-                if (task.isSuccessful && task.result == true) {
-                    onLogInClick()
-                } else {
-                    //display "Login failed. Please try signing up.
-                }
-            }
-        } else {
-            //display "invalid credentials try again "
-        }
-    },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        contentPadding = PaddingValues(10.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
-        shape = RoundedCornerShape(50.dp)
-    ) {
-        Box(modifier = Modifier
-            .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ){
-            Text(
-                text = textValue,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-        }
-    }
 }
 
 @Composable

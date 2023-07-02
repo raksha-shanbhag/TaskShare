@@ -1,14 +1,15 @@
 package com.TaskShare.Models
 
 import android.util.Log
+import com.TaskShare.ViewModels.AddTaskState
 import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewState
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 data class RequestGroup(
@@ -148,21 +149,52 @@ class TSGroupsAPI {
 
 }
 
-class TSGroup(groupId: String) {
-    private val TAG = "Group"
-    private val id = groupId
-    private var users: MutableList<TSUser> = mutableListOf()
+data class TSGroupData (
+    val groupName: String ="",
+    val groupDescription: String = "",
+    val groupMembers: MutableList<String> = mutableListOf(),
+    val tasks: MutableList<String> = mutableListOf()
+)
+
+class TSGroup() {
     private var tasks: MutableList<TSTask> = mutableListOf()
+    private var members: MutableList<TSUser> = mutableListOf()
 
-    var name: String = "None"
-    var description: String = "None"
+    var id = ""
+    var groupData = TSGroupData()
 
-    fun getId(): String {
-        return id
-    }
+    companion object {
+        private val TAG = "Group"
 
-    fun getTaskCollection(): CollectionReference {
-        return Firebase.firestore.collection("Groups").document(id).collection("Tasks")
+        fun getFromId(id: String, recurse: Boolean = true): TSGroup {
+            var group = TSGroup()
+            group.id = id
+
+            runBlocking {
+                group.read(recurse)
+            }
+
+            return group
+        }
+
+        fun createGroup(data: TSGroupData) : String {
+            val ref = Firebase.firestore.collection("Groups")
+            var documentId = ""
+
+            runBlocking {
+                try {
+                    var document = ref.add(data).await()
+                    Log.d(TAG, document.id)
+                    Log.d(TAG, "DocumentSnapshot successfully written!")
+
+                    documentId = document.id
+                } catch (exception: Throwable) {
+                    Log.w(TAG, "Error writing document", exception)
+                }
+            }
+
+            return documentId
+        }
     }
 
     fun getSubTasksAssignedTo(userId: String): Set<TSSubTask> {
@@ -178,16 +210,16 @@ class TSGroup(groupId: String) {
     }
 
     fun getState(): GroupViewState {
-        var userNames: MutableList<String> = mutableListOf()
+        var userEmails: MutableList<String> = mutableListOf()
         var taskStates: MutableList<TaskViewState> = mutableListOf()
         var incompleteTasks: MutableList<TaskViewState> = mutableListOf()
 
-        for (user in users) {
-            userNames.add(user.name)
+        for (user in members) {
+            userEmails.add(user.userData.email)
         }
 
         for (task in tasks) {
-            for (subTask in task.subTasks) {
+            for (subTask in task.getSubTasks()) {
                 var taskState = subTask.getState()
                 taskStates.add(taskState)
 
@@ -198,161 +230,92 @@ class TSGroup(groupId: String) {
         }
 
         return GroupViewState(
-            name,
-            description,
-            "",
-            userNames,
+            groupData.groupName,
+            groupData.groupDescription,
+            userEmails,
             taskStates,
             incompleteTasks,
-            id
+            ""
         )
     }
 
-    fun updateUser(user: TSUser, add: Boolean = true): Boolean {
-        val db = Firebase.firestore
-        val dbRef = db.collection("Groups").document(id)
-
-        var success = true
-        val failureListener = { exception: Throwable ->
-            Log.w(TAG, "Error updating users in group.", exception)
-            success = false
+    fun updateInfo() {
+        if (id.isEmpty()) {
+            return
         }
+
+        val dbRef = Firebase.firestore.collection("Groups").document(id)
+
+        dbRef.update("groupName", groupData.groupName)
+        dbRef.update("groupDescription", groupData.groupDescription)
+    }
+
+    fun updateMember(userId: String, add: Boolean = true) {
+        val dbRef = Firebase.firestore.collection("Groups").document(id)
 
         if (add) {
-            dbRef.update("Users", FieldValue.arrayUnion(user.getId()))
-                .addOnFailureListener(failureListener)
+            dbRef.update("groupMembers", FieldValue.arrayUnion(userId))
+                .addOnFailureListener{ exception: Throwable ->
+                    Log.w(TAG, "Error adding user to group.", exception)
+                }
         } else {
-            dbRef.update("Users", FieldValue.arrayRemove(user.getId()))
-                .addOnFailureListener(failureListener)
+            dbRef.update("groupMembers", FieldValue.arrayRemove(userId))
+                .addOnFailureListener{ exception: Throwable ->
+                    Log.w(TAG, "Error removing user from group.", exception)
+                }
         }
-
-        if (success) {
-            users.add(user)
-        }
-
-        return success
     }
 
-    fun read() {
-        val ref = Firebase.firestore.collection("Groups").document(id)
+    fun updateTask(taskId: String, add: Boolean = true) {
+        val dbRef = Firebase.firestore.collection("Groups").document(id)
 
-        ref.get()
-            .addOnSuccessListener { result ->
-                readCallback(result)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-        ref.collection("Tasks")
-            .get()
-            .addOnSuccessListener { result ->
-                readTasksCallback(result)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
+        if (add) {
+            dbRef.update("tasks", FieldValue.arrayUnion(taskId))
+                .addOnFailureListener{ exception: Throwable ->
+                    Log.w(TAG, "Error adding user to group.", exception)
+                }
+        } else {
+            dbRef.update("tasks", FieldValue.arrayRemove(taskId))
+                .addOnFailureListener{ exception: Throwable ->
+                    Log.w(TAG, "Error removing user from group.", exception)
+                }
+        }
     }
 
-    suspend fun syncRead() {
+    fun createTask(state: AddTaskState) {
+    }
+
+    suspend fun read(recurse: Boolean = true) {
         val ref = Firebase.firestore.collection("Groups").document(id)
-        var result: DocumentSnapshot? = null
-        var result2: QuerySnapshot? = null
+        var document: DocumentSnapshot? = null
 
         try {
-            result = ref.get().await()
-            result2 = ref.collection("Tasks").get().await()
+            document = ref.get().await()
         } catch (exception: Throwable) {
             Log.w(TAG, "Error getting documents.", exception)
             return
         }
 
-        if (result != null && result2 != null) {
-            readCallback(result)
-            readTasksCallback(result2)
-        }
-    }
-
-    fun write(groupDescription: String) {
-        Log.i(TAG, id)
-        val db = Firebase.firestore
-        val docRef = db.collection("Groups").document(id)
-        var doesExist = false
-
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    Log.w(TAG, "Group already exists.")
-                    doesExist = true
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-        if (!doesExist) {
-            var userIds: HashSet<String> = hashSetOf()
-            for (user in users) {
-                userIds.add(user.getId())
-            }
-
-            val data = hashMapOf(
-                "Users" to users.toList(),
-                "Name" to name,
-                "Description" to groupDescription
+        if (document != null && document.exists()) {
+            groupData = TSGroupData(
+                groupName = document.get("groupName") as String,
+                groupDescription = document.get("groupDescription") as String,
+                groupMembers = document.get("groupMembers") as MutableList<String>,
+                tasks = document.get("tasks") as MutableList<String>
             )
 
-            docRef.set(data)
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error creating group.", exception)
-                }
-        }
-    }
+            members.clear()
+            for (userId in groupData.groupMembers) {
+                members.add(TSUser.getFromId(userId, false))
+            }
 
-    private fun readCallback(result: DocumentSnapshot) {
-        var userIds: MutableList<String> = mutableListOf()
-        userIds.addAll(result.get("Users") as List<String>)
-
-        var list: MutableList<TSUser> = mutableListOf()
-
-        for (userId in userIds) {
-            var flag = false
-            for (user in users) {
-                if (user.getId() == userId) {
-                    list.add(user)
-                    flag = true
-                    break
+            tasks.clear()
+            if (recurse) {
+                for (taskId in groupData.tasks) {
+                    var task = TSTask.getFromId(taskId)
+                    tasks.add(task)
                 }
             }
-
-            if (!flag) {
-                list.add(TSUser(userId))
-            }
         }
-
-        users = list
-    }
-
-    private fun readTasksCallback(result: QuerySnapshot) {
-        var list: MutableList<TSTask> = mutableListOf()
-
-        for (document in result) {
-            var flag = false
-
-            for (task in tasks) {
-                if (task.getId() == document.id) {
-                    list.add(task)
-                    flag = true
-                    break
-                }
-            }
-
-            if (!flag) {
-                list.add(TSTask(this, document.id))
-            }
-        }
-
-        tasks = list
     }
 }

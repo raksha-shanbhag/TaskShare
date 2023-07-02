@@ -1,7 +1,10 @@
 package com.TaskShare.UI.Views.screens
+import com.TaskShare.Models.TSUser
+import com.TaskShare.Models.TSUserData
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class LoginBackend {
     private val firebaseAuth = FirebaseAuth.getInstance()
@@ -15,6 +18,10 @@ class LoginBackend {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     loginCompletionSource.setResult(true)
+                    val user: FirebaseUser? = firebaseAuth.currentUser
+                    if (user != null) {
+                        TSUser.globalUser = TSUser.getFromId(user.uid)
+                    }
                 } else {
                     loginCompletionSource.setResult(false)
                 }

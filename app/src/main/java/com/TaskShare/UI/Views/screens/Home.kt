@@ -132,7 +132,7 @@ fun RenderTasksList(incompleteTasks: List<TaskViewState>) {
 }
 
 @Composable
-fun RenderGroupCard(group_name: String, group_id: String, completedTasks: Int, tasksNum: Int, incompleteTasks: List<TaskViewState>, showDetail: () -> Unit, viewModel: GroupViewModel){
+fun RenderGroupCard(group_name: String, completedTasks: Int, tasksNum: Int, incompleteTasks: List<TaskViewState>, showDetail: () -> Unit, viewModel: GroupViewModel){
     var bg_col = R.color.pink
     if(completedTasks == tasksNum) {
         bg_col = R.color.group_progress
@@ -149,7 +149,6 @@ fun RenderGroupCard(group_name: String, group_id: String, completedTasks: Int, t
             .fillMaxWidth()
             .clickable(
                 onClick =  {
-                    viewModel.updateGroupId(group_id);
                     showDetail;
                 }
             ),
@@ -250,7 +249,6 @@ fun HomeScreen(
 
                     RenderGroupCard(
                         group_name = it.groupName,
-                        group_id = it.id,
                         completedTasks = it.tasks.size - it.incompleteTasks.size,
                         tasksNum = it.tasks.size,
                         incompleteTasks = it.incompleteTasks,

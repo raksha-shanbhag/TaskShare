@@ -1,11 +1,11 @@
 package com.TaskShare.Models
 
 import android.util.Log
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 class TSTaskAPI() {
@@ -41,28 +41,62 @@ class TSTaskAPI() {
     }
 }
 
-class TSTask(groupRef: TSGroup, taskId: String) {
-    private val TAG = "Task"
-    private val group = groupRef
-    private val id = taskId
-    private val dataRef = group.getTaskCollection().document(id)
+data class TSTaskData (
+    val groupId: String = "",
+    val taskName: String = "",
+    val assigner: String = "",
+    val assignees: MutableList<String> = mutableListOf(),
+    val subTasks: MutableList<String> = mutableListOf(),
+    val cycle: String = ""
+)
 
-    var taskName: String = "None"
-    var assigner: String = "None"
-    var assignees: MutableList<String> = mutableListOf()
-    var subTasks: MutableList<TSSubTask> = mutableListOf()
-    var cycle: Int = 0;
+class TSTask() {
+    private var subTasks = mutableListOf<TSSubTask>()
+    private var group = TSGroup()
 
-    fun getId(): String {
-        return id
+    var id = ""
+    var taskData = TSTaskData()
+
+    companion object {
+        private val TAG = "Task"
+
+        fun getFromId(id: String, recurse: Boolean = true): TSTask {
+            var task = TSTask()
+            task.id = id
+
+            runBlocking {
+                task.read(recurse)
+            }
+
+            return task
+        }
+
+        fun createTask(data: TSTaskData): String {
+            val ref = Firebase.firestore.collection("Tasks")
+            var documentId = ""
+
+            runBlocking {
+                try {
+                    var document = ref.add(data).await()
+                    Log.d(TAG, document.id)
+                    Log.d(TAG, "DocumentSnapshot successfully written!")
+
+                    documentId = document.id
+                } catch (exception: Throwable) {
+                    Log.w(TAG, "Error writing document", exception)
+                }
+            }
+
+            return documentId
+        }
     }
 
     fun getGroup(): TSGroup {
         return group
     }
 
-    fun getSubTaskCollection(): CollectionReference {
-        return dataRef.collection("SubTasks")
+    fun getSubTasks(): List<TSSubTask> {
+        return subTasks
     }
 
     fun getSubTasksAssignedTo(userId: String): List<TSSubTask> {
@@ -78,90 +112,57 @@ class TSTask(groupRef: TSGroup, taskId: String) {
     }
 
     fun isAssignedTo(userId: String): Boolean {
-        return assignees.contains(userId)
+        return taskData.assignees.contains(userId)
     }
 
-    fun read() {
-        dataRef.get()
-            .addOnSuccessListener { result ->
-                readCallback(result)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+    fun updateSubTask(subTaskId: String, add: Boolean = true) {
+        val dbRef = Firebase.firestore.collection("Tasks").document(id)
 
-        dataRef.collection("SubTasks")
-            .get()
-            .addOnSuccessListener { result ->
-                readSubTasksCallback(result)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+        if (add) {
+            dbRef.update("tasks", FieldValue.arrayUnion(subTaskId))
+                .addOnFailureListener{ exception: Throwable ->
+                    Log.w(TAG, "Error adding subtask to task.", exception)
+                }
+        } else {
+            dbRef.update("tasks", FieldValue.arrayRemove(subTaskId))
+                .addOnFailureListener{ exception: Throwable ->
+                    Log.w(TAG, "Error removing subtask from task.", exception)
+                }
+        }
     }
 
-    suspend fun syncRead() {
-        var result: DocumentSnapshot? = null
-        var result2: QuerySnapshot? = null
+    suspend fun read(recurse: Boolean = true) {
+        var dataRef = Firebase.firestore.collection("Tasks").document(id)
+        var document: DocumentSnapshot? = null
 
         try {
-            result = dataRef.get().await()
-            result2 = dataRef.collection("SubTasks").get().await()
+            document = dataRef.get().await()
         } catch (exception: Throwable) {
             Log.w(TAG, "Error getting documents.", exception)
             return
         }
 
-        if (result != null && result2 != null) {
-            readCallback(result)
-            readSubTasksCallback(result2)
-        }
-    }
+        if (document != null && document.exists()) {
+            taskData = TSTaskData(
+                groupId = document.get("groupId") as String,
+                taskName = document.get("taskName") as String,
+                assigner = document.get("assigner") as String,
+                assignees = document.get("assignees") as MutableList<String>,
+                subTasks = document.get("subTasks") as MutableList<String>,
+                cycle = document.get("cycle") as String
+            )
 
-    fun write(overwrite: Boolean = true) {
-        dataRef.get()
-            .addOnSuccessListener { document ->
-                if (document.exists() && !overwrite) {
-                    Log.w(TAG, "Group already exists.")
-                } else {
-                    val data = hashMapOf(
-                        "Assignees" to assignees.toList()
-                    )
+            group = TSGroup.getFromId(taskData.groupId, false)
 
-                    dataRef.set(data)
-                        .addOnFailureListener { exception ->
-                            Log.w(TAG, "Error creating group.", exception)
-                        }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-    }
-
-    private fun readCallback(result: DocumentSnapshot) {
-        assignees.addAll(result.get("Assignees") as List<String>)
-    }
-
-    private fun readSubTasksCallback(result: QuerySnapshot) {
-        var list: MutableList<TSSubTask> = mutableListOf()
-
-        for (document in result) {
-            var flag = false
-
-            for (subTask in subTasks) {
-                if (subTask.getId() == document.id) {
-                    list.add(subTask)
-                    flag = true
-                    break
+            subTasks.clear()
+            if (recurse) {
+                for (subTaskId in taskData.subTasks) {
+                    var subTask = TSSubTask.getFromId(subTaskId)
+                    subTasks.add(subTask)
                 }
             }
 
-            if (!flag) {
-                list.add(TSSubTask(this, document.id))
-            }
-        }
 
-        subTasks = list
+        }
     }
 }

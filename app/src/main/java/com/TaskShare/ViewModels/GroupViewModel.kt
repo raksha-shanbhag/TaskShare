@@ -3,7 +3,10 @@ package com.TaskShare.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.TaskShare.Models.TSGroup
+import com.TaskShare.Models.TSGroupData
 import com.TaskShare.Models.TSGroupsAPI
+import com.TaskShare.Models.TSUser
 import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
@@ -35,10 +38,6 @@ class GroupViewModel: ViewModel() {
         state.value = state.value.copy(groupMembers = currentList)
     }
 
-    fun updateGroupId(id: String) {
-        state.value = state.value.copy(id = id);
-    }
-
     fun getIncompleteTasks() {
         state.value.tasks.forEach{
             if(it.status != "done") {
@@ -57,31 +56,44 @@ class GroupViewModel: ViewModel() {
 
     // view model to get a new group
     fun createGroup(groupName : String, groupDescription: String, groupMembers: MutableList<String>) {
-        Log.i("Raksha debug", groupName)
-        val groupId = groupAPI.createGroup(groupName, groupDescription, groupMembers)
+        var userIds = mutableListOf<String>()
+        for (member in groupMembers) {
+            var userId = TSUser.getIdFromEmail(member)
+
+            if (!userId.isEmpty()) {
+                userIds.add(userId)
+            }
+        }
+
+        val groupId = TSGroup.createGroup(
+            TSGroupData(
+                groupName = groupName,
+                groupDescription = groupDescription,
+                groupMembers = userIds
+            )
+        )
+
+        for (userId in userIds) {
+            TSUser.updateGroup(userId, groupId)
+        }
+
         val newGroup = GroupViewState (
             groupName = groupName,
             groupDescription = groupDescription,
-            id = groupId
         )
         appendNewGroup(newGroup)
     }
 
     // view model to get all groups
     fun getAllGroups() {
+        groupsState.value.groups.clear()
+
         runBlocking {
-            val allGroups = groupAPI.getAllGroups()
-            Log.i("Debugging Raksha old", allGroups.toString())
-            for (group in allGroups) {
-                appendNewGroup(
-                    GroupViewState(
-                        id = group.id,
-                        groupName = group.groupName,
-                        groupDescription = group.groupDescription,
-                        groupMembers = group.groupMembers
-                    )
-                )
-            }
+            TSUser.globalUser.read()
+        }
+
+        for (group in TSUser.globalUser.getGroups()) {
+            appendNewGroup(group.getState())
         }
     }
 
@@ -107,7 +119,11 @@ class GroupViewModel: ViewModel() {
     }
 
     fun getAssigneeTasks( id: Int): Map<String, List<TaskViewState>>{
-         val currentList = groupsState.value.groups[id].tasks
+        if (groupsState.value.groups.size <= id) {
+            return mapOf()
+        }
+
+         val currentList = groupsState.value.groups[0].tasks
          return currentList.groupBy { it.assignee }
 
     }
@@ -116,21 +132,13 @@ class GroupViewModel: ViewModel() {
 data class GroupViewState (
     val groupName: String ="",
     val groupDescription: String = "",
-    val member: String = "",
     val groupMembers: MutableList<String> = mutableListOf(),
     val tasks: MutableList<TaskViewState> = mutableListOf(),
     val incompleteTasks: MutableList<TaskViewState> = mutableListOf(),
-    val id: String = ""
+//    val id: String = "", // Used for navigation
+    val member: String = "" // Temp val for creating new groups
 )
 
 data class GroupsViewState (
     val groups: MutableList<GroupViewState> = mutableListOf()
 )
-//
-//data class TaskViewState (
-//    val taskName: String ="",
-//    val assignee: String = "",
-//    val assigner: String = "",
-//    val dueDate: String = "",
-//    val status: String = ""
-//)

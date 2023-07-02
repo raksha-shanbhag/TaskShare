@@ -1,7 +1,7 @@
 package com.TaskShare.UI.Views.screens
 
-import android.widget.Toast
 import com.TaskShare.Models.TSUser
+import com.TaskShare.Models.TSUserData
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth
@@ -21,12 +21,14 @@ class SignUpBackend {
                     loginCompletionSource.setResult(true)
                     val user: FirebaseUser? = firebaseAuth.currentUser
                     if (user != null) {
-                        val tsUser = TSUser(user.uid)
-                        tsUser.setEmail(hashSetOf(email))
-                        tsUser.setPassword(hashSetOf(password))
-                        tsUser.setFirstName(hashSetOf(firstName))
-                        tsUser.setLastName(hashSetOf(lastName))
-                        tsUser.create()
+                        TSUser.register(user.uid,
+                            TSUserData(
+                                firstName = firstName,
+                                lastName = lastName,
+                                email = email
+                            )
+                        )
+                        TSUser.globalUser = TSUser.getFromId(user.uid)
                     }
                 }else{
                     loginCompletionSource.setResult(false)

@@ -1,35 +1,26 @@
 package com.example.greetingcard.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import com.TaskShare.UI.Views.screens.SignUpBackend
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
@@ -39,9 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -120,7 +109,46 @@ fun SignUpScreen(
             }
 
             Spacer(modifier = Modifier.height(50.dp))
-            RegisterButton(stringResource(R.string.sign_up), onSignUpClick)
+            val signUpBackend = SignUpBackend()
+            Button(onClick = {
+                val emailValue = email.value
+                val passwordValue = password.value
+                val firstNameValue = firstName.value
+                val lastNameValue = lastName.value
+                if (signUpBackend.validateCredentials(emailValue, passwordValue, firstNameValue,lastNameValue)) {
+                    val loginTask = signUpBackend.performSignUp(emailValue, passwordValue, firstNameValue,lastNameValue)
+                    loginTask.addOnCompleteListener { task ->
+                        if (task.isSuccessful && task.result == true) {
+                            // Successful login
+                            onSignUpClick()
+                        } else {
+                            // Unsuccessful login
+                            //message would be field empty or password too short
+                        }
+                    }
+                } else {
+                    //display "invalid credentials try again "
+                }
+            },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                contentPadding = PaddingValues(10.dp),
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
+                shape = RoundedCornerShape(50.dp)
+            ) {
+                Box(modifier = Modifier
+                    .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "Sign Up",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(15.dp))
             ClickableLoginText(onLogInClick)
@@ -217,53 +245,6 @@ fun RenderPasswordTextField(labelValue: String, icon: ImageVector, onValueChange
     )
 }
 
-@Composable
-fun RegisterButton(textValue: String, onSignUpClick: () -> Unit) {
-    val email = remember { mutableStateOf("")}
-    val password = remember { mutableStateOf("")}
-    val firstName= remember { mutableStateOf("")}
-    val lastName= remember { mutableStateOf("")}
-    val signUpBackend = SignUpBackend()
-    Button(onClick = {
-        val emailValue = email.value
-        val passwordValue = password.value
-        val firstNameValue = firstName.value
-        val lastNameValue = lastName.value
-        if (signUpBackend.validateCredentials(emailValue, passwordValue, firstNameValue,lastNameValue)) {
-            val loginTask = signUpBackend.performSignUp(emailValue, passwordValue, firstNameValue,lastNameValue)
-            loginTask.addOnCompleteListener { task ->
-                if (task.isSuccessful && task.result == true) {
-                    // Successful login
-                    onSignUpClick()
-                } else {
-                    // Unsuccessful login
-                    //message would be field empty or password too short
-                }
-            }
-        } else {
-            //display "invalid credentials try again "
-        }
-    },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        contentPadding = PaddingValues(10.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
-        shape = RoundedCornerShape(50.dp)
-    ) {
-        Box(modifier = Modifier
-            .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ){
-            Text(
-                text = textValue,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-        }
-    }
-}
 @Composable
 fun RenderTextFields(labelValue: String, icon: ImageVector, onValueChange: (String) -> Unit) {
     val textValue = remember {
