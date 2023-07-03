@@ -180,7 +180,7 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: Gro
     }
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
-            title = { Text(text = "Group Details", color = Color.White, fontSize = 30.sp) },
+            title = { Text(text = group.groupName, color = Color.White, fontSize = 30.sp) },
             colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
             navigationIcon = {
                 IconButton(
