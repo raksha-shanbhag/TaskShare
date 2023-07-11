@@ -2,6 +2,7 @@ package com.TaskShare.ViewModels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import java.util.Date
 
 class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
@@ -18,7 +19,8 @@ class TaskViewModel: ViewModel() {
     }
 
     fun updateDeadline(date: String) {
-        state.value = state.value.copy(deadline = date)
+        var endDate = Date(date)
+        state.value = state.value.copy(endDate = endDate)
     }
 
     fun updateCycle(cycle: String) {
@@ -40,7 +42,7 @@ class TaskViewModel: ViewModel() {
         dummyTask1.value = dummyTask1.value.copy(taskName = name)
         dummyTask1.value = dummyTask1.value.copy(assigner = assigner)
         dummyTask1.value = dummyTask1.value.copy(status = status)
-        dummyTask1.value = dummyTask1.value.copy(assignee = assignee)
+        dummyTask1.value = dummyTask1.value.copy(assigner = assignee)
         dummyTask1.value = dummyTask1.value.copy(groupName = groupName)
         dummyTask1.value = dummyTask1.value.copy(deadline = deadline)
         dummyTask1.value = dummyTask1.value.copy(cycle = cycle)
@@ -67,11 +69,13 @@ data class TasksViewState (
 )
 
 data class TaskViewState (
-    val taskName: String ="",
-    val assigner: String ="",
-    val status: String ="",
-    val assignee: String="",
+    val taskName: String = "",
+    val assigner: String = "",
+    val status: String = "",
+    val assignees: String = "",
+    val assignee: String = "",
     val groupName: String = "",
     val deadline: String = "",
-    val cycle: String = ""
+    val cycle: String = "",
+    val id: String = ""
 )

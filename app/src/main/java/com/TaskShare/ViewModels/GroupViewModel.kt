@@ -3,16 +3,15 @@ package com.TaskShare.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.TaskShare.Models.TSGroup
-import com.TaskShare.Models.TSGroupData
-import com.TaskShare.Models.TSGroupsAPI
-import com.TaskShare.Models.TSUser
+import com.TaskShare.Models.Repositories.TSUser
+import com.TaskShare.Models.Services.GroupManagementService
 import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
+    var temporaryGlobalUserId = "xvG378qDSANqPD6Ic54vD8C2PpZ2" // remove this
     val state = mutableStateOf(GroupViewState())
     val groupsState = mutableStateOf(GroupsViewState())
-    private val groupAPI = TSGroupsAPI()
+    private val groupManager = GroupManagementService()
 
     val test = mutableStateOf("");
     fun updateGroupMember(mem: String) {
@@ -56,17 +55,17 @@ class GroupViewModel: ViewModel() {
             }
         }
 
-        val groupId = TSGroup.createGroup(
-            TSGroupData(
-                groupName = groupName,
-                groupDescription = groupDescription,
-                groupMembers = userIds
-            )
+        val groupId = groupManager.createGroup(
+            creatorId = temporaryGlobalUserId,
+            groupName = groupName,
+            groupDescription = groupDescription,
+            groupMemberEmails = groupMembers
         )
 
         for (userId in userIds) {
             TSUser.updateGroup(userId, groupId)
         }
+        TSUser.updateGroup(userId = temporaryGlobalUserId, groupId = groupId)
 
         val newGroup = GroupViewState (
             groupName = groupName,
@@ -76,23 +75,22 @@ class GroupViewModel: ViewModel() {
     }
 
     // view model to get all groups
-    fun getAllGroups() {
+    fun getAllGroupsForUser() {
         groupsState.value.groups.clear()
+        var allGroups = mutableListOf<GroupViewState>()
+        allGroups.addAll(groupManager.getGroupsForUserId(temporaryGlobalUserId))
 
-        runBlocking {
-            TSUser.globalUser.read()
-        }
-
-        for (group in TSUser.globalUser.getGroups()) {
-            appendNewGroup(group.getState())
+        for (group in allGroups) {
+            appendNewGroup(group)
         }
     }
 
+    // get rid of this. Make Frontend use only Ids or come up with new View Models?
     fun getAllGroupNames() : ArrayList<String> {
         var groupNames = ArrayList<String>()
 
         runBlocking {
-            val allGroups = groupAPI.getAllGroups()
+            val allGroups = groupManager.getGroupsForUserId(temporaryGlobalUserId)
             for (group in allGroups) {
                 groupNames.add(group.groupName)
             }

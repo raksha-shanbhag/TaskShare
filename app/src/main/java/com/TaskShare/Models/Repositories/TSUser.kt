@@ -1,8 +1,7 @@
-package com.TaskShare.Models
+package com.TaskShare.Models.Repositories
 
 import android.util.Log
-import com.TaskShare.ViewModels.AddTaskState
-import com.TaskShare.ViewModels.TaskViewState
+import com.TaskShare.Models.DataObjects.Group
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
@@ -12,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
 
-class TSUserApi() {
+class TSUsersRepository() {
     private val TAG = "TSUserApi"
     val db = Firebase.firestore
     val users = db.collection("Users")
@@ -61,6 +60,32 @@ class TSUserApi() {
         return result
     }
 
+    // temporary API
+    fun getUserIdsFromEmails(emails: MutableList<String>) : MutableList<String> {
+        var result = HashSet<String>()
+        for (email in emails) {
+            var userId = getUserIdFromEmail(email)
+            if(userId != "") {
+                result.add(userId)
+            }
+        }
+        return result.toMutableList()
+    }
+
+    // get Groups for a given userId
+    fun getGroupsForUserId(userId: String): MutableList<String> {
+        var result = ArrayList<String>()
+        runBlocking {
+            var document  = users.document(userId).get().await()
+            Log.i("Debug Raksha TS User get group", document.toString())
+            var groups = document.get("groups") as MutableList<String>
+            result.addAll(groups)
+        }
+
+        Log.i("Debug Raksha TS user group state", result.toString())
+        return result.toMutableList()
+    }
+
 }
 
 data class TSUserData (
@@ -72,7 +97,7 @@ data class TSUserData (
 )
 
 class TSUser() {
-    private var groups: MutableList<TSGroup> = mutableListOf()
+//    private var groups: MutableList<TSGroup> = mutableListOf()
 
     var id = ""
     var userData = TSUserData()
@@ -139,9 +164,9 @@ class TSUser() {
         }
     }
 
-    fun getGroups(): MutableList<TSGroup> {
-        return groups;
-    }
+//    fun getGroups(): MutableList<TSGroup> {
+//        return groups;
+//    }
 
     fun updateInfo(value: TSUserData) {
         val dbRef = Firebase.firestore.collection("Users").document(id)
@@ -152,34 +177,34 @@ class TSUser() {
         dbRef.update("phoneNumber", userData.phoneNumber)
     }
 
-    fun getTasks(): List<TSSubTask> {
-        var list: MutableList<TSSubTask> = mutableListOf()
-
-        for (group in groups) {
-            list.addAll(group.getSubTasksAssignedTo(id))
-        }
-
-        return list
-    }
+//    fun getTasks(): List<TSSubTask> {
+//        var list: MutableList<TSSubTask> = mutableListOf()
+//
+//        for (group in groups) {
+//            list.addAll(group.getSubTasksAssignedTo(id))
+//        }
+//
+//        return list
+//    }
 
     fun updateGroup(groupId: String, add: Boolean = true) {
         Companion.updateGroup(id, groupId, add)
     }
 
-    fun getTaskStates(): List<TaskViewState> {
-        var list: MutableList<TaskViewState> = mutableListOf()
-        var tasks = getTasks()
-
-        for (task in tasks) {
-            list.add(task.getState())
-        }
-
-        return list
-    }
-
-    fun createTask(taskState: AddTaskState) {
-        // empty
-    }
+//    fun getTaskStates(): List<TaskViewState> {
+//        var list: MutableList<TaskViewState> = mutableListOf()
+//        var tasks = getTasks()
+//
+//        for (task in tasks) {
+//            list.add(task.getState())
+//        }
+//
+//        return list
+//    }
+//
+//    fun createTask(taskState: AddTaskState) {
+//        // empty
+//    }
 
     suspend fun read(recurse: Boolean = true) {
         var document: DocumentSnapshot? = null
@@ -200,13 +225,13 @@ class TSUser() {
                 groups = document.get("groups") as MutableList<String>,
             )
 
-            groups.clear()
-            if (recurse) {
-                for (groupId in userData.groups) {
-                    var group = TSGroup.getFromId(groupId)
-                    groups.add(group)
-                }
-            }
+//            groups.clear()
+//            if (recurse) {
+//                for (groupId in userData.groups) {
+//                    var group = TSGroup.getFromId(groupId)
+//                    groups.add(group)
+//                }
+//            }
         }
     }
 }

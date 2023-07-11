@@ -1,6 +1,5 @@
 package com.TaskShare.UI.Views.screens
-import com.TaskShare.Models.TSUser
-import com.TaskShare.Models.TSUserData
+import com.TaskShare.Models.Repositories.TSUser
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth

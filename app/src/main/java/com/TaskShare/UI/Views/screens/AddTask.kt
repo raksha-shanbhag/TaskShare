@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.ViewModels.AddTaskViewModel
+import com.TaskShare.ViewModels.GroupData
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
 import com.example.greetingcard.R
@@ -87,7 +88,6 @@ import com.example.greetingcard.R
 @Composable
 fun AddTaskScreen() {
     val viewModel = viewModel(AddTaskViewModel::class.java)
-    val groupViewModel = viewModel(GroupViewModel::class.java)
     val state by viewModel.state
 
     val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
@@ -100,12 +100,12 @@ fun AddTaskScreen() {
         mutableStateOf(false)
     }
 //    var assigneesState by remember { mutableListOf<Boolean>() }
-    var groupNames by remember {
-        mutableStateOf(mutableListOf<String>())
+    var groups by remember {
+        mutableStateOf(mutableListOf<GroupData>())
     }
 
-    groupNames = groupViewModel.getAllGroupNames()
-    Log.i("Debugging Raksha", groupNames.toString())
+    groups = viewModel.getAllGroupsForUser()
+    Log.i("Debugging Raksha", groups.toString())
 
 
     Scaffold( topBar = {
@@ -149,11 +149,11 @@ fun AddTaskScreen() {
                             expandedGroup = false
                         }
                     ){
-                        groupNames.forEach { item ->
+                        groups.forEach { item ->
                             DropdownMenuItem(
-                                text = { Text(text = item) },
+                                text = { Text(text = item.groupName) },
                                 onClick = {
-                                    viewModel.updateGroupName(item)
+                                    viewModel.updateTaskGroup(item)
                                     expandedGroup = false
                                 }
                             )
@@ -161,7 +161,7 @@ fun AddTaskScreen() {
                     }
                 }
 
-                TextField(value = state.deadline,
+                TextField(value = state.endDate.toString(),
                     onValueChange = {text -> viewModel.updateDeadline(text)},
                     label = {Text("Deadline")},
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
