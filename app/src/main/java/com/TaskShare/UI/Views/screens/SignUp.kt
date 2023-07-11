@@ -1,5 +1,6 @@
 package com.example.greetingcard.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -25,9 +27,11 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,12 +50,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
+import kotlinx.coroutines.launch
 
 /*
     Followed this tutorial to set up the password text field:
     https://www.youtube.com/watch?v=PeUERQJnHdI
  */
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SignUpScreen(
     onSignUpClick: () -> Unit,
@@ -65,10 +71,14 @@ fun SignUpScreen(
 
     val headingSize = 30.sp
 
-    Box(
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
+        scaffoldState = scaffoldState
     ) {
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -123,11 +133,19 @@ fun SignUpScreen(
                             onSignUpClick()
                         } else {
                             // Unsuccessful login
-                            //message would be field empty or password too short
+                            // Message would be field empty or password too short
+                            scope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    "Password is too short.")
+                            }
                         }
                     }
                 } else {
-                    //display "invalid credentials try again "
+                    //display "invalid credentials try again"
+                    scope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            "Invalid credentials. Please try again.")
+                    }
                 }
             },
                 modifier = Modifier
