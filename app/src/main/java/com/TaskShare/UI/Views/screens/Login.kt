@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -100,11 +101,19 @@ fun LoginScreen(
                         if (task.isSuccessful && task.result == true) {
                             onLogInClick()
                         } else {
-                            //display "Login failed. Please try signing up.
+                            // Display "Login failed. Please try signing up.
+                            scope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    "Login failed. Please sign up.")
+                            }
                         }
                     }
                 } else {
-                    //display "invalid credentials try again "
+                    //display "invalid credentials try again"
+                    scope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            "Invalid credentials. Please try again.")
+                    }
                 }
             },
                 modifier = Modifier
