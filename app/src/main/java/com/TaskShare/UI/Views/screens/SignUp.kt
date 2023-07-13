@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -221,12 +223,11 @@ fun RenderPasswordTextField(labelValue: String, icon: ImageVector, onValueChange
             )
         },
 
-        // Trailing icon to be updated
         trailingIcon = {
             val trailingIcon = if(passwordVisibility.value) {
-                Icons.Filled.Face
+                painterResource(id = R.drawable.ic_visibility)
             } else {
-                Icons.Filled.Lock
+                painterResource(id = R.drawable.ic_visibility_off)
             }
             var description = if(passwordVisibility.value) {
                 stringResource(R.string.hide_password)
@@ -238,8 +239,9 @@ fun RenderPasswordTextField(labelValue: String, icon: ImageVector, onValueChange
                 passwordVisibility.value = !passwordVisibility.value
             }) {
                 Icon(
-                    imageVector = trailingIcon,
-                    contentDescription = description
+                    painter = trailingIcon,
+                    contentDescription = description,
+                    modifier = Modifier.size(25.dp)
                 )
             }
         },

@@ -130,7 +130,7 @@ fun TopBar(modifier: Modifier = Modifier) {
             modifier = Modifier.size(30.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Person,
+                painter = painterResource(id = R.drawable.ic_person_add),
                 contentDescription = "Friends",
                 tint = Color.White
             )
