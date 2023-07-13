@@ -6,6 +6,8 @@ import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewState
+import com.TaskShare.ViewModels.GroupMember
+
 
 class GroupManagementService {
     private val groupsRepository = TSGroupsRepository()
@@ -56,5 +58,22 @@ class GroupManagementService {
         }
 
         return result.toMutableList()
+    }
+
+    fun getGroupMembersFromGroupID(groupId: String): MutableList<GroupMember> {
+        var result = mutableListOf<GroupMember>()
+        var groupMemberIds = groupsRepository.getGroupMembersFromGroupId(groupId)
+
+        for (memberId in groupMemberIds){
+            var userInfo = usersRepository.getUserInfo(memberId)
+
+            var groupMember = GroupMember(
+                memberId = memberId,
+                memberName = userInfo.firstName
+            )
+            result.add(groupMember)
+        }
+
+        return result
     }
 }

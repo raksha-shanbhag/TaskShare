@@ -2,6 +2,7 @@ package com.TaskShare.Models.Repositories
 
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Group
+import com.TaskShare.Models.DataObjects.User
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
@@ -84,6 +85,20 @@ class TSUsersRepository() {
 
         Log.i("Debug Raksha TS user group state", result.toString())
         return result.toMutableList()
+    }
+
+    fun getUserInfo(userId: String): User {
+        var userInfo = User()
+        runBlocking {
+            var result = users.document(userId).get().await()
+            userInfo = User(
+                firstName = result.get("firstName").toString(),
+                lastName = result.get("lastName").toString(),
+                email = result.get("email").toString(),
+                phoneNumber = result.get("phoneNumber").toString().toInt()
+            )
+        }
+        return userInfo
     }
 
 }

@@ -117,3 +117,8 @@ data class GroupData (
     val groupName: String = "",
     val groupId: String = ""
 )
+
+data class GroupMember (
+    val memberName: String = "",
+    val memberId: String = ""
+)
