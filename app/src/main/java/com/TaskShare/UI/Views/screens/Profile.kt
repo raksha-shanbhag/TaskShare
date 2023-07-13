@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -94,8 +96,14 @@ fun ProfileScreen(
                 onEditClick)
 
             Spacer(modifier = Modifier.height(25.dp))
-            SettingButton("Account Privacy",
-                "Account Privacy",
+            SettingButton("Change Password",
+                "Change Password",
+                Icons.Default.Edit,
+                onAccountPrivClick)
+
+            Spacer(modifier = Modifier.height(25.dp))
+            SettingButton("Blocked Accounts",
+                "Blocked Accounts",
                 Icons.Default.Lock,
                 onAccountPrivClick)
 
@@ -117,11 +125,16 @@ fun TopBar(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        /*Icon(imageVector = Icons.Default.Settings,//ArrowBack
-            contentDescription = "Settings",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp),
-        )*/
+        IconButton(
+            onClick = {},
+            modifier = Modifier.size(30.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Friends",
+                tint = Color.White
+            )
+        }
     }
 }
 
