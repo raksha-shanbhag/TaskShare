@@ -142,20 +142,6 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(5.dp))
             ClickableSignUpText(onSignUpClick)
 
-            // Temporary
-            /*Spacer(modifier = Modifier.height(50.dp))
-            Button(onClick = {
-                 scope.launch {
-                     scaffoldState.snackbarHostState.showSnackbar(
-                         "Hello!")
-                 }
-            },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Temporary Button",
-                    color = Color.White)
-            }*/
-
         }
 
     }
