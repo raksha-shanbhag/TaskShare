@@ -31,6 +31,8 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +48,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
+import com.TaskShare.Models.Repositories.TSUser
+import com.google.firebase.auth.FirebaseAuth
+import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.google.firebase.firestore.FirebaseFirestore
+
 
 @Composable
 fun ProfileScreen(
@@ -149,9 +156,29 @@ fun ProfileSection(modifier: Modifier = Modifier) {
                 .weight(5f)     // Pfp will take up 50% of row's width
             )
         }
+        val email = remember { mutableStateOf("") }
+        val firstName= remember { mutableStateOf("") }
+        val lastName= remember { mutableStateOf("") }
+
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val currentUser = firebaseAuth.currentUser
+
+        val db = FirebaseFirestore.getInstance()
+        val usersCollection = db.collection("Users")
+        val userId: String = currentUser?.uid ?: ""
+
+        usersCollection.document(userId).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    firstName.value = documentSnapshot.getString("firstName")?: ""
+                    lastName.value = documentSnapshot.getString("lastName")?: ""
+                    email.value = documentSnapshot.getString("email")?: ""
+                }
+            }
+
         Spacer(modifier = Modifier.height(5.dp))
-        ProfileDescription(name = "Firstname Lastname",
-            email = "example123@gmail.com",
+        ProfileDescription(name = "${firstName.value} ${lastName.value}",
+            email = email.value,
             bio = "Short optional biography about the user.")
     }
 }
