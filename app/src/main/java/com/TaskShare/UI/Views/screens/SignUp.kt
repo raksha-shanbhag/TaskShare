@@ -138,7 +138,7 @@ fun SignUpScreen(
                             // Message would be field empty or password too short
                             scope.launch {
                                 scaffoldState.snackbarHostState.showSnackbar(
-                                    "Password is too short.")
+                                    "Empty field or password is too short.")
                             }
                         }
                     }
