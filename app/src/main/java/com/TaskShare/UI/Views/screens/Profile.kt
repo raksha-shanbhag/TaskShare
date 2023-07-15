@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,10 +44,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
@@ -69,6 +72,7 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundBlue)
+            .verticalScroll(rememberScrollState())
             ){
         Box(
             modifier = Modifier
@@ -87,34 +91,34 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 //.background(Color.White)
-                .verticalScroll(rememberScrollState())
+                //.verticalScroll(rememberScrollState())
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopBar(modifier = Modifier.padding(20.dp))
 
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(65.dp))
             ProfileSection()
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             SettingButton("Edit Profile",
                 "Edit Profile",
                 Icons.Default.Edit,
                 onEditClick)
 
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             SettingButton("Change Password",
                 "Change Password",
                 Icons.Default.Edit,
                 onAccountPrivClick)
 
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             SettingButton("Blocked Accounts",
                 "Blocked Accounts",
                 Icons.Default.Lock,
                 onAccountPrivClick)
 
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             SettingButton("Log Out",
                 "Log Out",
                 Icons.Default.ExitToApp,
@@ -169,7 +173,9 @@ fun ProfileSection(modifier: Modifier = Modifier) {
                 .weight(5f)     // Pfp will take up 50% of row's width
             )
         }
-        val email = remember { mutableStateOf("") }
+
+        // Temporarily commented
+        /*val email = remember { mutableStateOf("") }
         val firstName= remember { mutableStateOf("") }
         val lastName= remember { mutableStateOf("") }
 
@@ -187,24 +193,33 @@ fun ProfileSection(modifier: Modifier = Modifier) {
                     lastName.value = documentSnapshot.getString("lastName")?: ""
                     email.value = documentSnapshot.getString("email")?: ""
                 }
-            }
+            }*/
 
         Spacer(modifier = Modifier.height(5.dp))
-        ProfileDescription(name = "${firstName.value} ${lastName.value}",
+
+        // Temporarily commented
+        /*ProfileDescription(name = "${firstName.value} ${lastName.value}",
             email = email.value,
+            bio = "Short optional biography about the user.")*/
+
+        // Temporary
+        ProfileDescription(name = "Firstname Lastname",
+            email = "email@gmail.com",
             bio = "Short optional biography about the user.")
     }
 }
 
 @Composable
-fun SettingButton(textValue: String, contentDesc: String, buttonIcon: ImageVector, onClick: () -> Unit) {
+fun SettingButton(textValue: String, contentDesc: String,
+                  buttonIcon: ImageVector,
+                  onClick: () -> Unit) {
     Button(onClick = { onClick },
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(50.dp),
         contentPadding = PaddingValues(10.dp),
         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.grey_button)),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(10.dp)
     ) {
         Row(modifier = Modifier
             .fillMaxWidth(),
@@ -213,12 +228,13 @@ fun SettingButton(textValue: String, contentDesc: String, buttonIcon: ImageVecto
             Icon(
                 imageVector = buttonIcon,
                 contentDescription = contentDesc,
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(2.dp),
                 tint = Color.DarkGray
             )
+            Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = textValue,
-                fontSize = 18.sp,
+                fontSize = 15.sp,
                 color = Color.DarkGray
             )
         }
