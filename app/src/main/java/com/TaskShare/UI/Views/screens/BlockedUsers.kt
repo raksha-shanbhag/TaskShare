@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,12 +37,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
-import java.time.format.TextStyle
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun FriendScreen() {
-
+fun BlockedUserScreen() {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -72,7 +69,7 @@ fun FriendScreen() {
                             )
                         }
                         Text(
-                            text = "Friends",
+                            text = "Blocked Users",
                             color = Color.White,
                             fontSize = 30.sp
                         )
@@ -82,7 +79,7 @@ fun FriendScreen() {
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_add),
-                                contentDescription = "Add a friend",
+                                contentDescription = "Block another user",
                                 tint = Color.White
                             )
                         }
@@ -102,19 +99,20 @@ fun FriendScreen() {
         ) {
 
             Spacer(modifier = Modifier.height(20.dp))
-            RenderFriendCard("User1",
+            RenderBlockedUserCard("User1",
                 painterResource(R.drawable.ic_account_circle))
 
             Spacer(modifier = Modifier.height(20.dp))
-            RenderFriendCard("User2",
+            RenderBlockedUserCard("User2",
                 painterResource(R.drawable.ic_account_circle))
 
         }
     }
 }
+
 @Composable
-fun RenderFriendCard(username: String, profilePic: Painter,
-                     modifier: Modifier = Modifier) {
+fun RenderBlockedUserCard(username: String, profilePic: Painter,
+                          modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier
             .background(
@@ -125,7 +123,6 @@ fun RenderFriendCard(username: String, profilePic: Painter,
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Icon(
             painterResource(id = R.drawable.ic_account_circle),
             contentDescription = "Default User Icon",
@@ -146,29 +143,29 @@ fun RenderFriendCard(username: String, profilePic: Painter,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
-            RenderRemoveButton()
+            RenderUnblockButton()
         }
     }
 }
 
 @Composable
-fun RenderRemoveButton(modifier: Modifier = Modifier) {
-    Button(onClick = { /*TODO: Remove friend when clicked*/ },
+fun RenderUnblockButton(modifier: Modifier = Modifier) {
+    Button(onClick = { /*TODO Unblock user when clicked*/ },
         modifier = Modifier
-            .width(110.dp)
-            .height(43.dp),
+        .width(110.dp)
+        .height(43.dp),
         contentPadding = PaddingValues(10.dp),
         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
         shape = RoundedCornerShape(10.dp)
     ) {
         Row (
             modifier = Modifier
-            .fillMaxWidth(),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ){
             Text(
-                text = "Remove",
+                text = "Unblock",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
                 color = Color.White
@@ -180,6 +177,6 @@ fun RenderRemoveButton(modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-fun FriendScreenPreview() {
-    FriendScreen()
+fun BlockedUserScreenPreview() {
+    BlockedUserScreen()
 }
