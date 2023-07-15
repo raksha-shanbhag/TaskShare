@@ -130,7 +130,7 @@ fun SignUpScreen(
                 if (signUpBackend.validateCredentials(emailValue, passwordValue, firstNameValue,lastNameValue)) {
                     val loginTask = signUpBackend.performSignUp(emailValue, passwordValue, firstNameValue,lastNameValue)
                     loginTask.addOnCompleteListener { task ->
-                        if (task.isSuccessful && task.result == true) {
+                        if (task.isSuccessful) {
                             // Successful login
                             onSignUpClick()
                         } else {

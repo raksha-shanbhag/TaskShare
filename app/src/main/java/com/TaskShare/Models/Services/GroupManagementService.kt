@@ -36,6 +36,10 @@ class GroupManagementService {
     // return:-  groups: MutableList<GroupViewModel>
     fun getGroupsForUserId(userId: String): MutableList<GroupViewState>
     {
+        if (userId.isEmpty()) {
+            return mutableListOf()
+        }
+
         var groupIds = usersRepository.getGroupsForUserId(userId)
         var result = mutableListOf<GroupViewState>()
 

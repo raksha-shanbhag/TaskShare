@@ -83,6 +83,9 @@ class TSGroupsRepository {
 
     // API to get group from Id
     fun getGroupFromId(groupId: String): Group {
+        if (groupId.isEmpty()) {
+            return Group()
+        }
         var result = Group()
         runBlocking {
             var document = groups.document(groupId)
