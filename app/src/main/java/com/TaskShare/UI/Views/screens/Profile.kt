@@ -175,7 +175,7 @@ fun ProfileSection(modifier: Modifier = Modifier) {
         }
 
         // Temporarily commented
-        /*val email = remember { mutableStateOf("") }
+        val email = remember { mutableStateOf("") }
         val firstName= remember { mutableStateOf("") }
         val lastName= remember { mutableStateOf("") }
 
@@ -193,19 +193,19 @@ fun ProfileSection(modifier: Modifier = Modifier) {
                     lastName.value = documentSnapshot.getString("lastName")?: ""
                     email.value = documentSnapshot.getString("email")?: ""
                 }
-            }*/
+            }
 
         Spacer(modifier = Modifier.height(5.dp))
 
         // Temporarily commented
-        /*ProfileDescription(name = "${firstName.value} ${lastName.value}",
+        ProfileDescription(name = "${firstName.value} ${lastName.value}",
             email = email.value,
-            bio = "Short optional biography about the user.")*/
-
-        // Temporary
-        ProfileDescription(name = "Firstname Lastname",
-            email = "email@gmail.com",
             bio = "Short optional biography about the user.")
+
+        // Temporary to view preview
+        /*ProfileDescription(name = "Firstname Lastname",
+            email = "email@gmail.com",
+            bio = "Short optional biography about the user.")*/
     }
 }
 

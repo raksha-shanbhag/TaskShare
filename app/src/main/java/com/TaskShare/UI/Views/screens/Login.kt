@@ -186,13 +186,10 @@ fun ClickableForgotPasswordText() {
 
     // Add string into clickable text component
     // Find out which part of the text the user has clicked.
-    ClickableText(text = annotatedString, onClick = {offset->
-        annotatedString.getStringAnnotations(offset, offset)
-            .firstOrNull()?.also{ span->
-                Log.d("ClickableForgotPasswordText", "{$span}")
-            }
-
-    })
+    ClickableText(
+        text = annotatedString,
+        onClick = {/*onForgotClick()*/}
+    )
 }
 
 @Composable

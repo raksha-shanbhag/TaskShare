@@ -52,7 +52,7 @@ fun EditProfileScreen(
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
-    // Variables to hold the user's name
+    // Variables to hold the user's credentials
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val bio = remember { mutableStateOf("") }
@@ -159,7 +159,7 @@ fun RenderSaveButton(textValue: String, contentDesc: String,
         onClick = { onClick },
         modifier = Modifier
             .width(200.dp)
-            .height(50.dp),
+            .height(45.dp),
         contentPadding = PaddingValues(10.dp),
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(2.dp, colorResource(id = R.color.primary_blue)),
