@@ -8,3 +8,7 @@
 | 2023//06//24 | 2     | Worked on integrating front-end and back-end for authentication                                     |
 | 2023//06//25 | 2     | Finalized log-in, sign-up, and profile screens for demo                                             |
 | 2023//07//05 | 2.5   | Worked on the Architectural Styles document                                                         |
+| 2023//07//11 | 1     | Added snack bars for authentication                                                                 |
+| 2023//07//13 | 3     | Added new screens in Figma to edit profile, change password, add friends, and block accounts        |
+| 2023//07//13 | 2     | Updated profile screen with additional buttons and created new friends screen                       |
+| 2023//07//15 | 5     | Added screens to view friends list, blocked list, add friends, block users, and edit profile        |
