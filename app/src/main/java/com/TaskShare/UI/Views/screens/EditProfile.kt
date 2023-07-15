@@ -20,6 +20,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
@@ -44,13 +46,15 @@ import com.example.greetingcard.screens.ProfileImage
 @Composable
 fun EditProfileScreen(
     onBack: () -> Unit,
-    onEditPicture: () -> Unit
+    onEditPicture: () -> Unit,
+    onSaveEdit: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
     // Variables to hold the user's name
-    val userName = remember { mutableStateOf("") }
+    val firstName = remember { mutableStateOf("") }
+    val lastName = remember { mutableStateOf("") }
     val bio = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
 
@@ -101,8 +105,80 @@ fun EditProfileScreen(
             Spacer(modifier = Modifier.height(20.dp))
             EditProfilePictureSection(onClick = onEditPicture)
             Spacer(modifier = Modifier.height(20.dp))
+
+            RenderEditTextField(labelValue = "First name"){ newValue ->
+                firstName.value = newValue
+            }
+            RenderEditTextField(labelValue = "Last name"){ newValue ->
+                lastName.value = newValue
+            }
+            RenderEditTextField(labelValue = "Bio"){ newValue ->
+                bio.value = newValue
+            }
+            RenderEditTextField(labelValue = "Email"){ newValue ->
+                email.value = newValue
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            RenderSaveButton("Save",
+                "Save changes to profile", onSaveEdit)
         }
     }
+}
+
+@Composable
+fun RenderEditTextField(modifier: Modifier = Modifier, labelValue: String,
+                        onValueChange: (String) -> Unit) {
+    val textValue = remember {
+        mutableStateOf("")
+    }
+
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = textValue.value,
+        onValueChange = {
+            textValue.value = it
+            onValueChange(it)},
+        label = { Text(text = labelValue) },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            textColor = Color.Black,
+            focusedIndicatorColor = Color.Black,
+            cursorColor = Color.Black,
+            focusedLabelColor = Color.Black,
+            disabledPlaceholderColor = Color.Black
+        )
+    )
+    Spacer(modifier = Modifier.height(15.dp))
+}
+
+@Composable
+fun RenderSaveButton(textValue: String, contentDesc: String,
+                     onClick: () -> Unit) {
+    Button(
+        onClick = { onClick },
+        modifier = Modifier
+            .width(200.dp)
+            .height(50.dp),
+        contentPadding = PaddingValues(10.dp),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(2.dp, colorResource(id = R.color.primary_blue)),
+        colors = ButtonDefaults.buttonColors(Color.White),
+    ){
+        Row(modifier = Modifier
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = textValue,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp,
+                color = colorResource(id = R.color.primary_blue)
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -159,6 +235,7 @@ fun EditProfilePictureSection(modifier: Modifier = Modifier, onClick: () -> Unit
 fun EditProfileScreenPreview() {
     EditProfileScreen(
         onBack = {},
-        onEditPicture = {}
+        onEditPicture = {},
+        onSaveEdit = {}
     )
 }
