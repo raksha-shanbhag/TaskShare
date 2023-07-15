@@ -30,13 +30,15 @@ class TSGroupsRepository {
         )
 
         Log.i("Raksha Debug", groupName)
-        groups.add(newRequestGroup)
-            .addOnSuccessListener { document ->
-                documentId = document.id
-                Log.d(TAG, document.id)
-                Log.d(TAG, "DocumentSnapshot successfully written!")
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        runBlocking {
+            groups.add(newRequestGroup)
+                .addOnSuccessListener { document ->
+                    documentId = document.id
+                    Log.d(TAG, document.id)
+                    Log.d(TAG, "DocumentSnapshot successfully written!")
+                }
+                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        }
 
         return documentId
     }
@@ -65,20 +67,24 @@ class TSGroupsRepository {
 
     // API method to remove member
     fun removeUserFromGroup(groupId: String, memberId: String) {
-        groups.document(groupId)
-            .update("groupMembers", FieldValue.arrayUnion(memberId))
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
+        runBlocking {
+            groups.document(groupId)
+                .update("groupMembers", FieldValue.arrayUnion(memberId))
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+        }
     }
 
     // API method to add member
     fun addMemberToGroup(groupId: String, newMemberUserId: String) {
-        groups.document(groupId)
-            .update("groupMembers", FieldValue.arrayUnion(newMemberUserId))
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
+        runBlocking {
+            groups.document(groupId)
+                .update("groupMembers", FieldValue.arrayUnion(newMemberUserId))
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+        }
     }
 
     // API to get group from Id
@@ -110,14 +116,16 @@ class TSGroupsRepository {
     // get Group Members for a given group Id
     fun getGroupMembersFromGroupId(groupId: String): MutableList<String> {
         var result = ArrayList<String>()
-        groups.document(groupId)
-            .get()
-            .addOnSuccessListener { document ->
-                result.addAll(document.get("groupMembers") as List<String>)
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
+        runBlocking {
+            groups.document(groupId)
+                .get()
+                .addOnSuccessListener { document ->
+                    result.addAll(document.get("groupMembers") as List<String>)
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+        }
 
         return result.toMutableList()
     }
