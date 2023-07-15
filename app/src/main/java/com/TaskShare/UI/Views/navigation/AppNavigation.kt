@@ -8,6 +8,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.TaskShare.UI.Views.screens.AddFriendScreen
+import com.TaskShare.UI.Views.screens.BlockUserScreen
+import com.TaskShare.UI.Views.screens.BlockedUserScreen
+import com.TaskShare.UI.Views.screens.ChangePasswordScreen
+import com.TaskShare.UI.Views.screens.EditProfileScreen
+import com.TaskShare.UI.Views.screens.FriendScreen
 import com.TaskShare.ViewModels.GroupViewModel
 import com.example.greetingcard.screens.AddTaskScreen
 import com.example.greetingcard.screens.CreateGroupScreen
@@ -219,14 +225,79 @@ private fun NavGraphBuilder.addProfileRoute(navController: NavController) {
         startDestination = LeafScreen.Profile.route
     ) {
         showProfile(navController)
+        showFriends(navController)
+        showEditProfile(navController)
+        showChangePassword(navController)
+        showBlockedAccounts(navController)
+        showAddFriends(navController)
+        showBlockUser(navController)
     }
 }
 private fun NavGraphBuilder.showProfile(navController: NavController) {
     composable(route = LeafScreen.Profile.route) {
         ProfileScreen(
-            onEditClick = { },
-            onAccountPrivClick = { },
+            onSeeFriends = { navController.navigate(LeafScreen.Friends.route) },
+            onEditProfile = { navController.navigate(LeafScreen.EditProfile.route) },
+            onChangePassword = { navController.navigate(LeafScreen.ChangePassword.route) },
+            onSeeBlockedAccs = { navController.navigate(LeafScreen.BlockedAccounts.route) },
             onLogOut = { },
+        )
+    }
+}
+
+private fun NavGraphBuilder.showFriends(navController: NavController) {
+    composable(route = LeafScreen.Friends.route) {
+        FriendScreen(
+            onBack = { navController.navigateUp() },
+            onAddFriends = { navController.navigate(LeafScreen.AddFriend.route) },
+            onRemoveFriend = {}
+        )
+    }
+}
+
+private fun NavGraphBuilder.showEditProfile(navController: NavController) {
+    composable(route = LeafScreen.EditProfile.route) {
+        EditProfileScreen(
+            onBack = { navController.navigateUp() },
+            onEditPicture = {},
+            onSaveEdit = {}
+        )
+    }
+}
+
+private fun NavGraphBuilder.showChangePassword(navController: NavController) {
+    composable(route = LeafScreen.ChangePassword.route) {
+        ChangePasswordScreen(
+            onBack = { navController.navigateUp() },
+            onSavePassword = {}
+        )
+    }
+}
+
+private fun NavGraphBuilder.showBlockedAccounts(navController: NavController) {
+    composable(route = LeafScreen.BlockedAccounts.route) {
+        BlockedUserScreen(
+            onBack = { navController.navigateUp() },
+            onBlockUsers = { navController.navigate(LeafScreen.BlockUser.route) },
+            onUnblockUser = {},
+        )
+    }
+}
+
+private fun NavGraphBuilder.showAddFriends(navController: NavController) {
+    composable(route = LeafScreen.AddFriend.route) {
+        AddFriendScreen(
+            onBack = { navController.navigateUp() },
+            onFriendRequest = {}
+        )
+    }
+}
+
+private fun NavGraphBuilder.showBlockUser(navController: NavController) {
+    composable(route = LeafScreen.BlockUser.route) {
+        BlockUserScreen(
+            onBack = { navController.navigateUp() },
+            onBlockUser = {}
         )
     }
 }

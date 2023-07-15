@@ -62,8 +62,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 @Composable
 fun ProfileScreen(
     //userData: UserData
-    onEditClick: () -> Unit,
-    onAccountPrivClick: () -> Unit,
+    onSeeFriends: () -> Unit,
+    onEditProfile: () -> Unit,
+    onChangePassword: () -> Unit,
+    onSeeBlockedAccs: () -> Unit,
     onLogOut: () -> Unit,
 ) {
     val primaryBlue = colorResource(id = R.color.primary_blue)
@@ -95,7 +97,7 @@ fun ProfileScreen(
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopBar(modifier = Modifier.padding(20.dp))
+            TopBar(modifier = Modifier.padding(20.dp), onSeeFriends)
 
             Spacer(modifier = Modifier.height(65.dp))
             ProfileSection()
@@ -104,19 +106,19 @@ fun ProfileScreen(
             SettingButton("Edit Profile",
                 "Edit Profile",
                 Icons.Default.Edit,
-                onEditClick)
+                onEditProfile)
 
             Spacer(modifier = Modifier.height(20.dp))
             SettingButton("Change Password",
                 "Change Password",
                 Icons.Default.Edit,
-                onAccountPrivClick)
+                onChangePassword)
 
             Spacer(modifier = Modifier.height(20.dp))
             SettingButton("Blocked Accounts",
                 "Blocked Accounts",
                 Icons.Default.Lock,
-                onAccountPrivClick)
+                onSeeBlockedAccs)
 
             Spacer(modifier = Modifier.height(20.dp))
             SettingButton("Log Out",
@@ -129,7 +131,7 @@ fun ProfileScreen(
 
 // Creates the bar at the top of the screen to place the back button
 @Composable
-fun TopBar(modifier: Modifier = Modifier) {
+fun TopBar(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
@@ -137,7 +139,7 @@ fun TopBar(modifier: Modifier = Modifier) {
             .fillMaxWidth()
     ) {
         IconButton(
-            onClick = {},
+            onClick = { onClick },
             modifier = Modifier.size(30.dp)
         ) {
             Icon(
@@ -301,8 +303,10 @@ fun ProfileDescription(name: String, email: String, bio: String,
 @Preview
 fun ProfileScreenPreview() {
     ProfileScreen(
-        onEditClick = { },
-        onAccountPrivClick = { },
+        onSeeFriends = { },
+        onEditProfile = { },
+        onChangePassword = { },
+        onSeeBlockedAccs = { },
         onLogOut = { },
     )
 }
