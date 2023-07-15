@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUser
+import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import kotlinx.coroutines.runBlocking
 
@@ -56,7 +57,7 @@ class GroupViewModel: ViewModel() {
         }
 
         val groupId = groupManager.createGroup(
-            creatorId = temporaryGlobalUserId,
+            creatorId = TSUsersRepository.globalUserId,
             groupName = groupName,
             groupDescription = groupDescription,
             groupMemberEmails = groupMembers
@@ -65,7 +66,7 @@ class GroupViewModel: ViewModel() {
         for (userId in userIds) {
             TSUser.updateGroup(userId, groupId)
         }
-        TSUser.updateGroup(userId = temporaryGlobalUserId, groupId = groupId)
+        TSUser.updateGroup(userId = TSUsersRepository.globalUserId, groupId = groupId)
 
         val newGroup = GroupViewState (
             groupName = groupName,
@@ -78,7 +79,7 @@ class GroupViewModel: ViewModel() {
     fun getAllGroupsForUser() {
         groupsState.value.groups.clear()
         var allGroups = mutableListOf<GroupViewState>()
-        allGroups.addAll(groupManager.getGroupsForUserId(temporaryGlobalUserId))
+        allGroups.addAll(groupManager.getGroupsForUserId(TSUsersRepository.globalUserId))
 
         for (group in allGroups) {
             appendNewGroup(group)
@@ -90,7 +91,7 @@ class GroupViewModel: ViewModel() {
         var groupNames = ArrayList<String>()
 
         runBlocking {
-            val allGroups = groupManager.getGroupsForUserId(temporaryGlobalUserId)
+            val allGroups = groupManager.getGroupsForUserId(TSUsersRepository.globalUserId)
             for (group in allGroups) {
                 groupNames.add(group.groupName)
             }

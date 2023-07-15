@@ -10,5 +10,8 @@
 | 2023/06/22 | 5     | Implement database communication APIs                                                 |
 | 2023/06/25 | 3     | Update database structures                                                            |
 | 2023/06/25 | 1     | Fix bug with synchronous get                                                          |
+| 2023/06/30 | 1     | Work on prototype document                                                            |
+| 2023/07/02 | 5     | Fix backend stuff                                                                     |
+| 2023/07/15 | 1     | Fix backend stuff                                                                     |
 --------------------------------------------------------------------------------------------------------------
-| ---------- | 19.5  | Total                                                                                 |
+| ---------- | 26.5  | Total                                                                                 |

@@ -2,6 +2,7 @@ package com.TaskShare.ViewModels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
 import java.util.Date
@@ -54,7 +55,7 @@ class AddTaskViewModel: ViewModel() {
             groupId = state.value.groupId,
             lastDate = state.value.endDate,
             cycle = state.value.cycle,
-            assignerId = temporaryGlobalUserId,
+            assignerId = TSUsersRepository.globalUserId,
             assignees = state.value.assignees
         )
     }
@@ -84,7 +85,7 @@ class AddTaskViewModel: ViewModel() {
 //    }
 
     fun getAllGroupsForUser() : MutableList<GroupData> {
-        var groups = groupManager.getGroupsForUserId(temporaryGlobalUserId)
+        var groups = groupManager.getGroupsForUserId(TSUsersRepository.globalUserId)
         var result = ArrayList<GroupData>()
 
         for (group in groups) {

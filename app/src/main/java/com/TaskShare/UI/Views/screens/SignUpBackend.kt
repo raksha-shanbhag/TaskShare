@@ -2,6 +2,7 @@ package com.TaskShare.UI.Views.screens
 
 import com.TaskShare.Models.Repositories.TSUser
 import com.TaskShare.Models.Repositories.TSUserData
+import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +29,7 @@ class SignUpBackend {
                                 email = email
                             )
                         )
-                        TSUser.globalUser = TSUser.getFromId(user.uid)
+                        TSUsersRepository.globalUserId = user.uid
                     }
                 }else{
                     loginCompletionSource.setResult(false)

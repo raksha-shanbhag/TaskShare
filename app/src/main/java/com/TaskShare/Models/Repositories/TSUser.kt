@@ -17,6 +17,10 @@ class TSUsersRepository() {
     val db = Firebase.firestore
     val users = db.collection("Users")
 
+    companion object {
+        var globalUserId: String = ""
+    }
+
     // temporary API
     fun getUserIdFromName(username: String) : String{
         var result = ""
