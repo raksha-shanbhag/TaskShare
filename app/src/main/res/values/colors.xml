@@ -20,4 +20,5 @@
     <color name="completed_tasks">#00970F</color>
     <color name="incomplete_tasks">#FF4747</color>
     <color name="grey_button">#D9DDE2</color>
+    <color name="primary_pink">#FF7B9C</color>
 </resources>

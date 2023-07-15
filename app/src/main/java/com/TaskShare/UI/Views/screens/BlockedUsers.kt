@@ -40,7 +40,11 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BlockedUserScreen() {
+fun BlockedUserScreen(
+    onBack: () -> Unit,
+    onBlockUsers: () -> Unit,
+    onUnblockUser: () -> Unit
+) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -59,7 +63,7 @@ fun BlockedUserScreen() {
                             .fillMaxWidth()
                     ) {
                         IconButton(
-                            onClick = {},
+                            onClick = onBack,
                             modifier = Modifier.size(30.dp)
                         ) {
                             Icon(
@@ -74,7 +78,7 @@ fun BlockedUserScreen() {
                             fontSize = 30.sp
                         )
                         IconButton(
-                            onClick = {},
+                            onClick = onBlockUsers,
                             modifier = Modifier.size(30.dp)
                         ) {
                             Icon(
@@ -100,11 +104,11 @@ fun BlockedUserScreen() {
 
             Spacer(modifier = Modifier.height(20.dp))
             RenderBlockedUserCard("User1",
-                painterResource(R.drawable.ic_account_circle))
+                painterResource(R.drawable.ic_account_circle), onClick = onUnblockUser)
 
             Spacer(modifier = Modifier.height(20.dp))
             RenderBlockedUserCard("User2",
-                painterResource(R.drawable.ic_account_circle))
+                painterResource(R.drawable.ic_account_circle), onClick = onUnblockUser)
 
         }
     }
@@ -112,7 +116,7 @@ fun BlockedUserScreen() {
 
 @Composable
 fun RenderBlockedUserCard(username: String, profilePic: Painter,
-                          modifier: Modifier = Modifier) {
+                          modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .background(
@@ -143,17 +147,18 @@ fun RenderBlockedUserCard(username: String, profilePic: Painter,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
-            RenderUnblockButton()
+            RenderUnblockButton(onClick = onClick)
         }
     }
 }
 
 @Composable
-fun RenderUnblockButton(modifier: Modifier = Modifier) {
-    Button(onClick = { /*TODO Unblock user when clicked*/ },
+fun RenderUnblockButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Button(
+        onClick = { onClick /*TODO Unblock user when clicked*/ },
         modifier = Modifier
-        .width(110.dp)
-        .height(43.dp),
+            .width(110.dp)
+            .height(43.dp),
         contentPadding = PaddingValues(10.dp),
         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
         shape = RoundedCornerShape(10.dp)
@@ -178,5 +183,9 @@ fun RenderUnblockButton(modifier: Modifier = Modifier) {
 @Composable
 @Preview
 fun BlockedUserScreenPreview() {
-    BlockedUserScreen()
+    BlockedUserScreen(
+        onBack = {},
+        onBlockUsers = {},
+        onUnblockUser = {}
+    )
 }

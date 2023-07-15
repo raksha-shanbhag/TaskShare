@@ -1,14 +1,13 @@
 package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,11 +25,12 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,19 +38,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
-import java.time.format.TextStyle
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun FriendScreen(
-    onBack: () -> Unit,
-    onAddFriends: () -> Unit,
-    onRemoveFriend: () -> Unit
+fun BlockUserScreen(
+    onBlockUser: () -> Unit,
+    onBack: () -> Unit
 ) {
-
+    
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
+    // Variables to hold the user's name
+    val userName = remember { mutableStateOf("") }
+    
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -61,13 +62,12 @@ fun FriendScreen(
                 title = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
                         IconButton(
                             onClick = onBack,
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_chevron_left),
@@ -75,21 +75,12 @@ fun FriendScreen(
                                 tint = Color.White
                             )
                         }
+                        Spacer(modifier = Modifier.width(50.dp))
                         Text(
-                            text = "Friends",
+                            text = "Block an Account",
                             color = Color.White,
-                            fontSize = 30.sp
+                            fontSize = 26.sp
                         )
-                        IconButton(
-                            onClick = onAddFriends,
-                            modifier = Modifier.size(30.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_add),
-                                contentDescription = "Add a friend",
-                                tint = Color.White
-                            )
-                        }
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
@@ -98,85 +89,54 @@ fun FriendScreen(
             )
         }
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-            Spacer(modifier = Modifier.height(20.dp))
-            RenderFriendCard("User1",
-                painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend)
-
-            Spacer(modifier = Modifier.height(20.dp))
-            RenderFriendCard("User2",
-                painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend)
-
-        }
-    }
-}
-@Composable
-fun RenderFriendCard(username: String, profilePic: Painter,
-                     modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .background(
-                colorResource(id = R.color.grey_button),
-                RoundedCornerShape(10.dp)
-            )
-            .fillMaxWidth()
-            .padding(10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Icon(
-            painterResource(id = R.drawable.ic_account_circle),
-            contentDescription = "Default User Icon",
-            modifier = Modifier
-                .size(60.dp)
-        )
-
-        Spacer(modifier = Modifier.width(5.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = username,
-                color = Color.Black,
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "Block an account on SplitChore",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp)
+            Text(text = "Blocked users will not be notified",
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp
-            )
-            RenderRemoveButton(onClick = onClick)
+                fontSize = 14.sp)
+            Spacer(modifier = Modifier.height(30.dp))
+            RenderTextField("BLOCK USER","Enter a username") { newValue ->
+                userName.value = newValue
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            RenderBlockButton("Block Account",
+                "Block a user", onBlockUser)
         }
     }
 }
 
 @Composable
-fun RenderRemoveButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun RenderBlockButton(textValue: String, contentDesc: String,
+                      onClick: () -> Unit) {
     Button(
-        onClick = { onClick /*TODO: Remove friend when clicked*/ },
+        onClick = { onClick },
         modifier = Modifier
-            .width(110.dp)
-            .height(43.dp),
+            .fillMaxWidth()
+            .height(50.dp),
         contentPadding = PaddingValues(10.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(2.dp, colorResource(id = R.color.primary_pink)),
+        colors = ButtonDefaults.buttonColors(Color.White),
     ) {
-        Row (
-            modifier = Modifier
-                .fillMaxWidth(),
+        Row(modifier = Modifier
+            .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             Text(
-                text = "Remove",
+                text = textValue,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
-                color = Color.White
+                color = colorResource(id = R.color.primary_pink)
             )
         }
     }
@@ -185,10 +145,9 @@ fun RenderRemoveButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 
 @Composable
 @Preview
-fun FriendScreenPreview() {
-    FriendScreen(
-        onBack = {},
-        onAddFriends = {},
-        onRemoveFriend = {}
+fun BlockUserScreenPreview() {
+    BlockUserScreen(
+        onBlockUser = {},
+        onBack = {}
     )
 }
