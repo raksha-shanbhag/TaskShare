@@ -29,8 +29,3 @@ fun NotificationScreen() {
     }
 }
 
-@Composable
-@Preview
-fun NotificationScreenPreview() {
-    NotificationScreen()
-}
