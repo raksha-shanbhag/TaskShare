@@ -120,6 +120,10 @@ class GroupViewModel: ViewModel() {
 
 
     }
+
+    fun getFriendsList(): List<friendItem> {
+        return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
+    }
 }
 
 data class GroupViewState (
@@ -134,4 +138,9 @@ data class GroupViewState (
 
 data class GroupsViewState (
     val groups: MutableList<GroupViewState> = mutableListOf()
+)
+
+data class friendItem (
+    val name: String,
+    val isSelected: Boolean
 )

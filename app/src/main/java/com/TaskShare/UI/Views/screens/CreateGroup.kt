@@ -1,7 +1,9 @@
 package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -38,9 +41,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.UI.Views.screens.AddFriendScreen
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
 import com.example.greetingcard.R
@@ -62,6 +67,10 @@ fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
     }
 
     val state by viewModel.state
+
+    var friends by remember {
+        mutableStateOf(viewModel.getFriendsList())
+    }
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -86,38 +95,37 @@ fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                 TextField(value = groupName, onValueChange = {text -> groupName = text},  label = {Text("Group Name")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
 
                 TextField(value = groupDescription, onValueChange = {text -> groupDescription = text}, label = {Text("Group Description")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
+                Text("Click to select group members")
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    items(friends.size) { i ->
+                        Row(modifier = Modifier
+                            .absolutePadding(60.dp, 0.dp, 0.dp, 0.dp)
+                            .fillMaxWidth()
+                            .clickable { friends = friends.mapIndexed { j, item ->
+                                if(i == j) {
+                                    item.copy(isSelected = !item.isSelected)
+                                } else item
+                            } }) {
+                            Text(text = friends[i].name)
+                            if(friends[i].isSelected) {
+                                Icon(imageVector = Icons.Default.Check,
+                                    contentDescription = "selected" )
+                            }
+                        }
 
-                TextField(value = member, onValueChange = {text -> member = text}, label = {Text("Group Member Email")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
-
-                LazyColumn() {
-                    itemsIndexed(groupMembers) { ind, currentGroup ->
-                        Text(text = "Member " +  (ind+1) + ": $currentGroup")
                     }
-                }
-                Button(onClick = {
-                    groupMembers = (groupMembers + member) as MutableList<String>
-                    member = ""
-                },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.banner_blue),
-                        contentColor = Color.White),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
-                ) {
-                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text("Add Group Member")
-                    }
-
                 }
 
                 Button(onClick = {
+                    var selected = friends.filter{it.isSelected}
+                    selected.forEach{
+                        groupMembers = (groupMembers + it.name) as MutableList<String>
+                    }
                     viewModel.createGroup(groupName, groupDescription, groupMembers)
                     groupMembers = (mutableListOf<String>())
                     groupName = ""
                     groupDescription = ""
+                    onBack
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.banner_blue),
