@@ -1,6 +1,7 @@
 package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
 import com.example.greetingcard.R
@@ -123,7 +125,8 @@ fun ViewGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
 
 //using data
                         items(group.groupMembers) {  currentMem ->
-                            Text(text = " $currentMem", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
+                            var email = TSUsersRepository().getUserInfo(currentMem).email
+                            Text(text = " $email", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
                         }
 
                 }

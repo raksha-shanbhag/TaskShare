@@ -96,7 +96,6 @@ class GroupViewModel: ViewModel() {
             for (group in allGroups) {
                 groupNames.add(group.groupName)
             }
-            Log.i("Debugging Raksha new", allGroups.toString())
 
         }
 
