@@ -31,38 +31,23 @@ class TSGroupsRepository {
 
         Log.i("Raksha Debug", groupName)
         runBlocking {
-            groups.add(newRequestGroup)
-                .addOnSuccessListener { document ->
-                    documentId = document.id
-                    Log.d(TAG, document.id)
-                    Log.d(TAG, "DocumentSnapshot successfully written!")
-                }
-                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+            var document = groups.add(newRequestGroup).await()
+            if (document != null){
+                Log.d(TAG, document.id)
+                documentId = document.id
+                Log.i("Raksha Debug GroupId", documentId)
+            }
+//                .addOnSuccessListener { document ->
+//                    documentId = document.id
+//                    Log.i("Raksha Debug GroupId", documentId)
+//                    Log.d(TAG, document.id)
+//                    Log.d(TAG, "DocumentSnapshot successfully written!")
+//                }
+//                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
         }
 
+        Log.i("Raksha Debug GroupId", documentId)
         return documentId
-    }
-
-    // API method to get all the groups for a user
-    suspend fun getAllGroups(): MutableList<Group> {
-        var result = ArrayList<Group>()
-
-        var documents = groups.get().await()
-        for (document in documents) {
-            var groupMembers = ArrayList<String>()
-            groupMembers.addAll(document.get("groupMembers") as List<String>)
-
-            var group = Group(
-                id = document.id,
-                groupName = document.data["groupName"].toString(),
-                groupDescription = document.data["groupDescription"].toString(),
-                groupMembers = groupMembers
-            )
-
-            result.add(group)
-        }
-
-        return result.toMutableList()
     }
 
     // API method to remove member
@@ -117,14 +102,14 @@ class TSGroupsRepository {
     fun getGroupMembersFromGroupId(groupId: String): MutableList<String> {
         var result = ArrayList<String>()
         runBlocking {
-            groups.document(groupId)
-                .get()
-                .addOnSuccessListener { document ->
-                    result.addAll(document.get("groupMembers") as List<String>)
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
-                }
+            var document = groups.document(groupId)
+                .get().await()
+
+            if(document != null) {
+                result.addAll(document.get("groupMembers") as List<String>)
+            } else {
+                Log.w(TAG, "Error getting group")
+            }
         }
 
         return result.toMutableList()

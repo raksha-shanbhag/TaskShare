@@ -27,8 +27,12 @@ class GroupManagementService {
         var groupMemberIds = usersRepository.getUserIdsFromEmails(groupMemberEmails)
         groupMemberIds.add(creatorId)
 
-        var result = groupsRepository.createGroup(creatorId, groupName, groupDescription, groupMemberIds)
-        return result
+        var newGroupId = groupsRepository.createGroup(creatorId, groupName, groupDescription, groupMemberIds)
+
+        if(newGroupId.isNullOrEmpty()) {
+            usersRepository.addGroupToUserId(creatorId, newGroupId)
+        }
+        return newGroupId
     }
 
     // API service for my groups page with GroupsViewModel

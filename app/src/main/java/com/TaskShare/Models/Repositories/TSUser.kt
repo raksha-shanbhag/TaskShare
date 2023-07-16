@@ -126,10 +126,21 @@ class TSUsersRepository() {
     }
 
     fun addAcitivity(userId: String, activityId: String) {
-        users.document(userId).update("activities", FieldValue.arrayUnion(activityId))
-            .addOnFailureListener { exception: Throwable ->
-                Log.w(TAG, "Error adding activity to user.", exception)
-            }
+        runBlocking {
+            users.document(userId).update("activities", FieldValue.arrayUnion(activityId))
+                .addOnFailureListener { exception: Throwable ->
+                    Log.w(TAG, "Error adding activity to user.", exception)
+                }
+        }
+    }
+
+    fun addGroupToUserId(userId: String, groupId: String) {
+        runBlocking {
+            users.document(userId).update("groups", FieldValue.arrayUnion(groupId))
+                .addOnFailureListener { exception: Throwable ->
+                    Log.w(TAG, "Error adding groupId to user.", exception)
+                }
+        }
     }
 
     fun removeActivity(userId: String, activityId: String) {
