@@ -55,6 +55,8 @@ class GroupViewModel: ViewModel() {
             }
         }
 
+        groupMembers.add(TSUsersRepository.globalUserId)
+
         val groupId = groupManager.createGroup(
             creatorId = TSUsersRepository.globalUserId,
             groupName = groupName,
