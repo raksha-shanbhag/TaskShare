@@ -103,6 +103,7 @@ fun RenderTaskCard(task_name: String, group_name: String, status: String, end_da
             )
             .fillMaxWidth()
             .clickable(
+
                 onClick = showDetail
             )
             .padding(10.dp),
@@ -232,21 +233,15 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                         Text(text = "Groups",
                             fontSize = mid_font_size.sp)
                     }
-//                    TASK CARD
-                    //using data
-                    // UNCOMMENT AND UPDATE THE BELOW WHEN BACKEND DONE
-//                    var userTasks = viewModel.getTasks()
-//                    userTasks.forEach{
-//                        RenderTaskCard(it.taskName, it.groupName, it.status, it.deadline, showDetail)
-//                        Spacer(modifier = Modifier.height(height = 10.dp))
-//                    }
 
-                    RenderTaskCard("Clean Counters and Sing", "Roommates", "inprogress", "10/05/2023", showDetail)
-                    Spacer(modifier = Modifier.height(height = 10.dp))
-                    RenderTaskCard("Take out trash", "Roommates", "done", "12/05/2023", showDetail)
-                    Spacer(modifier = Modifier.height(height = 10.dp))
-                    RenderTaskCard("Take out meee", "Roommates", "todo", "11/05/2023", showDetail)
-                    Spacer(modifier = Modifier.height(height = 10.dp))
+                    // pull task data
+
+                    var userTasks = viewModel.getTasks()
+                    userTasks.forEach{
+                        RenderTaskCard(it.taskName, it.groupName, it.status, it.deadline, showDetail)
+                        Spacer(modifier = Modifier.height(height = 10.dp))
+                    }
+
                 }
             }
         }

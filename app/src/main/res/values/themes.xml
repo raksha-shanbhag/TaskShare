@@ -2,4 +2,14 @@
 <resources>
 
     <style name="Theme.GreetingCard" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="ThemeOverlay.MyApp.Dialog" parent="@android:style/Widget.DeviceDefault.DatePicker">
+<!--        <item name="colorSecondary">#FF5722</item>-->
+<!--        <item name="colorPrimary">##FF5758</item>-->
+        <item name="android:colorAccent">#225A96</item>
+        <item name="android:colorControlActivated">#225A96</item>
+
+        <item name="android:textColor">#2482D9</item>
+
+    </style>
 </resources>

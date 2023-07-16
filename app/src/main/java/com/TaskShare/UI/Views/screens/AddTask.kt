@@ -105,6 +105,8 @@ fun AddTaskScreen(context: Context) {
     val date = remember { mutableStateOf("") }
     val datePickerDialog = DatePickerDialog(
         context,
+
+//        R.style.ThemeOverlay_MyApp_Dialog,
         {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             date.value = "$dayOfMonth/$month/$year"
         }, year, month, day

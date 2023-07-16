@@ -2,6 +2,7 @@ package com.TaskShare.ViewModels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.greetingcard.screens.RenderTaskCard
 import java.util.Date
 
 class TaskViewModel: ViewModel() {
@@ -57,8 +58,17 @@ class TaskViewModel: ViewModel() {
     }
 
     fun getTasks(): List<TaskViewState>{
-        val currentList = tasksState.value.tasks
-        return currentList
+        var task1 = TaskViewState("Clean Counters", "Jaishree", "inprogress", "", "Lamia", "Roommates", "09/14/2022", "No Cycle", "")
+        var task2 = TaskViewState("Clean Room", "Jaishree", "done", "", "Lamia", "Roommates 3A", "24/10/2022", "No Cycle", "")
+        var task3 = TaskViewState("Clean Bathroom", "Cheng", "todo", "", "Lamia", "Roommates", "01/14/2022", "Daily", "")
+        var task4 = TaskViewState("Clean Kitchen", "Lamia", "inprogress", "", "Jaishree", "Roommates", "14/12/2022", "Monthly", "")
+
+        var tasks = mutableListOf<TaskViewState>(task1, task2, task3, task4)
+        var result = mutableListOf<GroupMember>()
+
+
+
+        return tasks
     }
 }
 
