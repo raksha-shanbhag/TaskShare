@@ -139,7 +139,7 @@ fun TopBar(modifier: Modifier = Modifier, onClick: () -> Unit) {
             .fillMaxWidth()
     ) {
         IconButton(
-            onClick = { onClick },
+            onClick = { onClick() },
             modifier = Modifier.size(30.dp)
         ) {
             Icon(
@@ -215,7 +215,7 @@ fun ProfileSection(modifier: Modifier = Modifier) {
 fun SettingButton(textValue: String, contentDesc: String,
                   buttonIcon: ImageVector,
                   onClick: () -> Unit) {
-    Button(onClick = { onClick },
+    Button(onClick = { onClick() },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),

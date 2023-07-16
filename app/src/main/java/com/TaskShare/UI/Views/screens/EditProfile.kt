@@ -3,6 +3,8 @@ package com.TaskShare.UI.Views.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -49,6 +52,8 @@ fun EditProfileScreen(
     onEditPicture: () -> Unit,
     onSaveEdit: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -61,7 +66,8 @@ fun EditProfileScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .scrollable(state = scrollState, orientation = Orientation.Vertical),
         scaffoldState = scaffoldState,
         topBar = {
             CenterAlignedTopAppBar(
@@ -106,16 +112,20 @@ fun EditProfileScreen(
             EditProfilePictureSection(onClick = onEditPicture)
             Spacer(modifier = Modifier.height(20.dp))
 
-            RenderEditTextField(labelValue = "First name"){ newValue ->
+            RenderEditTextField(labelValue = "First name",
+                isSingleLine = true, maxChar = 50){ newValue ->
                 firstName.value = newValue
             }
-            RenderEditTextField(labelValue = "Last name"){ newValue ->
+            RenderEditTextField(labelValue = "Last name",
+                isSingleLine = true, maxChar = 50){ newValue ->
                 lastName.value = newValue
             }
-            RenderEditTextField(labelValue = "Bio"){ newValue ->
+            RenderEditTextField(labelValue = "Bio",
+                isSingleLine = true, maxChar = 50){ newValue ->
                 bio.value = newValue
             }
-            RenderEditTextField(labelValue = "Email"){ newValue ->
+            RenderEditTextField(labelValue = "Email",
+                isSingleLine = true, maxChar = 50){ newValue ->
                 email.value = newValue
             }
 
@@ -128,6 +138,7 @@ fun EditProfileScreen(
 
 @Composable
 fun RenderEditTextField(modifier: Modifier = Modifier, labelValue: String,
+                        isSingleLine: Boolean, maxChar: Int,
                         onValueChange: (String) -> Unit) {
     val textValue = remember {
         mutableStateOf("")
@@ -136,9 +147,12 @@ fun RenderEditTextField(modifier: Modifier = Modifier, labelValue: String,
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = textValue.value,
+        singleLine = isSingleLine,
         onValueChange = {
-            textValue.value = it
-            onValueChange(it)},
+            if (it.length <= maxChar) {
+                textValue.value = it
+                onValueChange(it)}
+            },
         label = { Text(text = labelValue) },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White,
@@ -200,7 +214,7 @@ fun EditProfilePictureSection(modifier: Modifier = Modifier, onClick: () -> Unit
         ) {
             ProfileImage(image = imagePfp,
                 modifier = Modifier
-                    .size(180.dp)
+                    .size(150.dp)
                     .weight(5f)     // Pfp will take up 50% of row's width
             )
         }
