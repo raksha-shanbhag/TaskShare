@@ -20,7 +20,7 @@ class ActivityManagementService {
 
         if (activityId != null) {
             for (userId in activity.affectedUsers) {
-                usersRepository.addAcitivity(userId, activityId)
+                usersRepository.addActivity(userId, activityId)
             }
         }
     }

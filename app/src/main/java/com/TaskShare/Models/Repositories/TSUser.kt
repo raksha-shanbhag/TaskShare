@@ -120,17 +120,22 @@ class TSUsersRepository() {
             return mutableListOf()
         }
 
-        var activities = document!!.get("activities") as MutableList<String>
+        var activities = document!!.get("activities") as MutableList<String>?
 
-        return activities
+        if (activities != null) {
+            return activities
+        }
+
+        return mutableListOf()
     }
 
-    fun addAcitivity(userId: String, activityId: String) {
+    fun addActivity(userId: String, activityId: String) {
         runBlocking {
-            users.document(userId).update("activities", FieldValue.arrayUnion(activityId))
-                .addOnFailureListener { exception: Throwable ->
-                    Log.w(TAG, "Error adding activity to user.", exception)
-                }
+            try {
+                users.document(userId).update("activities", FieldValue.arrayUnion(activityId)).await()
+            } catch (e: Throwable) {
+                Log.w(TAG, "Error adding activity to user.", e)
+            }
         }
     }
 
