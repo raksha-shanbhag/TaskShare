@@ -2,6 +2,7 @@ package com.TaskShare.ViewModels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.TaskShare.Models.DataObjects.Group
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
@@ -28,6 +29,11 @@ class AddTaskViewModel: ViewModel() {
         state.value = state.value.copy(groupName = taskGroup.groupName)
         state.value = state.value.copy(groupId = taskGroup.groupId)
     }
+
+    fun updateAssignee(selectedMember: GroupMember) {
+        state.value = state.value.copy(assignee = selectedMember)
+    }
+
 
     fun updateDeadline(date: String) {
         var endDate = Date(date)
@@ -99,19 +105,50 @@ class AddTaskViewModel: ViewModel() {
 
         return result
     }
+
+    fun getGroupMembers() : MutableList<GroupMember> {
+        if (state.value.groupId == ""){
+            return ArrayList<GroupMember>()
+        }
+
+        var members = groupManager.getGroupMembersFromGroupID(state.value.groupId)
+        var result = mutableListOf<GroupMember>()
+
+        for (member in members) {
+            result.add(
+                GroupMember(
+                    memberName = member.memberName,
+                    memberId = member.memberId,
+                    selected = false
+                )
+            )
+        }
+//        state.value = state.value.copy(
+//            groupMembers = mutableListOf(member1, member2, member3, member4, member5, member6)
+//        )
+//        state.value = state.value.copy(groupMembers = currentList)
+
+        return result
+    }
+
+
 }
+
+
 
 // states
 data class AddTaskState (
     val taskName: String ="",
     val groupName: String = "Select Group Name",
+    val groupMembers: MutableList<GroupMember> = mutableListOf(),
     val assignTo: String = "",
     val assignees: MutableList<String> = mutableListOf(),
-    val assignee: String = "",
+    val assignee: GroupMember = GroupMember(),
     //    how are we actually storing dates in DB?
     val endDate: Date = Date(),
     val cycle: String = "Select Cycle",
     val groupId: String = ""
+
 )
 
 data class GroupData (
@@ -120,6 +157,11 @@ data class GroupData (
 )
 
 data class GroupMember (
-    val memberName: String = "",
-    val memberId: String = ""
-)
+    var memberName: String = "",
+    val memberId: String = "",
+    var selected: Boolean = true
+){
+    fun toggle(){
+        selected=!selected
+    }
+}

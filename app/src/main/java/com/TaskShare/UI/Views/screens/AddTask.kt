@@ -7,13 +7,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
@@ -51,14 +55,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.Models.DataObjects.Group
 import com.TaskShare.ViewModels.AddTaskViewModel
 import com.TaskShare.ViewModels.GroupData
+import com.TaskShare.ViewModels.GroupMember
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
 import com.example.greetingcard.R
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 
 //@Composable
@@ -85,13 +91,13 @@ import com.example.greetingcard.R
 //    }
 //}
 
+
 @Composable
 fun AddTaskScreen() {
     val viewModel = viewModel(AddTaskViewModel::class.java)
     val state by viewModel.state
 
     val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
-    val assignees = arrayOf("Jaishree", "Lamia", "Cheng")
     // state of the menu
     var expandedGroup by remember {
         mutableStateOf(false)
@@ -99,13 +105,25 @@ fun AddTaskScreen() {
     var expandedCycle by remember {
         mutableStateOf(false)
     }
-//    var assigneesState by remember { mutableListOf<Boolean>() }
+
+    var expandedAssignTo by remember {
+        mutableStateOf(false)
+    }
+
     var groups by remember {
         mutableStateOf(mutableListOf<GroupData>())
     }
 
+    var groupMembers by remember {
+        mutableStateOf(mutableListOf<GroupMember>())
+    }
+
+
     groups = viewModel.getAllGroupsForUser()
+
     Log.i("Debugging Raksha", groups.toString())
+
+    groupMembers = viewModel.getGroupMembers()
 
 
     Scaffold( topBar = {
@@ -146,6 +164,7 @@ fun AddTaskScreen() {
                     ExposedDropdownMenu(
                         expanded = expandedGroup,
                         onDismissRequest = {
+                            groupMembers = viewModel.getGroupMembers()
                             expandedGroup = false
                         }
                     ){
@@ -204,35 +223,78 @@ fun AddTaskScreen() {
                     }
                 }
 
-                TextField(value = state.assignTo, onValueChange = {text -> viewModel.updateAssignTo(text)}, label = {Text("Assign To")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black))
-                LazyColumn() {
-                    itemsIndexed(state.assignees) { ind, currentGroup ->
-                        Text(text = "Assignee " +  (ind+1) + ": $currentGroup")
+                ExposedDropdownMenuBox(
+                    expanded = expandedAssignTo,
+                    onExpandedChange = {
+                        expandedAssignTo = !expandedAssignTo
                     }
-                }
-                Button(onClick = {
-                    viewModel.updateAssignees(state.assignTo)
-                    viewModel.updateAssignTo("")
-                },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.banner_blue),
-                        contentColor = Color.White),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
                 ) {
-                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text("Assign Another Member")
+                    TextField(
+                        readOnly = true,
+                        value = "Select Assignees",
+                        onValueChange = { },
+                        label = { Text("Assignees") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = expandedAssignTo
+                            )
+                        },
+                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedAssignTo,
+                        onDismissRequest = {
+                            expandedAssignTo = false
+                        }
+                    ){
+                        groupMembers.forEach { item ->
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+
+                                    ) {
+                                        Checkbox(
+                                            checked = item.selected,
+                                            onCheckedChange = {
+                                                item.toggle()
+                                            }
+                                        )
+
+                                        Text(text = item.memberName)
+                                    }
+                                       },
+                                onClick = {
+//                                    viewModel.updateAssignee(groupMembers.indexOf(item))
+//                                    updateSelectedGroupMember()
+//                                    item.selected = !item.selected
+                                    expandedAssignTo = false
+                                }
+                            )
+                        }
                     }
                 }
+
+                FlowRow(modifier = Modifier
+                    .fillMaxWidth()
+                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp),
+                    horizontalArrangement = Arrangement.Center
+
+                )
+                {
+                    groupMembers.forEach { item ->
+                        if (item.selected) {
+                            RenderPills(item.memberName, R.color.icon_blue)
+                            Spacer(modifier = Modifier.padding(5.dp, 20.dp))
+                        }
+                    }
+                }
+
 
                 Button(onClick = {
                     viewModel.createTask()
                 },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.banner_blue),
+                        backgroundColor = colorResource(id = R.color.primary_blue),
                         contentColor = Color.White),
                     modifier = Modifier
                         .fillMaxWidth()
