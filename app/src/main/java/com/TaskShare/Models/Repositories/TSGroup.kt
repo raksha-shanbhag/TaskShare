@@ -1,12 +1,16 @@
 package com.TaskShare.Models.Repositories
 
 import android.util.Log
+import com.TaskShare.Models.DataObjects.Activity
+import com.TaskShare.Models.DataObjects.ActivityType
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import com.TaskShare.Models.DataObjects.Group
+import com.TaskShare.Models.Services.ActivityManagementService
 import kotlinx.coroutines.runBlocking
+import java.util.Date
 
 // APIs
 class TSGroupsRepository {
@@ -28,25 +32,15 @@ class TSGroupsRepository {
             "groupMembers" to groupMembersIds,
             "createdBy" to creatorId
         )
-
-        Log.i("Raksha Debug", groupName)
         runBlocking {
             var document = groups.add(newRequestGroup).await()
             if (document != null){
                 Log.d(TAG, document.id)
                 documentId = document.id
-                Log.i("Raksha Debug GroupId", documentId)
+                ActivityManagementService().addActivity(Activity(Date(), "", documentId, groupMembersIds, creatorId, ActivityType.GROUP_REQUEST))
             }
-//                .addOnSuccessListener { document ->
-//                    documentId = document.id
-//                    Log.i("Raksha Debug GroupId", documentId)
-//                    Log.d(TAG, document.id)
-//                    Log.d(TAG, "DocumentSnapshot successfully written!")
-//                }
-//                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
         }
 
-        Log.i("Raksha Debug GroupId", documentId)
         return documentId
     }
 
