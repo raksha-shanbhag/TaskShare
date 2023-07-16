@@ -17,13 +17,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TextButton
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
@@ -44,10 +46,11 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun FriendScreen(
+fun IncomingRequestsScreen(
     onBack: () -> Unit,
-    onAddFriends: () -> Unit,
-    onRemoveFriend: () -> Unit,
+    onAcceptRequest: () -> Unit,
+    onDenyRequest: () -> Unit,
+    onBlockUser: () -> Unit,
     onFriends: () -> Unit,
     onIncoming: () -> Unit,
     onOutgoing: () -> Unit
@@ -68,7 +71,6 @@ fun FriendScreen(
                 title = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
@@ -82,21 +84,12 @@ fun FriendScreen(
                                 tint = Color.White
                             )
                         }
+                        Spacer(modifier = Modifier.width(70.dp))
                         Text(
-                            text = "Friends",
+                            text = "Incoming Requests",
                             color = Color.White,
-                            fontSize = 30.sp
+                            fontSize = 24.sp
                         )
-                        IconButton(
-                            onClick = onAddFriends,
-                            modifier = Modifier.size(30.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_add),
-                                contentDescription = "Add a friend",
-                                tint = Color.White
-                            )
-                        }
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
@@ -116,69 +109,33 @@ fun FriendScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
-                RenderFriendCard(
-                    "User1",
-                    painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend
+                RenderIncomingRequestCard("User1",
+                    painterResource(R.drawable.ic_account_circle),
+                    onClickAccept = onAcceptRequest,
+                    onClickDeny = onDenyRequest,
+                    onClickBlock = onBlockUser
                 )
-
                 Spacer(modifier = Modifier.height(20.dp))
-                RenderFriendCard(
-                    "User2",
-                    painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend
+                RenderIncomingRequestCard("User1",
+                    painterResource(R.drawable.ic_account_circle),
+                    onClickAccept = onAcceptRequest,
+                    onClickDeny = onDenyRequest,
+                    onClickBlock = onBlockUser
                 )
-
             }
         }
     }
 }
 
 @Composable
-fun RenderTopButtonBar(onClickFriends: () -> Unit, onClickIncoming: () -> Unit,
-                       onClickOutgoing: () -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorResource(id = R.color.background_blue)),
-    ) {
-        RenderTopButton(label = "Friends", onClick = onClickFriends)
-        RenderTopButton(label = "Incoming", onClick = onClickIncoming)
-        RenderTopButton(label = "Outgoing", onClick = onClickOutgoing)
-    }
-}
-
-@Composable
-fun RenderTopButton(modifier: Modifier = Modifier, label: String,
-                    onClick: () -> Unit) {
-    TextButton(onClick = { onClick() },
-        modifier = Modifier
-            .width(130.dp)
-            .height(45.dp),
-        contentPadding = PaddingValues(10.dp),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Row(modifier = Modifier
-            .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = label,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
-                color = Color.Black
-            )
-        }
-    }
-}
-
-
-@Composable
-fun RenderFriendCard(username: String, profilePic: Painter,
-                     modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun RenderIncomingRequestCard(username: String, profilePic: Painter,
+                              onClickAccept: () -> Unit, onClickDeny: () -> Unit,
+                              onClickBlock: () -> Unit,
+                              modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier
             .background(
-                colorResource(id = R.color.grey_button),
+                colorResource(id = R.color.background_blue),
                 RoundedCornerShape(10.dp)
             )
             .fillMaxWidth()
@@ -196,7 +153,6 @@ fun RenderFriendCard(username: String, profilePic: Painter,
         Spacer(modifier = Modifier.width(5.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -206,48 +162,68 @@ fun RenderFriendCard(username: String, profilePic: Painter,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
-            RenderRemoveButton(onClick = onClick)
+
+            Row (modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ){
+                // Accept button
+                RenderCircleButton(
+                    onClick = onClickAccept,
+                    buttonColor = colorResource(id = R.color.progress_green),
+                    buttonIcon = painterResource(id = R.drawable.ic_check),
+                    contentDesc = "Accept friend request"
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+
+                // Reject button
+                RenderCircleButton(
+                    onClick = onClickDeny,
+                    buttonColor = colorResource(id = R.color.primary_blue),
+                    buttonIcon = painterResource(id = R.drawable.ic_close),
+                    contentDesc = "Reject friend request"
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+
+                // Block button
+                RenderCircleButton(
+                    onClick = onClickBlock,
+                    buttonColor = colorResource(id = R.color.progress_red),
+                    buttonIcon = painterResource(id = R.drawable.ic_block),
+                    contentDesc = "Block the account"
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+            }
         }
     }
 }
 
 @Composable
-fun RenderRemoveButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
+fun RenderCircleButton(modifier: Modifier = Modifier,
+                       onClick: () -> Unit, buttonColor: Color,
+                       buttonIcon: Painter, contentDesc: String) {
+    IconButton(
         onClick = { onClick() },
-        modifier = Modifier
-            .width(110.dp)
-            .height(43.dp),
-        contentPadding = PaddingValues(10.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_pink)),
-        shape = RoundedCornerShape(10.dp)
+        modifier = Modifier.size(40.dp)
     ) {
-        Row (
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text(
-                text = "Remove",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
-                color = Color.White
-            )
-        }
+        Icon(
+            painter = buttonIcon,
+            contentDescription = contentDesc,
+            tint = buttonColor
+        )
     }
 }
 
 
 @Composable
 @Preview
-fun FriendScreenPreview() {
-    FriendScreen(
+fun IncomingRequestsScreenPreview() {
+    IncomingRequestsScreen(
         onBack = {},
-        onAddFriends = {},
-        onRemoveFriend = {},
-        onFriends = {},
         onIncoming = {},
-        onOutgoing = {}
+        onOutgoing = {},
+        onFriends = {},
+        onAcceptRequest = {},
+        onDenyRequest = {},
+        onBlockUser = {}
     )
 }

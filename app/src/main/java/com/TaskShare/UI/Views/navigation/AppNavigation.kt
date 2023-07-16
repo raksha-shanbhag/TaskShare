@@ -9,7 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.TaskShare.UI.Views.screens.AddFriendScreen
-import com.TaskShare.UI.Views.screens.BlockUserScreen
 import com.TaskShare.UI.Views.screens.BlockedUserScreen
 import com.TaskShare.UI.Views.screens.ChangePasswordScreen
 import com.TaskShare.UI.Views.screens.EditProfileScreen
@@ -230,7 +229,6 @@ private fun NavGraphBuilder.addProfileRoute(navController: NavController) {
         showChangePassword(navController)
         showBlockedAccounts(navController)
         showAddFriends(navController)
-        showBlockUser(navController)
     }
 }
 private fun NavGraphBuilder.showProfile(navController: NavController) {
@@ -281,7 +279,6 @@ private fun NavGraphBuilder.showBlockedAccounts(navController: NavController) {
     composable(route = LeafScreen.BlockedAccounts.route) {
         BlockedUserScreen(
             onBack = { navController.navigateUp() },
-            onBlockUsers = { navController.navigate(LeafScreen.BlockUser.route) },
             onUnblockUser = {},
         )
     }
@@ -292,15 +289,6 @@ private fun NavGraphBuilder.showAddFriends(navController: NavController) {
         AddFriendScreen(
             onBack = { navController.navigateUp() },
             onFriendRequest = {}
-        )
-    }
-}
-
-private fun NavGraphBuilder.showBlockUser(navController: NavController) {
-    composable(route = LeafScreen.BlockUser.route) {
-        BlockUserScreen(
-            onBack = { navController.navigateUp() },
-            onBlockUser = {}
         )
     }
 }

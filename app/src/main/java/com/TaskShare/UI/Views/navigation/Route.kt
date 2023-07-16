@@ -23,7 +23,6 @@ sealed class LeafScreen(val route: String) {
     object ChangePassword : LeafScreen("changePassword")
     object BlockedAccounts : LeafScreen("blockedAccounts")
     object AddFriend : LeafScreen("addFriend")
-    object BlockUser : LeafScreen("blockUser")
 
     object CreateGroup : LeafScreen("createGroup")
     object ViewGroup : LeafScreen("viewGroup")

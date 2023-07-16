@@ -42,7 +42,6 @@ import com.example.greetingcard.R
 @Composable
 fun BlockedUserScreen(
     onBack: () -> Unit,
-    onBlockUsers: () -> Unit,
     onUnblockUser: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -58,7 +57,6 @@ fun BlockedUserScreen(
                 title = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
@@ -72,21 +70,12 @@ fun BlockedUserScreen(
                                 tint = Color.White
                             )
                         }
+                        Spacer(modifier = Modifier.width(60.dp))
                         Text(
                             text = "Blocked Users",
                             color = Color.White,
                             fontSize = 30.sp
                         )
-                        IconButton(
-                            onClick = onBlockUsers,
-                            modifier = Modifier.size(30.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_add),
-                                contentDescription = "Block another user",
-                                tint = Color.White
-                            )
-                        }
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
@@ -185,7 +174,6 @@ fun RenderUnblockButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 fun BlockedUserScreenPreview() {
     BlockedUserScreen(
         onBack = {},
-        onBlockUsers = {},
         onUnblockUser = {}
     )
 }
