@@ -1,7 +1,6 @@
 package com.TaskShare.Models.Repositories
 
 import android.util.Log
-import com.TaskShare.Models.DataObjects.Group
 import com.TaskShare.Models.DataObjects.User
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -99,12 +98,46 @@ class TSUsersRepository() {
                 firstName = result.get("firstName").toString(),
                 lastName = result.get("lastName").toString(),
                 email = result.get("email").toString(),
-                phoneNumber = result.get("phoneNumber").toString().toInt()
+                phoneNumber = result.get("phoneNumber").toString()
             )
         }
         return userInfo
     }
 
+    fun getActivitiesForUserId(userId: String): MutableList<String> {
+        var document: DocumentSnapshot? = null
+
+        runBlocking {
+                document = users.document(userId).get().await()
+            try {
+
+            } catch (e: Throwable) {
+                Log.w("Error getting documents", e)
+            }
+        }
+
+        if (document == null) {
+            return mutableListOf()
+        }
+
+        var activities = document!!.get("activities") as MutableList<String>
+
+        return activities
+    }
+
+    fun addAcitivity(userId: String, activityId: String) {
+        users.document(userId).update("activities", FieldValue.arrayUnion(activityId))
+            .addOnFailureListener { exception: Throwable ->
+                Log.w(TAG, "Error adding activity to user.", exception)
+            }
+    }
+
+    fun removeActivity(userId: String, activityId: String) {
+        users.document(userId).update("activities", FieldValue.arrayRemove(activityId))
+            .addOnFailureListener { exception: Throwable ->
+                Log.w(TAG, "Error removing activity from user.", exception)
+            }
+    }
 }
 
 data class TSUserData (
