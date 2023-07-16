@@ -1,6 +1,7 @@
 package com.example.greetingcard
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -30,7 +31,7 @@ https://www.youtube.com/watch?v=tt3dYmqJTrw
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(context: Context) {
     val navController = rememberNavController()
     val currentSelectedScreen by navController.currentScreenAsState()
 
@@ -48,7 +49,7 @@ fun MainScreen() {
         }
     ) {
 
-        AppNavGraph(navController = navController)
+        AppNavGraph(navController = navController, context)
 
     }
 }

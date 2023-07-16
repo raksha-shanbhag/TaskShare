@@ -1,5 +1,6 @@
 package com.example.greetingcard.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -39,6 +40,7 @@ https://www.youtube.com/watch?v=tt3dYmqJTrw
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
+    context: Context
 ) {
     val viewModel: GroupViewModel = viewModel()
     NavHost(
@@ -49,7 +51,7 @@ fun AppNavGraph(
         addLoginRoute(navController, viewModel)
         addHomeRoute(navController, viewModel)
         addMyTasksRoute(navController)
-        addCreateTaskRoute(navController)
+        addCreateTaskRoute(navController, context)
         addActivityRoute(navController)
         addProfileRoute(navController)
     }
@@ -188,17 +190,17 @@ private fun NavGraphBuilder.showTaskDetail(navController: NavController) {
 //end of myTasks navigation
 
 //addTask navigation
-private fun NavGraphBuilder.addCreateTaskRoute(navController: NavController) {
+private fun NavGraphBuilder.addCreateTaskRoute(navController: NavController, context: Context) {
     navigation(
         route = RootScreen.AddTask.route,
         startDestination = LeafScreen.AddTask.route
     ) {
-        showAddTask(navController)
+        showAddTask(navController, context)
     }
 }
-private fun NavGraphBuilder.showAddTask(navController: NavController) {
+private fun NavGraphBuilder.showAddTask(navController: NavController, context: Context) {
     composable(route = LeafScreen.AddTask.route) {
-        AddTaskScreen()
+        AddTaskScreen(context)
     }
 }
 //end of AddTask navigation

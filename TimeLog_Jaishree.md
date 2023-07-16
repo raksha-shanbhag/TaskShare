@@ -20,4 +20,5 @@
 | 2023/07/13 | 2        | fixing assignee dropdown in add task (sync with backend code for add task)             |
 | 2023/07/14 | 2        | fixing assignee dropdown in add task (created view model for get assignees in a group) |
 | 2023/07/15 | 6        | completed adding assignee multiselect dropdown (integrated with be as well)            |
+| 2023/07/16 | 2        | datepicker implemented under add task (styling needs to be done)                       |
 

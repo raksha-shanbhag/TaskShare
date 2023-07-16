@@ -1,9 +1,13 @@
 package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.content.Context
 import android.util.Log
+import android.widget.DatePicker
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,67 +66,60 @@ import com.TaskShare.ViewModels.GroupMember
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
 import com.example.greetingcard.R
+import java.util.Calendar
+import java.util.Date
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 
-//@Composable
-//fun multiselectAssignees(assignee: String, assigneesState: MutableList<Boolean>, index: Int) {
-//    var isSelected by rememberSaveable { mutableStateOf(assigneesState[index]) }
-//    val backgroundColor by animateColorAsState(if (isSelected) Color.Blue else Color.Transparent)
-//
-//    Row {
-//
-//        Checkbox(
-//            checked = isSelected,
-//            onCheckedChange = {
-//                isSelected = !isSelected
-//                assigneesState[index] = !isSelected
-//            },
-//            modifier = Modifier
-//                .background(color = backgroundColor)
-//        )
-//        Text(
-//            text = assignee,
-//            modifier = Modifier
-//                .padding(24.dp)
-//        )
-//    }
-//}
-
 
 @Composable
-fun AddTaskScreen() {
+fun AddTaskScreen(context: Context) {
     val viewModel = viewModel(AddTaskViewModel::class.java)
     val state by viewModel.state
 
+    // integrate with backend
     val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
-    // state of the menu
+    // state of the menus
     var expandedGroup by remember {
         mutableStateOf(false)
     }
     var expandedCycle by remember {
         mutableStateOf(false)
     }
-
     var expandedAssignTo by remember {
         mutableStateOf(false)
     }
+    // date picker setup
+    val year: Int
+    val month: Int
+    val day: Int
 
+    val calendar = Calendar.getInstance()
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH)
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+    calendar.time = Date()
+
+    val date = remember { mutableStateOf("") }
+    val datePickerDialog = DatePickerDialog(
+        context,
+        {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            date.value = "$dayOfMonth/$month/$year"
+        }, year, month, day
+    )
+
+    // variables
     var groups by remember {
         mutableStateOf(mutableListOf<GroupData>())
     }
-
     var groupMembers by remember {
         mutableStateOf(mutableListOf<GroupMember>())
     }
 
-
+    // fetch data from viewmodel
     groups = viewModel.getAllGroupsForUser()
-
-    Log.i("Debugging Raksha", groups.toString())
-
     groupMembers = viewModel.getGroupMembers()
 
 
@@ -141,7 +138,11 @@ fun AddTaskScreen() {
         ) {
             Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
-                TextField(value = state.taskName, onValueChange = {text -> viewModel.updateTaskName(text)},  label = {Text("Task Name")}, colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
+                TextField(value = state.taskName, onValueChange = {text -> viewModel.updateTaskName(text)},  label = {Text("Task Name")},
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White, textColor = Color.Black,
+                        focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
 
                 ExposedDropdownMenuBox(
                     expanded = expandedGroup,
@@ -180,12 +181,34 @@ fun AddTaskScreen() {
                     }
                 }
 
-                TextField(value = state.endDate.toString(),
-                    onValueChange = {text -> viewModel.updateDeadline(text)},
-                    label = {Text("Deadline")},
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
-                    placeholder = { Text(text = "mm/dd/yyyy") }
+
+                TextField(
+                    readOnly = true,
+                    value = date.value,
+                    onValueChange = { },
+                    label = { Text("End Date") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = false
+                        )
+                    },
+                    enabled = false,
+                    modifier = Modifier
+                        .clickable {
+                            datePickerDialog.show()
+                        },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White,
+                        textColor = Color.Black,
+                        focusedIndicatorColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        disabledPlaceholderColor = Color.Black,
+                        disabledTextColor = Color.Black,
+                        disabledLabelColor = Color.Black
+                    )
                 )
+
 
                 ExposedDropdownMenuBox(
                     expanded = expandedCycle,
@@ -222,6 +245,7 @@ fun AddTaskScreen() {
                         }
                     }
                 }
+
 
                 ExposedDropdownMenuBox(
                     expanded = expandedAssignTo,
@@ -274,6 +298,7 @@ fun AddTaskScreen() {
                     }
                 }
 
+
                 FlowRow(modifier = Modifier
                     .fillMaxWidth()
                     .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp),
@@ -315,8 +340,8 @@ fun AddTaskScreen() {
 }
 
 
-@Composable
-@Preview
-fun AddTaskScreenPreview() {
-    AddTaskScreen()
-}
+//@Composable
+//@Preview
+//fun AddTaskScreenPreview() {
+//    AddTaskScreen()
+//}
