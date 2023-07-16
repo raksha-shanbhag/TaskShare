@@ -1,16 +1,14 @@
 package com.TaskShare.ViewModels
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.ActivityManagementService
 
-
 class ActivityViewModel: ViewModel() {
     val state = mutableStateOf(Activity())
-    private val activitiesState = mutableStateOf(ActivitiesViewState())
+    val activitiesState = mutableStateOf(ActivitiesViewState())
 
     private val activityManager = ActivityManagementService()
 

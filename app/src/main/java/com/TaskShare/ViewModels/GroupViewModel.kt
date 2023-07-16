@@ -9,7 +9,6 @@ import com.TaskShare.Models.Services.GroupManagementService
 import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
-    var temporaryGlobalUserId = "xvG378qDSANqPD6Ic54vD8C2PpZ2" // remove this
     val state = mutableStateOf(GroupViewState())
     val groupsState = mutableStateOf(GroupsViewState())
     private val groupManager = GroupManagementService()
@@ -55,6 +54,8 @@ class GroupViewModel: ViewModel() {
                 userIds.add(userId)
             }
         }
+
+        groupMembers.add(TSUsersRepository.globalUserId)
 
         val groupId = groupManager.createGroup(
             creatorId = TSUsersRepository.globalUserId,
