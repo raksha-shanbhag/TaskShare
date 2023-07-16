@@ -81,7 +81,8 @@ fun ChangePasswordScreen(
                         Text(
                             text = "Change Password",
                             color = Color.White,
-                            fontSize = 26.sp
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 },

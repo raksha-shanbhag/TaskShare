@@ -89,7 +89,8 @@ fun EditProfileScreen(
                         Text(
                             text = "Edit Profile",
                             color = Color.White,
-                            fontSize = 26.sp
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 },

@@ -70,11 +70,12 @@ fun BlockedUserScreen(
                                 tint = Color.White
                             )
                         }
-                        Spacer(modifier = Modifier.width(60.dp))
+                        Spacer(modifier = Modifier.width(70.dp))
                         Text(
                             text = "Blocked Users",
                             color = Color.White,
-                            fontSize = 30.sp
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 },

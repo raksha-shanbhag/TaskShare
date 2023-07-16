@@ -77,11 +77,12 @@ fun AddFriendScreen(
                                 tint = Color.White
                             )
                         }
-                        Spacer(modifier = Modifier.width(80.dp))
+                        Spacer(modifier = Modifier.width(90.dp))
                         Text(
                             text = "Add Friend",
                             color = Color.White,
-                            fontSize = 30.sp
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 },

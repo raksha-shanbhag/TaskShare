@@ -88,7 +88,8 @@ fun IncomingRequestsScreen(
                         Text(
                             text = "Incoming Requests",
                             color = Color.White,
-                            fontSize = 24.sp
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 },
@@ -116,7 +117,7 @@ fun IncomingRequestsScreen(
                     onClickBlock = onBlockUser
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                RenderIncomingRequestCard("User1",
+                RenderIncomingRequestCard("User2",
                     painterResource(R.drawable.ic_account_circle),
                     onClickAccept = onAcceptRequest,
                     onClickDeny = onDenyRequest,

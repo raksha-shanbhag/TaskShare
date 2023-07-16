@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -50,7 +51,8 @@ fun FriendScreen(
     onRemoveFriend: () -> Unit,
     onFriends: () -> Unit,
     onIncoming: () -> Unit,
-    onOutgoing: () -> Unit
+    onOutgoing: () -> Unit,
+    onBlock: () -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -85,7 +87,8 @@ fun FriendScreen(
                         Text(
                             text = "Friends",
                             color = Color.White,
-                            fontSize = 30.sp
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                         IconButton(
                             onClick = onAddFriends,
@@ -118,13 +121,17 @@ fun FriendScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 RenderFriendCard(
                     "User1",
-                    painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend
+                    painterResource(R.drawable.ic_account_circle),
+                    onClickRemove = onRemoveFriend,
+                    onClickBlock = onBlock
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 RenderFriendCard(
                     "User2",
-                    painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend
+                    painterResource(R.drawable.ic_account_circle),
+                    onClickRemove = onRemoveFriend,
+                    onClickBlock = onBlock
                 )
 
             }
@@ -174,11 +181,12 @@ fun RenderTopButton(modifier: Modifier = Modifier, label: String,
 
 @Composable
 fun RenderFriendCard(username: String, profilePic: Painter,
-                     modifier: Modifier = Modifier, onClick: () -> Unit) {
+                     modifier: Modifier = Modifier, onClickRemove: () -> Unit,
+                     onClickBlock: () -> Unit) {
     Row(
         modifier = Modifier
             .background(
-                colorResource(id = R.color.grey_button),
+                colorResource(id = R.color.background_blue),
                 RoundedCornerShape(10.dp)
             )
             .fillMaxWidth()
@@ -206,20 +214,34 @@ fun RenderFriendCard(username: String, profilePic: Painter,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
-            RenderRemoveButton(onClick = onClick)
+            Column (modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.End
+            ){
+
+                // Remove button
+                RenderRectButton(onClick = onClickRemove, buttonLabel = "Remove",
+                    buttonColor = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)))
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Block button
+                RenderRectButton(onClick = onClickBlock, buttonLabel = "Block",
+                    buttonColor = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_pink)))
+            }
         }
     }
 }
 
 @Composable
-fun RenderRemoveButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun RenderRectButton(modifier: Modifier = Modifier, buttonColor: ButtonColors,
+                     buttonLabel: String, onClick: () -> Unit) {
     Button(
         onClick = { onClick() },
         modifier = Modifier
             .width(110.dp)
             .height(43.dp),
         contentPadding = PaddingValues(10.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_pink)),
+        colors = buttonColor,
         shape = RoundedCornerShape(10.dp)
     ) {
         Row (
@@ -229,7 +251,7 @@ fun RenderRemoveButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.Center
         ){
             Text(
-                text = "Remove",
+                text = buttonLabel,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
                 color = Color.White
@@ -248,6 +270,7 @@ fun FriendScreenPreview() {
         onRemoveFriend = {},
         onFriends = {},
         onIncoming = {},
-        onOutgoing = {}
+        onOutgoing = {},
+        onBlock = {}
     )
 }
