@@ -52,7 +52,7 @@ fun AddFriendScreen(
     val scope = rememberCoroutineScope()
 
     // Variables to hold the user's name, email and password
-    val userName = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
 
     Scaffold(
         modifier = Modifier
@@ -102,12 +102,12 @@ fun AddFriendScreen(
             Text(text = "Add your friends on SplitChore",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp)
-            Text(text = "You can add friends with their username",
+            Text(text = "You can add friends with their email",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp)
             Spacer(modifier = Modifier.height(30.dp))
-            RenderTextField("ADD FRIEND","Enter a username") { newValue ->
-                userName.value = newValue
+            RenderTextField("ADD FRIEND","Enter an email") { newValue ->
+                email.value = newValue
             }
             Spacer(modifier = Modifier.height(20.dp))
             AddFriendButton("Send Friend Request",

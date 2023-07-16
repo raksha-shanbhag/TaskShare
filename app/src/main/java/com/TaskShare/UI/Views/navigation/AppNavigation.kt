@@ -250,7 +250,10 @@ private fun NavGraphBuilder.showFriends(navController: NavController) {
         FriendScreen(
             onBack = { navController.navigateUp() },
             onAddFriends = { navController.navigate(LeafScreen.AddFriend.route) },
-            onRemoveFriend = {}
+            onRemoveFriend = {},
+            onFriends = {},
+            onOutgoing = {},
+            onIncoming = {}
         )
     }
 }

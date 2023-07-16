@@ -52,7 +52,6 @@ fun EditProfileScreen(
     onEditPicture: () -> Unit,
     onSaveEdit: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
 
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -66,8 +65,7 @@ fun EditProfileScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .scrollable(state = scrollState, orientation = Orientation.Vertical),
+            .background(Color.White),
         scaffoldState = scaffoldState,
         topBar = {
             CenterAlignedTopAppBar(
@@ -170,7 +168,7 @@ fun RenderEditTextField(modifier: Modifier = Modifier, labelValue: String,
 fun RenderSaveButton(textValue: String, contentDesc: String,
                      onClick: () -> Unit) {
     Button(
-        onClick = { onClick },
+        onClick = { onClick() },
         modifier = Modifier
             .width(200.dp)
             .height(45.dp),

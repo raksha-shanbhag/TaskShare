@@ -1,26 +1,29 @@
 package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.TextButton
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
@@ -38,15 +41,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
-import java.time.format.TextStyle
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun FriendScreen(
     onBack: () -> Unit,
     onAddFriends: () -> Unit,
-    onRemoveFriend: () -> Unit
+    onRemoveFriend: () -> Unit,
+    onFriends: () -> Unit,
+    onIncoming: () -> Unit,
+    onOutgoing: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
 
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -54,7 +60,8 @@ fun FriendScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .scrollable(state = scrollState, orientation = Orientation.Vertical),
         scaffoldState = scaffoldState,
         topBar = {
             CenterAlignedTopAppBar(
@@ -98,24 +105,73 @@ fun FriendScreen(
             )
         }
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        Column (modifier = Modifier.fillMaxWidth()
+        ){
+            RenderTopButtonBar(onFriends, onIncoming, onOutgoing)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                RenderFriendCard(
+                    "User1",
+                    painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
-            RenderFriendCard("User1",
-                painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend)
+                Spacer(modifier = Modifier.height(20.dp))
+                RenderFriendCard(
+                    "User2",
+                    painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
-            RenderFriendCard("User2",
-                painterResource(R.drawable.ic_account_circle), onClick = onRemoveFriend)
-
+            }
         }
     }
 }
+
+@Composable
+fun RenderTopButtonBar(onClickFriends: () -> Unit, onClickIncoming: () -> Unit,
+                       onClickOutgoing: () -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.background_blue)),
+    ) {
+        RenderTopButton(label = "Friends", onClick = onClickFriends)
+        RenderTopButton(label = "Incoming", onClick = onClickIncoming)
+        RenderTopButton(label = "Outgoing", onClick = onClickOutgoing)
+    }
+}
+
+@Composable
+fun RenderTopButton(modifier: Modifier = Modifier, label: String,
+                    onClick: () -> Unit) {
+    TextButton(onClick = { onClick() },
+        modifier = Modifier
+            .width(130.dp)
+            .height(45.dp),
+        contentPadding = PaddingValues(10.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Row(modifier = Modifier
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = label,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+
 @Composable
 fun RenderFriendCard(username: String, profilePic: Painter,
                      modifier: Modifier = Modifier, onClick: () -> Unit) {
@@ -163,7 +219,7 @@ fun RenderRemoveButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
             .width(110.dp)
             .height(43.dp),
         contentPadding = PaddingValues(10.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_blue)),
+        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary_pink)),
         shape = RoundedCornerShape(10.dp)
     ) {
         Row (
@@ -189,6 +245,9 @@ fun FriendScreenPreview() {
     FriendScreen(
         onBack = {},
         onAddFriends = {},
-        onRemoveFriend = {}
+        onRemoveFriend = {},
+        onFriends = {},
+        onIncoming = {},
+        onOutgoing = {}
     )
 }

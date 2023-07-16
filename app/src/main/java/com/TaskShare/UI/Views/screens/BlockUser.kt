@@ -50,7 +50,7 @@ fun BlockUserScreen(
     val scope = rememberCoroutineScope()
 
     // Variables to hold the user's name
-    val userName = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
     
     Scaffold(
         modifier = Modifier
@@ -104,8 +104,8 @@ fun BlockUserScreen(
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp)
             Spacer(modifier = Modifier.height(30.dp))
-            RenderTextField("BLOCK USER","Enter a username") { newValue ->
-                userName.value = newValue
+            RenderTextField("BLOCK USER","Enter an email") { newValue ->
+                email.value = newValue
             }
             Spacer(modifier = Modifier.height(20.dp))
             RenderBlockButton("Block Account",
@@ -118,7 +118,7 @@ fun BlockUserScreen(
 fun RenderBlockButton(textValue: String, contentDesc: String,
                       onClick: () -> Unit) {
     Button(
-        onClick = { onClick },
+        onClick = { onClick() },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
