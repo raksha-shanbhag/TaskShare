@@ -84,7 +84,7 @@ fun IncomingRequestsScreen(
                                 tint = Color.White
                             )
                         }
-                        Spacer(modifier = Modifier.width(70.dp))
+                        Spacer(modifier = Modifier.width(60.dp))
                         Text(
                             text = "Incoming Requests",
                             color = Color.White,

@@ -13,6 +13,8 @@ import com.TaskShare.UI.Views.screens.BlockedUserScreen
 import com.TaskShare.UI.Views.screens.ChangePasswordScreen
 import com.TaskShare.UI.Views.screens.EditProfileScreen
 import com.TaskShare.UI.Views.screens.FriendScreen
+import com.TaskShare.UI.Views.screens.IncomingRequestsScreen
+import com.TaskShare.UI.Views.screens.OutgoingRequestsScreen
 import com.TaskShare.ViewModels.GroupViewModel
 import com.example.greetingcard.screens.AddTaskScreen
 import com.example.greetingcard.screens.CreateGroupScreen
@@ -229,6 +231,8 @@ private fun NavGraphBuilder.addProfileRoute(navController: NavController) {
         showChangePassword(navController)
         showBlockedAccounts(navController)
         showAddFriends(navController)
+        showIncomingRequests(navController)
+        showOutgoingRequests(navController)
     }
 }
 private fun NavGraphBuilder.showProfile(navController: NavController) {
@@ -249,9 +253,9 @@ private fun NavGraphBuilder.showFriends(navController: NavController) {
             onBack = { navController.navigateUp() },
             onAddFriends = { navController.navigate(LeafScreen.AddFriend.route) },
             onRemoveFriend = {},
-            onFriends = {},
-            onOutgoing = {},
-            onIncoming = {}
+            onFriends = { navController.navigate(LeafScreen.Friends.route) },
+            onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) },
+            onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) }
         )
     }
 }
@@ -289,6 +293,32 @@ private fun NavGraphBuilder.showAddFriends(navController: NavController) {
         AddFriendScreen(
             onBack = { navController.navigateUp() },
             onFriendRequest = {}
+        )
+    }
+}
+
+private fun NavGraphBuilder.showIncomingRequests(navController: NavController) {
+    composable(route = LeafScreen.IncomingRequests.route) {
+        IncomingRequestsScreen(
+            onBack = { navController.navigateUp() },
+            onDenyRequest = {},
+            onFriends = { navController.navigate(LeafScreen.Friends.route) },
+            onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) },
+            onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) },
+            onBlockUser = {},
+            onAcceptRequest = {}
+        )
+    }
+}
+
+private fun NavGraphBuilder.showOutgoingRequests(navController: NavController) {
+    composable(route = LeafScreen.OutgoingRequests.route) {
+        OutgoingRequestsScreen(
+            onBack = { navController.navigateUp() },
+            onBlockUser = { },
+            onFriends = { navController.navigate(LeafScreen.Friends.route) },
+            onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) },
+            onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) }
         )
     }
 }
