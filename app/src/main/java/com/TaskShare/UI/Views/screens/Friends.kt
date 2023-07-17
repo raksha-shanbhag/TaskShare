@@ -1,7 +1,6 @@
 package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -16,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -33,7 +34,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -41,7 +44,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.FriendsViewModel
 import com.example.greetingcard.R
+import com.example.greetingcard.screens.RenderTaskCard
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -54,16 +60,18 @@ fun FriendScreen(
     onOutgoing: () -> Unit,
     onBlock: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
+    // Getting friends data
+    val viewModel = viewModel(FriendsViewModel::class.java)
+    val friends = viewModel.getFriends()
 
+    val scrollState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .scrollable(state = scrollState, orientation = Orientation.Vertical),
+            .background(Color.White),
         scaffoldState = scaffoldState,
         topBar = {
             CenterAlignedTopAppBar(
@@ -108,32 +116,28 @@ fun FriendScreen(
             )
         }
     ) {
-        Column (modifier = Modifier.fillMaxWidth()
-        ){
+        Column {
             RenderTopButtonBar(onFriends, onIncoming, onOutgoing)
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                state = scrollState
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
-                RenderFriendCard(
-                    "User1",
-                    painterResource(R.drawable.ic_account_circle),
-                    onClickRemove = onRemoveFriend,
-                    onClickBlock = onBlock
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-                RenderFriendCard(
-                    "User2",
-                    painterResource(R.drawable.ic_account_circle),
-                    onClickRemove = onRemoveFriend,
-                    onClickBlock = onBlock
-                )
-
+                item{
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                items(friends.count()) { index ->
+                    RenderFriendCard(
+                        firstName = friends[index].firstName,
+                        lastName = friends[index].lastName,
+                        onClickRemove = onRemoveFriend,
+                        onClickBlock = onBlock
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
             }
         }
     }
@@ -180,13 +184,14 @@ fun RenderTopButton(modifier: Modifier = Modifier, label: String,
 
 
 @Composable
-fun RenderFriendCard(username: String, profilePic: Painter,
+fun RenderFriendCard(firstName: String, lastName: String,
+                     profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                      modifier: Modifier = Modifier, onClickRemove: () -> Unit,
                      onClickBlock: () -> Unit) {
     Row(
         modifier = Modifier
             .background(
-                colorResource(id = R.color.background_blue),
+                colorResource(id = R.color.icon_blue),
                 RoundedCornerShape(10.dp)
             )
             .fillMaxWidth()
@@ -195,7 +200,7 @@ fun RenderFriendCard(username: String, profilePic: Painter,
     ) {
 
         Icon(
-            painterResource(id = R.drawable.ic_account_circle),
+            profilePic,
             contentDescription = "Default User Icon",
             modifier = Modifier
                 .size(60.dp)
@@ -209,7 +214,7 @@ fun RenderFriendCard(username: String, profilePic: Painter,
                 .fillMaxWidth()
         ) {
             Text(
-                text = username,
+                text = "$firstName $lastName",
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
