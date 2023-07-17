@@ -252,7 +252,7 @@ private fun NavGraphBuilder.showProfile(navController: NavController) {
 private fun NavGraphBuilder.showFriends(navController: NavController) {
     composable(route = LeafScreen.Friends.route) {
         FriendScreen(
-            onBack = { navController.navigateUp() },
+            onBack = { navController.navigate(LeafScreen.Profile.route) },
             onAddFriends = { navController.navigate(LeafScreen.AddFriend.route) },
             onRemoveFriend = {},
             onBlock = {},
@@ -303,7 +303,7 @@ private fun NavGraphBuilder.showAddFriends(navController: NavController) {
 private fun NavGraphBuilder.showIncomingRequests(navController: NavController) {
     composable(route = LeafScreen.IncomingRequests.route) {
         IncomingRequestsScreen(
-            onBack = { navController.navigateUp() },
+            onBack = { navController.navigate(LeafScreen.Profile.route) },
             onDenyRequest = {},
             onFriends = { navController.navigate(LeafScreen.Friends.route) },
             onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) },
@@ -317,7 +317,7 @@ private fun NavGraphBuilder.showIncomingRequests(navController: NavController) {
 private fun NavGraphBuilder.showOutgoingRequests(navController: NavController) {
     composable(route = LeafScreen.OutgoingRequests.route) {
         OutgoingRequestsScreen(
-            onBack = { navController.navigateUp() },
+            onBack = { navController.navigate(LeafScreen.Profile.route) },
             onCancel = { },
             onFriends = { navController.navigate(LeafScreen.Friends.route) },
             onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) },

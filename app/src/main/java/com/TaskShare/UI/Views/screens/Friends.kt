@@ -138,6 +138,9 @@ fun FriendScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
+                item{
+                    Spacer(modifier = Modifier.height(60.dp))
+                }
             }
         }
     }

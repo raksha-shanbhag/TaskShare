@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 
 
 class FriendsViewModel: ViewModel() {
-    val tasksState = mutableStateOf(FriendsViewState())
+    //val tasksState = mutableStateOf(FriendsViewState())
 
     fun getFriends(): List<FriendViewState>{
         var friend1 = FriendViewState("Timmy", "Nook")
