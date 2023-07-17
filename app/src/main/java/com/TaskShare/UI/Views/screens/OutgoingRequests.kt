@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -36,6 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.IncomingViewModel
+import com.TaskShare.ViewModels.OutgoingViewModel
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -48,8 +53,11 @@ fun OutgoingRequestsScreen(
     onIncoming: () -> Unit,
     onOutgoing: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
+    // Get info for outgoing requests
+    val viewModel = viewModel(OutgoingViewModel::class.java)
+    val outgoingRequests = viewModel.getOutgoingRequests()
 
+    val scrollState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     
@@ -95,37 +103,40 @@ fun OutgoingRequestsScreen(
         Column (modifier = Modifier.fillMaxWidth()
         ) {
             RenderTopButtonBar(onFriends, onIncoming, onOutgoing)
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                state = scrollState
             ) {
-
-                Spacer(modifier = Modifier.height(20.dp))
-                RenderOutgoingRequestCard("User1",
-                    painterResource(R.drawable.ic_account_circle),
-                    onClickCancel = onCancel)
-
-                Spacer(modifier = Modifier.height(20.dp))
-                RenderOutgoingRequestCard("User2",
-                    painterResource(R.drawable.ic_account_circle),
-                    onClickCancel = onCancel)
-
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                items(outgoingRequests.count()) {index ->
+                    RenderOutgoingRequestCard(firstName = outgoingRequests[index].firstName,
+                        lastName = outgoingRequests[index].lastName,
+                        onClickCancel = onCancel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                item {
+                    Spacer(modifier = Modifier.height(60.dp))
+                }
             }
         }
     }
 }
 
 @Composable
-fun RenderOutgoingRequestCard(username: String, profilePic: Painter,
+fun RenderOutgoingRequestCard(firstName: String, lastName: String,
+                              profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                               onClickCancel: () -> Unit,
                               modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier
             .background(
-                colorResource(id = R.color.background_blue),
+                colorResource(id = R.color.icon_blue),
                 RoundedCornerShape(10.dp)
             )
             .fillMaxWidth()
@@ -133,7 +144,7 @@ fun RenderOutgoingRequestCard(username: String, profilePic: Painter,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painterResource(id = R.drawable.ic_account_circle),
+            profilePic,
             contentDescription = "Default User Icon",
             modifier = Modifier
                 .size(60.dp)
@@ -146,7 +157,7 @@ fun RenderOutgoingRequestCard(username: String, profilePic: Painter,
                 .fillMaxWidth()
         ) {
             Text(
-                text = username,
+                text = "$firstName $lastName",
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
