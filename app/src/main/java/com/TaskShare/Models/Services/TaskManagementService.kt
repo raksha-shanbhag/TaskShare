@@ -21,8 +21,15 @@ class TaskManagementService {
         assignerId: String,
         assignees: MutableList<String>
     ) : String {
-        // create main task
         var startDate = Date()
+
+        // create main task
+        var curr_assignees = mutableListOf<String>()
+        curr_assignees.addAll(assignees)
+        if (assignees.size <=0 ){
+            assignees.add(assignerId)
+        }
+
         var taskId = taskRepository.createTask(
             assignerId = assignerId,
             taskName = taskName,
