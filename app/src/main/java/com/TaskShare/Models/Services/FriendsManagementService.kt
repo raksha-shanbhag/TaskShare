@@ -22,7 +22,11 @@ class FriendsManagementService {
         }
     }
 
-    fun acceptFriendRequest(currentUserId: String, friendToAccept: String){ //lines 30 - 31 are from ChatGpt
+    fun acceptFriendRequest(currentUserId: String, friendToAccept: String){
+        val sender = TSUser.getFromId(currentUserId)
+        val senderNewFriend =  TSUser.Friend(userId = currentUserId, name = sender.userData.firstName, status = "Friend")
+        sender.userData.friends.add(senderNewFriend)
+        //lines 30 - 31 are from ChatGpt
         var currentUser = TSUser.getFromId(currentUserId)
         var friendRequest = currentUser.userData.friends.find { friend -> friend.userId == friendToAccept }
         friendRequest?.let { friend ->
