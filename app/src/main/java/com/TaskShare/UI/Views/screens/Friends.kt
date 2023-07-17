@@ -2,8 +2,6 @@ package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -34,9 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -45,9 +40,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.TaskShare.ViewModels.FriendsViewModel
+import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
-import com.example.greetingcard.screens.RenderTaskCard
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -61,7 +55,7 @@ fun FriendScreen(
     onBlock: () -> Unit
 ) {
     // Getting friends data
-    val viewModel = viewModel(FriendsViewModel::class.java)
+    val viewModel = viewModel(UserViewModel::class.java)
     val friends = viewModel.getFriends()
 
     val scrollState = rememberLazyListState()

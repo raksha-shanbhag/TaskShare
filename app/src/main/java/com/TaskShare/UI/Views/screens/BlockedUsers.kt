@@ -2,9 +2,7 @@ package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -36,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -44,6 +46,11 @@ fun BlockedUserScreen(
     onBack: () -> Unit,
     onUnblockUser: () -> Unit
 ) {
+    // Getting friends data
+    val viewModel = viewModel(UserViewModel::class.java)
+    val blockedUsers = viewModel.getBlockedUsers()
+
+    val scrollState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -85,27 +92,33 @@ fun BlockedUserScreen(
             )
         }
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            state = scrollState
         ) {
-
-            Spacer(modifier = Modifier.height(20.dp))
-            RenderBlockedUserCard("User1",
-                painterResource(R.drawable.ic_account_circle), onClick = onUnblockUser)
-
-            Spacer(modifier = Modifier.height(20.dp))
-            RenderBlockedUserCard("User2",
-                painterResource(R.drawable.ic_account_circle), onClick = onUnblockUser)
-
+            item{
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            items(blockedUsers.count()) {index ->
+                RenderBlockedUserCard(blockedUsers[index].firstName,
+                    blockedUsers[index].lastName,
+                    onClick = onUnblockUser)
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            item{
+                Spacer(modifier = Modifier.height(60.dp))
+            }
         }
     }
 }
 
 @Composable
-fun RenderBlockedUserCard(username: String, profilePic: Painter,
+fun RenderBlockedUserCard(firstName: String, lastName: String,
+                          profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                           modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
         modifier = Modifier
@@ -118,7 +131,7 @@ fun RenderBlockedUserCard(username: String, profilePic: Painter,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painterResource(id = R.drawable.ic_account_circle),
+            profilePic,
             contentDescription = "Default User Icon",
             modifier = Modifier
                 .size(60.dp)
@@ -132,7 +145,7 @@ fun RenderBlockedUserCard(username: String, profilePic: Painter,
                 .fillMaxWidth()
         ) {
             Text(
-                text = username,
+                text = "$firstName $lastName",
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp

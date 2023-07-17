@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.TaskShare.ViewModels.IncomingViewModel
+import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -52,7 +52,7 @@ fun IncomingRequestsScreen(
     onOutgoing: () -> Unit
 ) {
     // Get info for incoming requests
-    val viewModel = viewModel(IncomingViewModel::class.java)
+    val viewModel = viewModel(UserViewModel::class.java)
     val incomingRequests = viewModel.getIncomingRequests()
 
     val scrollState = rememberLazyListState()
