@@ -156,14 +156,20 @@ class TSUsersRepository() {
     }
 }
 
+data class Friend(
+    val userId: String = "",
+    val name: String = "",
+    var status: String = ""
+)
+
 data class TSUserData (
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",
     val phoneNumber: String = "",
+    val friends: MutableList<Friend> = mutableListOf(),
     val groups: MutableList<String> = mutableListOf()
 )
-
 class TSUser() {
 //    private var groups: MutableList<TSGroup> = mutableListOf()
 
@@ -230,6 +236,10 @@ class TSUser() {
                     }
             }
         }
+
+        fun Friend(userId: String, name: String, status: String): Friend {
+            return Friend(userId, name, status)
+        }
     }
 
 //    fun getGroups(): MutableList<TSGroup> {
@@ -239,10 +249,11 @@ class TSUser() {
     fun updateInfo(value: TSUserData) {
         val dbRef = Firebase.firestore.collection("Users").document(id)
 
-        dbRef.update("firstName", userData.firstName)
-        dbRef.update("lastName", userData.lastName)
-        dbRef.update("email", userData.email)
-        dbRef.update("phoneNumber", userData.phoneNumber)
+        dbRef.update("firstName", value.firstName)
+        dbRef.update("lastName", value.lastName)
+        dbRef.update("email", value.email)
+        dbRef.update("phoneNumber", value.phoneNumber)
+        dbRef.update("friends", value.friends)
     }
 
 //    fun getTasks(): List<TSSubTask> {
