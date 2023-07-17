@@ -25,6 +25,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -37,21 +41,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.TaskDetail
 import com.TaskShare.ViewModels.TaskViewModel
+import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun TaskDetailsScreen(onBack: () -> Unit) {
-    val viewModel = viewModel(TaskViewModel::class.java)
+fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
+//    val viewModel = viewModel(TaskViewModel::class.java)
+    var taskDetail by remember {
+        mutableStateOf(TaskViewState())
+    }
 
-    // REMOVE line below when integration with backend done, this is used to generate dummy data
-    viewModel.initTask("Cry Myself to Sleep", "Waterloo", "inprogress", "Jaishree", "ECE", "01/04/2024", "Daily")
 
-    // update getTaskByID to take in id so this page can be dynamically rendered
-    var task = viewModel.getTaskByID()
+
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Task Details", color = Color.White, fontSize = 30.sp) },
@@ -73,6 +79,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
+                taskDetail = viewModel.getDetailTaskInfo()
                 // Task Name
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -89,7 +96,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                 ) {
 
                     Text(
-                        text = task.taskName,
+                        text = viewModel.detailTaskState.value.taskDetail.taskName,
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
@@ -114,7 +121,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         Row(modifier = Modifier
                             .fillMaxWidth(value_width)
                             .wrapContentWidth()){
-                            RenderPills(task.assignee, R.color.icon_blue)
+                            RenderPills(taskDetail.assignee, R.color.icon_blue)
                         }
                     }
                     Row(modifier = Modifier
@@ -122,7 +129,7 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
-                            RenderPills(task.assigner, R.color.icon_blue)
+                            RenderPills(taskDetail.assigner, R.color.icon_blue)
                         }
                     }
                     Row(modifier = Modifier
@@ -130,26 +137,26 @@ fun TaskDetailsScreen(onBack: () -> Unit) {
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Group", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
-                            RenderPills(task.groupName, R.color.pink)
+                            RenderPills(taskDetail.groupName, R.color.pink)
                         }
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Status", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderStatus(task.status)
+                        RenderStatus(taskDetail.status)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderPills(task.deadline, R.color.banner_blue)
+                        RenderPills(taskDetail.deadline, R.color.banner_blue)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Cycle", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderPills(task.cycle, R.color.banner_blue)
+                        RenderPills(taskDetail.cycle, R.color.banner_blue)
                     }
 
                     Row(modifier = Modifier

@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.TaskViewModel
+import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
@@ -92,8 +95,9 @@ fun RenderStatus(status: String){
     RenderPills(text_print, bg_color)
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun RenderTaskCard(task_name: String, group_name: String, status: String, end_date: String, showDetail: () -> Unit){
+fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetail: () -> Unit){
 //    Button(onClick = showDetail){
     Row(
         modifier = Modifier
@@ -104,7 +108,10 @@ fun RenderTaskCard(task_name: String, group_name: String, status: String, end_da
             .fillMaxWidth()
             .clickable(
 
-                onClick = showDetail
+                onClick = {
+                    viewModel.setDetailTaskInfo(taskInfo.id)
+                    showDetail()
+                }
             )
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -119,59 +126,81 @@ fun RenderTaskCard(task_name: String, group_name: String, status: String, end_da
                 )
                 .padding(14.dp)
         )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .padding(10.dp, 0.dp)
+                    .widthIn(10.dp, 140.dp)
+            )
+            {
+                Text(
+                    text = taskInfo.taskName,
+                    fontSize = small_font_size.sp,
+                    modifier = Modifier
+                        .padding(2.dp, 0.dp, 0.dp, 5.dp)
+                )
+                Text(
+                    text = taskInfo.groupName,
+                    fontSize = small_font_size.sp,
+                    color = colorResource(id = R.color.banner_blue),
+                    modifier = Modifier
+                        .background(
+                            colorResource(id = R.color.white),
+                            RoundedCornerShape(3.dp)
+                        )
+                        .padding(10.dp, 2.dp)
+                )
+            }
 
-        Column(modifier = Modifier
-            .padding(10.dp, 0.dp)
-            .widthIn(10.dp, 140.dp))
-        {
-            Text(text = task_name,
-                fontSize = small_font_size.sp,
+            Column(
                 modifier = Modifier
-                    .padding(2.dp, 0.dp, 0.dp, 5.dp)
-            )
-            Text(text = group_name,
-                fontSize = small_font_size.sp,
-                color = colorResource(id = R.color.banner_blue),
-                modifier = Modifier
-                    .background(
-                        colorResource(id = R.color.white),
-                        RoundedCornerShape(3.dp)
-                    )
-                    .padding(10.dp, 2.dp)
-            )
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Center,
+
+                ) {
+                RenderStatus(taskInfo.status)
+                Spacer(modifier = Modifier.height(height = 5.dp))
+
+                Text(
+                    text = taskInfo.deadline,
+                    fontSize = small_font_size.sp,
+                    modifier = Modifier
+                        .widthIn(min_width_pill.dp, max_width_pill.dp)
+                        .background(
+                            colorResource(id = R.color.white),
+                            RoundedCornerShape(3.dp)
+                        )
+                        .padding(10.dp, 2.dp)
+                )
+            }
         }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Center,
-
-            ) {
-            RenderStatus(status)
-//                            RenderStatus("done")
-//                            RenderStatus("inprogress")
-            Spacer(modifier = Modifier.height(height = 5.dp))
-            Text(text = end_date,
-                fontSize = small_font_size.sp,
-                modifier = Modifier
-                    .widthIn(min_width_pill.dp, max_width_pill.dp)
-                    .background(
-                        colorResource(id = R.color.white),
-                        RoundedCornerShape(3.dp)
-                    )
-                    .padding(10.dp, 2.dp)
-            )
-        }
+//        FlowRow(){
+//            Text(text = "Assignees: ")
+//            taskInfo.assignees.forEach{
+//                Text(
+//                    text = it,
+//                    fontSize = small_font_size.sp,
+//                    color = colorResource(id = R.color.banner_blue),
+//                    modifier = Modifier
+//                        .background(
+//                            colorResource(id = R.color.white),
+//                            RoundedCornerShape(3.dp)
+//                        )
+//                        .padding(10.dp, 2.dp)
+//                )
+//            }
+//
+//        }
 
     }
 //    }
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MyTasksScreen(showDetail: () -> Unit) {
+fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
     //getting data
-    val viewModel = viewModel(TaskViewModel::class.java)
+//    val viewModel = viewModel(TaskViewModel::class.java)
     val state by viewModel.state
     val scrollState = rememberScrollState()
 
@@ -224,7 +253,6 @@ fun MyTasksScreen(showDetail: () -> Unit) {
                                 },
                             text = "0",
                             fontSize = mid_font_size.sp,
-//                                .background(colorResource(id = R.color.white), RoundedCornerShape(20.dp))
                         )
                     }
                     Row(Modifier.padding(10.dp)){
@@ -238,7 +266,7 @@ fun MyTasksScreen(showDetail: () -> Unit) {
 
                     var userTasks = viewModel.getTasks()
                     userTasks.forEach{
-                        RenderTaskCard(it.taskName, it.groupName, it.status, it.deadline, showDetail)
+                        RenderTaskCard(it, viewModel, showDetail)
                         Spacer(modifier = Modifier.height(height = 10.dp))
                     }
 

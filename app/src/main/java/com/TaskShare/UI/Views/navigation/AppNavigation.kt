@@ -17,6 +17,7 @@ import com.TaskShare.UI.Views.screens.FriendScreen
 import com.TaskShare.UI.Views.screens.IncomingRequestsScreen
 import com.TaskShare.UI.Views.screens.OutgoingRequestsScreen
 import com.TaskShare.ViewModels.GroupViewModel
+import com.TaskShare.ViewModels.TaskViewModel
 import com.example.greetingcard.screens.AddTaskScreen
 import com.example.greetingcard.screens.CreateGroupScreen
 import com.example.greetingcard.screens.HomeScreen
@@ -42,15 +43,16 @@ fun AppNavGraph(
     navController: NavHostController,
     context: Context
 ) {
-    val viewModel: GroupViewModel = viewModel()
+    val groupViewModel: GroupViewModel = viewModel()
+    val taskViewModel: TaskViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = RootScreen.Login.route
         //startDestination = RootScreen.Home.route
     ) {
-        addLoginRoute(navController, viewModel)
-        addHomeRoute(navController, viewModel)
-        addMyTasksRoute(navController)
+        addLoginRoute(navController, groupViewModel)
+        addHomeRoute(navController, groupViewModel)
+        addMyTasksRoute(navController, taskViewModel)
         addCreateTaskRoute(navController, context)
         addActivityRoute(navController)
         addProfileRoute(navController)
@@ -159,31 +161,31 @@ private fun NavGraphBuilder.showCreateGroup(navController: NavController, viewMo
 //end of home navigation
 
 //myTasks navigation
-private fun NavGraphBuilder.addMyTasksRoute(navController: NavController) {
+private fun NavGraphBuilder.addMyTasksRoute(navController: NavController, viewModel: TaskViewModel) {
     navigation(
         route = RootScreen.MyTasks.route,
         startDestination = LeafScreen.MyTasks.route
     ) {
-        showMyTasks(navController)
-        showTaskDetail(navController)
+        showMyTasks(navController, viewModel)
+        showTaskDetail(navController, viewModel)
     }
 }
-private fun NavGraphBuilder.showMyTasks(navController: NavController) {
+private fun NavGraphBuilder.showMyTasks(navController: NavController, viewModel: TaskViewModel) {
     composable(route = LeafScreen.MyTasks.route) {
         MyTasksScreen(
             showDetail = {
                 navController.navigate(LeafScreen.TaskDetails.route)
-            }
+            }, viewModel
         )
     }
 }
 
-private fun NavGraphBuilder.showTaskDetail(navController: NavController) {
+private fun NavGraphBuilder.showTaskDetail(navController: NavController, viewModel: TaskViewModel) {
     composable(route = LeafScreen.TaskDetails.route) {
         TaskDetailsScreen(
             onBack = {
                 navController.navigateUp()
-            }
+            }, viewModel
         )
     }
 }

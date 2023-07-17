@@ -21,5 +21,8 @@
 | 2023/07/14 | 2        | fixing assignee dropdown in add task (created view model for get assignees in a group) |
 | 2023/07/15 | 6        | completed adding assignee multiselect dropdown (integrated with be as well)            |
 | 2023/07/16 | 2        | datepicker implemented under add task (styling needs to be done)                       |
-| 2023/07/16 | 4        | implement getmytasks in vm, integrate with fe + partial integratation with be           |
+| 2023/07/16 | 4        | implement getmytasks in vm, integrate with fe + partial integratation with be          |
+| 2023/07/16 | 5        | refactor taskviewmodel to be easily integrated with backend (taskmanager)              |
+| 2023/07/16 | 2        | figuring out how to pass id in to task detail                                          |
+| 2023/07/17 | 1:30     | task detail clean up, updating ui to show all assignees... (in progress - 2:35)        |
 
