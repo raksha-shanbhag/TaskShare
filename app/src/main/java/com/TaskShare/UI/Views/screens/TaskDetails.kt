@@ -120,7 +120,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
 
                         Row(modifier = Modifier
                             .fillMaxWidth(value_width)
-                            .wrapContentWidth()){
+                            ){
                             RenderPills(taskDetail.assignee, R.color.icon_blue)
                         }
                     }
@@ -128,6 +128,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+
                         Row(modifier = Modifier.fillMaxWidth(value_width)){
                             RenderPills(taskDetail.assigner, R.color.icon_blue)
                         }
