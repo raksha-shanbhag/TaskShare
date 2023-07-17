@@ -10,5 +10,6 @@ data class Task(
     val groupId: String = "",
     val assignerId: String = "",
     val lastDate: Date = Date(),
-    val startDate: Date = Date()
+    val startDate: Date = Date(),
+    val assignees: MutableList<String> = mutableListOf()
 )

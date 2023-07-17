@@ -1,12 +1,9 @@
 package com.TaskShare.Models.Services
 
-import com.TaskShare.Models.DataObjects.Task
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
-import com.TaskShare.ViewModels.GroupMember
-import com.google.android.gms.tasks.Tasks
 import java.util.Date
 
 class TaskManagementService {
@@ -25,23 +22,26 @@ class TaskManagementService {
         assignees: MutableList<String>
     ) : String {
         // create main task
+        var startDate = Date()
         var taskId = taskRepository.createTask(
             assignerId = assignerId,
             taskName = taskName,
             groupId = groupId,
             lastDate = lastDate,
-            cycle = cycle
+            cycle = cycle,
+            assignees = assignees,
+            startDate = startDate
         )
 
-        // get groupMembers
-        var groupMembers = groupsRepository.getGroupMembersFromGroupId(groupId)
+        // endDate Calculation
+        var endDate = Date()
 
         // create sub Tasks
-        subTaskRepository.createSubTaskForGroup(
+        subTaskRepository.createSubTask(
             taskId = taskId,
-            groupMemberIds = groupMembers,
-            cycle = cycle,
-            startDate = Date()
+            assigneeId = assignees.first(),
+            startDate = startDate,
+            endDate = endDate
         )
 
         return taskId

@@ -23,10 +23,11 @@ class TSTasksRepository {
         taskName: String,
         groupId: String,
         cycle: String,
-        lastDate: Date
+        lastDate: Date,
+        assignees: MutableList<String>,
+        startDate: Date
     ) : String {
         var documentId: String = ""
-        var startDate: Date = Date()
 
         var data = hashMapOf(
             "taskName" to taskName,
@@ -34,17 +35,20 @@ class TSTasksRepository {
             "lastDate" to lastDate,
             "groupId" to groupId,
             "assignerId" to assignerId,
-            "startDate" to startDate
+            "startDate" to startDate,
+            "assignees" to assignees
         )
 
-        tasks.add(data)
-            .addOnSuccessListener { document ->
-                documentId = document.id
-                Log.d(TAG, document.id)
-                Log.d(TAG, "DocumentSnapshot successfully written!")
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-
+        runBlocking {
+            var document = tasks.add(data).await()
+                if(document != null){
+                    documentId = document.id
+                    Log.d(TAG, document.id)
+                    Log.d(TAG, "DocumentSnapshot successfully written!")
+                } else {
+                    Log.w(TAG, "Error writing document")
+                }
+        }
         return documentId
     }
 

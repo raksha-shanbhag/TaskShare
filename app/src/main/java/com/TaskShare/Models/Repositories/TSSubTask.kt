@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 // data Class
@@ -47,13 +48,16 @@ class TSSubTasksRepository {
         )
 
         var documentId = ""
-        subTasks.add(data)
-            .addOnSuccessListener { document ->
+        runBlocking {
+            var document = subTasks.add(data).await()
+            if (document != null) {
                 documentId = document.id
                 Log.d(TAG, document.id)
                 Log.d(TAG, "DocumentSnapshot successfully written!")
+            } else {
+                Log.w(TAG, "Error writing document")
             }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+        }
 
         return documentId
     }
@@ -101,19 +105,5 @@ class TSSubTasksRepository {
                 Log.w(TAG, "Error getting documents.", exception)
             }
         return result
-    }
-
-    // API to create subtasks for a group
-    fun createSubTaskForGroup(taskId: String, groupMemberIds: MutableList<String>, cycle: String, startDate: Date) {
-        // @toDo create subtasks based on cycle and startDate
-        val current = Date()
-        for (memberId in groupMemberIds) {
-            createSubTask(
-                assigneeId = memberId,
-                taskId = taskId,
-                startDate = current,
-                endDate = current
-            )
-        }
     }
 }
