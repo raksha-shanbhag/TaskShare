@@ -159,6 +159,13 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                             )
                             .padding(10.dp, 2.dp)
                     )
+
+                    Text(
+                        text = "Assignees",
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .padding(2.dp, 0.dp, 0.dp, 5.dp)
+                    )
                 }
 
                 Column(
@@ -184,55 +191,48 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                             )
                             .padding(10.dp, 2.dp)
                     )
+
+                    RenderPills(taskInfo.assignee, R.color.banner_blue)
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
+//
+//            ) {
 
-            ) {
-//                Row(
+
+                // Note: if we ever need to display all assignees, use the section below
+//                FlowRow(
 //                    modifier = Modifier
-//                    .background(
-//                        colorResource(id = R.color.progress_red),
+//                        .fillMaxWidth()
+//                ) {
+//                    Text(
+//                        text = "Assignees: ",
+//                        fontSize = small_font_size.sp,
+//                        modifier = Modifier
+//                        .padding(0.dp, 0.dp, 10.dp, 10.dp)
+////                        .padding(10.dp, 2.dp)
 //                    )
 //
-//                ){
-//
+//                    taskInfo.assignees.forEach {
+//                        Text(
+//                            text = it,
+//                            fontSize = small_font_size.sp,
+//                            color = colorResource(id = R.color.banner_blue),
+//                            modifier = Modifier
+//                                .padding(0.dp, 0.dp, 10.dp, 10.dp)
+//                                .background(
+//                                    colorResource(id = R.color.white),
+//                                    RoundedCornerShape(3.dp)
+//                                )
+//                                .padding(10.dp, 2.dp)
+//                        )
+//                    }
 //
 //                }
-
-
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Assignees: ",
-                        fontSize = small_font_size.sp,
-                        modifier = Modifier
-                        .padding(0.dp, 0.dp, 10.dp, 10.dp)
-//                        .padding(10.dp, 2.dp)
-                    )
-
-                    taskInfo.assignees.forEach {
-                        Text(
-                            text = it,
-                            fontSize = small_font_size.sp,
-                            color = colorResource(id = R.color.banner_blue),
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp, 10.dp, 10.dp)
-                                .background(
-                                    colorResource(id = R.color.white),
-                                    RoundedCornerShape(3.dp)
-                                )
-                                .padding(10.dp, 2.dp)
-                        )
-                    }
-
-                }
-            }
+//            }
         }
 
     }
