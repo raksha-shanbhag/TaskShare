@@ -126,72 +126,114 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                 )
                 .padding(14.dp)
         )
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Column(
-                modifier = Modifier
-                    .padding(10.dp, 0.dp)
-                    .widthIn(10.dp, 140.dp)
-            )
-            {
-                Text(
-                    text = taskInfo.taskName,
-                    fontSize = small_font_size.sp,
-                    modifier = Modifier
-                        .padding(2.dp, 0.dp, 0.dp, 5.dp)
-                )
-                Text(
-                    text = taskInfo.groupName,
-                    fontSize = small_font_size.sp,
-                    color = colorResource(id = R.color.banner_blue),
-                    modifier = Modifier
-                        .background(
-                            colorResource(id = R.color.white),
-                            RoundedCornerShape(3.dp)
-                        )
-                        .padding(10.dp, 2.dp)
-                )
-            }
-
-            Column(
+        Column() {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.Center,
-
-                ) {
-                RenderStatus(taskInfo.status)
-                Spacer(modifier = Modifier.height(height = 5.dp))
-
-                Text(
-                    text = taskInfo.deadline,
-                    fontSize = small_font_size.sp,
+//                    .background(
+//                        colorResource(id = R.color.progress_green),
+//                    )
+//                    ,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
                     modifier = Modifier
-                        .widthIn(min_width_pill.dp, max_width_pill.dp)
-                        .background(
-                            colorResource(id = R.color.white),
-                            RoundedCornerShape(3.dp)
-                        )
-                        .padding(10.dp, 2.dp)
+                        .padding(10.dp, 0.dp)
+                        .widthIn(10.dp, 140.dp)
                 )
+                {
+                    Text(
+                        text = taskInfo.taskName,
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .padding(2.dp, 0.dp, 0.dp, 5.dp)
+                    )
+                    Text(
+                        text = taskInfo.groupName,
+                        fontSize = small_font_size.sp,
+                        color = colorResource(id = R.color.banner_blue),
+                        modifier = Modifier
+                            .background(
+                                colorResource(id = R.color.white),
+                                RoundedCornerShape(3.dp)
+                            )
+                            .padding(10.dp, 2.dp)
+                    )
+
+                    Text(
+                        text = "Assignees",
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .padding(2.dp, 0.dp, 0.dp, 5.dp)
+                    )
+                }
+
+                Column(
+//                    modifier = Modifier.background(
+//                        colorResource(id = R.color.progress_yellow),
+//                    ),
+//                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center,
+
+                    ) {
+                    RenderStatus(taskInfo.status)
+                    Spacer(modifier = Modifier.height(height = 5.dp))
+
+                    Text(
+                        text = taskInfo.deadline,
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .widthIn(min_width_pill.dp, max_width_pill.dp)
+                            .background(
+                                colorResource(id = R.color.white),
+                                RoundedCornerShape(3.dp)
+                            )
+                            .padding(10.dp, 2.dp)
+                    )
+
+                    RenderPills(taskInfo.assignee, R.color.banner_blue)
+                }
             }
-        }
-//        FlowRow(){
-//            Text(text = "Assignees: ")
-//            taskInfo.assignees.forEach{
-//                Text(
-//                    text = it,
-//                    fontSize = small_font_size.sp,
-//                    color = colorResource(id = R.color.banner_blue),
-//                    modifier = Modifier
-//                        .background(
-//                            colorResource(id = R.color.white),
-//                            RoundedCornerShape(3.dp)
-//                        )
-//                        .padding(10.dp, 2.dp)
-//                )
-//            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
 //
-//        }
+//            ) {
+
+
+                // Note: if we ever need to display all assignees, use the section below
+//                FlowRow(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                ) {
+//                    Text(
+//                        text = "Assignees: ",
+//                        fontSize = small_font_size.sp,
+//                        modifier = Modifier
+//                        .padding(0.dp, 0.dp, 10.dp, 10.dp)
+////                        .padding(10.dp, 2.dp)
+//                    )
+//
+//                    taskInfo.assignees.forEach {
+//                        Text(
+//                            text = it,
+//                            fontSize = small_font_size.sp,
+//                            color = colorResource(id = R.color.banner_blue),
+//                            modifier = Modifier
+//                                .padding(0.dp, 0.dp, 10.dp, 10.dp)
+//                                .background(
+//                                    colorResource(id = R.color.white),
+//                                    RoundedCornerShape(3.dp)
+//                                )
+//                                .padding(10.dp, 2.dp)
+//                        )
+//                    }
+//
+//                }
+//            }
+        }
 
     }
 //    }
