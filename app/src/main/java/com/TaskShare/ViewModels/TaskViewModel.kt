@@ -25,6 +25,12 @@ class TaskViewModel: ViewModel() {
         return detailTaskState.value.taskDetail
     }
 
+    // TODO: integrate with backend
+    fun updateAssignee(newAssignee: String){
+        detailTaskState.value.taskDetail.assignee = newAssignee
+    }
+
+
     // get all my task
     fun getTasksForUser(): List<TaskViewState>{
         var result = taskManager.getAllTasksForUserId(TSUsersRepository.globalUserId);
@@ -49,7 +55,7 @@ data class TaskViewState (
     val assigner: String = "",
     val status: String = "",
     val assignees: MutableList<String> = mutableListOf(),
-    val assignee: String = "",
+    var assignee: String = "",
     val groupName: String = "",
     val deadline: String = "",
     val cycle: String = "",
