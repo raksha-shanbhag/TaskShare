@@ -276,9 +276,7 @@ fun AddTaskScreen(context: Context) {
                         groupMembers.forEach { item ->
                             DropdownMenuItem(
                                 text = {
-                                    Row(
-
-                                    ) {
+                                    Row() {
                                         Checkbox(
                                             checked = item.selected,
                                             onCheckedChange = {

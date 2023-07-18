@@ -12,11 +12,14 @@ class TaskManagementService {
     private val groupsRepository = TSGroupsRepository()
     private val taskRepository = TSTasksRepository()
     private val subTaskRepository = TSSubTasksRepository()
+    private val userRepository = TSUsersRepository()
 
     // API Service for getting tasks related to a user
     fun getAllTasksForUserId(userId: String): MutableList<TaskViewState> {
         var result = mutableListOf<TaskViewState>()
         var allSubtasks = subTaskRepository.getAllSubtasksForUserId(userId)
+
+        var assigneeInfo = userRepository.getUserInfo(userId)
 
         for (subTask in allSubtasks) {
             // get Task info
@@ -25,16 +28,19 @@ class TaskManagementService {
             // get group info
             var groupInfo = groupsRepository.getGroupFromId(taskInfo.groupId)
 
+            // assigner Info
+            var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
+
             var task = TaskViewState(
                 taskName = taskInfo.taskName,
                 cycle = taskInfo.cycle,
                 assignees = taskInfo.assignees,
-                assigner = taskInfo.assignerId,
+                assigner = assignerInfo.firstName,
                 groupName = groupInfo.groupName,
-                assignee = subTask.assigneeId,
+                assignee = assigneeInfo.firstName,
                 status = subTask.taskStatus.toString(),
                 id = subTask.subTaskId,
-                deadline = subTask.endDate.toString(),
+                deadline = subTask.endDate.toString()
             )
             result.add(task)
 
@@ -95,13 +101,17 @@ class TaskManagementService {
         // get group info
         var groupInfo = groupsRepository.getGroupFromId(taskInfo.groupId);
 
+        // assignment users
+        var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
+        var assigneeInfo = userRepository.getUserInfo(subTaskInfo.assigneeId)
+
         return TaskViewState(
             taskName = taskInfo.taskName,
             cycle = taskInfo.cycle,
             assignees = taskInfo.assignees,
-            assigner = taskInfo.assignerId,
+            assigner = assignerInfo.firstName,
             groupName = groupInfo.groupName,
-            assignee = subTaskInfo.assigneeId,
+            assignee = assigneeInfo.firstName,
             status = subTaskInfo.taskStatus.toString(),
             id = subTaskInfo.subTaskId,
             deadline = subTaskInfo.endDate.toString(),

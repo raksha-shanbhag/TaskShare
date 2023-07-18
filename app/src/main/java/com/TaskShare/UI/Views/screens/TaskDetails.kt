@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,14 +17,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Checkbox
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,14 +58,23 @@ import com.example.greetingcard.R
 
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
-//    val viewModel = viewModel(TaskViewModel::class.java)
     var taskDetail by remember {
         mutableStateOf(TaskViewState())
     }
 
+    var expandedTransfer by remember {
+        mutableStateOf(false)
+    }
+    var showConfirmTransfer by remember {
+        mutableStateOf(false)
+    }
+    var transferState by remember {
+        mutableStateOf("")
+    }
 
 
     Scaffold( topBar = {
@@ -169,8 +188,14 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
                                 SolidColor(colorResource(id = R.color.banner_blue))
                             ), RoundedCornerShape(4.dp)
                         )
-                        .padding(2.dp, 5.dp),
+                        .padding(2.dp, 5.dp)
+                        .clickable(
+                            onClick = {
+//                                showTransfer = !showTransfer
+                            }
+                        ),
                         horizontalArrangement = Arrangement.Center
+
                     ){
 
                         Text (text = "Transfer Task",
@@ -178,8 +203,92 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.fillMaxWidth(name_wdith),
                             color = colorResource(id = R.color.banner_blue)
+
+
                         )
                     }
+                    ExposedDropdownMenuBox(
+                        expanded = expandedTransfer,
+                        onExpandedChange = {
+                            expandedTransfer = !expandedTransfer
+                        }
+                    ) {
+                        TextField(
+                            readOnly = true,
+                            value = transferState,
+                            onValueChange = { showConfirmTransfer = true},
+                            label = { Text("Transfer Task") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(
+                                    expanded = expandedTransfer
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
+                        )
+
+
+
+
+
+                        ExposedDropdownMenu(
+                            expanded = expandedTransfer,
+                            onDismissRequest = {
+                                expandedTransfer = false
+                            }
+                        ){
+                            taskDetail.assignees.forEach { item ->
+//                                if (item!=myself) TODO
+                                DropdownMenuItem(
+                                    text = { Text(text = item) },
+                                    onClick = {
+                                        transferState = item
+                                        expandedTransfer = false
+                                        showConfirmTransfer = true
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    if(showConfirmTransfer){
+                        Text(text = "Do you want to transfer this task to ${transferState}?")
+                        Button(onClick = {
+                            showConfirmTransfer = false
+                            viewModel.updateAssignee(transferState)
+                            transferState = ""
+                        },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = colorResource(id = R.color.primary_blue),
+                                contentColor = Color.White),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                        ) {
+                            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                                Text("Confirm")
+                            }
+
+                        }
+
+                        Button(
+                            onClick = {
+                                transferState = ""
+                                showConfirmTransfer = false
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = colorResource(id = R.color.progress_red),
+                                contentColor = Color.White),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                        ) {
+                            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                                Text("Cancel")
+                            }
+
+                        }
+                    }
+
+
                 }
             }
         }
