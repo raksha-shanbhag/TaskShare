@@ -2,10 +2,15 @@ package com.TaskShare.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
+import com.TaskShare.Models.Services.FriendsManagementService
+import com.TaskShare.Models.Utilities.TSFriendStatus
+
 
 
 class FriendViewModel: ViewModel() {
     val state = mutableStateOf(FriendViewState())
+    private val friendsManagementService = FriendsManagementService()
+
 
     // Temporary vals
     var user1 = FriendViewState("Timmy Nook")
