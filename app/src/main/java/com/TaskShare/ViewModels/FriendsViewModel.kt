@@ -20,15 +20,9 @@ class FriendsViewModel: ViewModel() {
         state.value = state.value.copy(FriendUserId = friendToAccept)
     }
 
-    fun declineFriendRequest(currUserId: String, friendToDecline: String){
+    fun declineOrRemoveFriendRequest(currUserId: String, friendToDecline: String){
         state.value = state.value.copy(currentUserId = currUserId)
         state.value = state.value.copy(FriendUserId = friendToDecline)
-    }
-
-    fun removeFriend(currUserId: String, friendToBeRemoved: String){
-        state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(FriendUserId = friendToBeRemoved)
-
     }
 
     fun blockFriend(currUserId: String, friendToBeBlocked: String){
