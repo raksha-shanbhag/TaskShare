@@ -28,6 +28,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,14 +41,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.FriendViewModel
 import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AddFriendScreen(
-    onFriendRequest: () -> Unit,
     onBack: () -> Unit
 ) {
+    // Getting friends data
+    val viewModel = viewModel(FriendViewModel::class.java)
+    val state by viewModel.state
+
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -112,7 +118,8 @@ fun AddFriendScreen(
             }
             Spacer(modifier = Modifier.height(20.dp))
             AddFriendButton("Send Friend Request",
-                "Send a friend request", onFriendRequest)
+                "Send a friend request"
+            ) { viewModel.sendFriendRequest(state.currentUserId, state.friendEmail) }
         }
     }
 }
@@ -184,7 +191,6 @@ fun AddFriendButton(textValue: String, contentDesc: String,
 @Preview
 fun AddFriendScreenPreview() {
     AddFriendScreen(
-        onFriendRequest = {},
         onBack = {}
     )
 }

@@ -44,8 +44,7 @@ import com.example.greetingcard.R
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BlockedUserScreen(
-    onBack: () -> Unit,
-    onUnblockUser: () -> Unit
+    onBack: () -> Unit
 ) {
     // Getting friends data
     val viewModel = viewModel(FriendViewModel::class.java)
@@ -106,7 +105,7 @@ fun BlockedUserScreen(
             }
             items(blockedUsers.count()) {index ->
                 RenderBlockedUserCard(blockedUsers[index].friendName,
-                    onClick = onUnblockUser)
+                    onClick = { viewModel.unblockFriend(blockedUsers[index].currentUserId, blockedUsers[index].friendUserId) })
                 Spacer(modifier = Modifier.height(20.dp))
             }
             item{
@@ -158,7 +157,7 @@ fun RenderBlockedUserCard(name: String,
 @Composable
 fun RenderUnblockButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
-        onClick = { onClick /*TODO Unblock user when clicked*/ },
+        onClick = { onClick() },
         modifier = Modifier
             .width(110.dp)
             .height(43.dp),
@@ -187,7 +186,6 @@ fun RenderUnblockButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 @Preview
 fun BlockedUserScreenPreview() {
     BlockedUserScreen(
-        onBack = {},
-        onUnblockUser = {}
+        onBack = {}
     )
 }

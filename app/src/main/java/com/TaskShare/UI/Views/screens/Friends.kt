@@ -49,11 +49,9 @@ import com.example.greetingcard.R
 fun FriendScreen(
     onBack: () -> Unit,
     onAddFriends: () -> Unit,
-    onRemoveFriend: () -> Unit,
     onFriends: () -> Unit,
     onIncoming: () -> Unit,
-    onOutgoing: () -> Unit,
-    onBlock: () -> Unit
+    onOutgoing: () -> Unit
 ) {
     // Getting friends data
     val viewModel = viewModel(FriendViewModel::class.java)
@@ -127,8 +125,8 @@ fun FriendScreen(
                 items(friends.count()) { index ->
                     RenderFriendCard(
                         name = friends[index].friendName,
-                        onClickRemove = onRemoveFriend,
-                        onClickBlock = onBlock
+                        onClickRemove = {viewModel.declineOrRemoveFriendRequest(friends[index].currentUserId, friends[index].friendUserId)},
+                        onClickBlock = {viewModel.blockFriend(friends[index].currentUserId, friends[index].friendUserId)}
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
@@ -269,10 +267,8 @@ fun FriendScreenPreview() {
     FriendScreen(
         onBack = {},
         onAddFriends = {},
-        onRemoveFriend = {},
         onFriends = {},
         onIncoming = {},
-        onOutgoing = {},
-        onBlock = {}
+        onOutgoing = {}
     )
 }

@@ -256,8 +256,6 @@ private fun NavGraphBuilder.showFriends(navController: NavController) {
         FriendScreen(
             onBack = { navController.navigate(LeafScreen.Profile.route) },
             onAddFriends = { navController.navigate(LeafScreen.AddFriend.route) },
-            onRemoveFriend = {},
-            onBlock = {},
             onFriends = { navController.navigate(LeafScreen.Friends.route) },
             onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) },
             onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) }
@@ -287,8 +285,7 @@ private fun NavGraphBuilder.showChangePassword(navController: NavController) {
 private fun NavGraphBuilder.showBlockedAccounts(navController: NavController) {
     composable(route = LeafScreen.BlockedAccounts.route) {
         BlockedUserScreen(
-            onBack = { navController.navigateUp() },
-            onUnblockUser = {},
+            onBack = { navController.navigateUp() }
         )
     }
 }
@@ -296,8 +293,7 @@ private fun NavGraphBuilder.showBlockedAccounts(navController: NavController) {
 private fun NavGraphBuilder.showAddFriends(navController: NavController) {
     composable(route = LeafScreen.AddFriend.route) {
         AddFriendScreen(
-            onBack = { navController.navigateUp() },
-            onFriendRequest = {}
+            onBack = { navController.navigateUp() }
         )
     }
 }
@@ -306,12 +302,9 @@ private fun NavGraphBuilder.showIncomingRequests(navController: NavController) {
     composable(route = LeafScreen.IncomingRequests.route) {
         IncomingRequestsScreen(
             onBack = { navController.navigate(LeafScreen.Profile.route) },
-            onDenyRequest = {},
             onFriends = { navController.navigate(LeafScreen.Friends.route) },
             onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) },
-            onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) },
-            onBlockUser = {},
-            onAcceptRequest = {}
+            onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) }
         )
     }
 }

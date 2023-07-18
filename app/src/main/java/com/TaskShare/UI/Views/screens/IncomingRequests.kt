@@ -45,9 +45,6 @@ import com.example.greetingcard.R
 @Composable
 fun IncomingRequestsScreen(
     onBack: () -> Unit,
-    onAcceptRequest: () -> Unit,
-    onDenyRequest: () -> Unit,
-    onBlockUser: () -> Unit,
     onFriends: () -> Unit,
     onIncoming: () -> Unit,
     onOutgoing: () -> Unit
@@ -116,9 +113,9 @@ fun IncomingRequestsScreen(
                 items (incomingRequests.count()) { index ->
                     RenderIncomingRequestCard(name = incomingRequests[index].friendName,
                         painterResource(R.drawable.ic_account_circle),
-                        onClickAccept = onAcceptRequest,
-                        onClickDeny = onDenyRequest,
-                        onClickBlock = onBlockUser
+                        onClickAccept = {viewModel.acceptFriendRequest(incomingRequests[index].currentUserId, incomingRequests[index].friendUserId)},
+                        onClickDeny = {viewModel.declineOrRemoveFriendRequest(incomingRequests[index].currentUserId, incomingRequests[index].friendUserId)},
+                        onClickBlock = {viewModel.blockFriend(incomingRequests[index].currentUserId, incomingRequests[index].friendUserId)}
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
@@ -225,9 +222,6 @@ fun IncomingRequestsScreenPreview() {
         onBack = {},
         onIncoming = {},
         onOutgoing = {},
-        onFriends = {},
-        onAcceptRequest = {},
-        onDenyRequest = {},
-        onBlockUser = {}
+        onFriends = {}
     )
 }

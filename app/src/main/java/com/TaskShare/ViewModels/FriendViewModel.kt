@@ -51,34 +51,33 @@ class FriendViewModel: ViewModel() {
 
     fun sendFriendRequest(senderId: String, receiverEmail: String){
         state.value = state.value.copy(currentUserId = senderId)
-        state.value = state.value.copy(FriendEmail = receiverEmail)
-
+        state.value = state.value.copy(friendUserId = receiverEmail)
     }
+
     fun acceptFriendRequest(currUserId: String, friendToAccept: String){ //lines 30 - 31 are from ChatGpt
         state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(FriendUserId = friendToAccept)
+        state.value = state.value.copy(friendUserId = friendToAccept)
     }
 
     fun declineOrRemoveFriendRequest(currUserId: String, friendToDecline: String){
         state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(FriendUserId = friendToDecline)
+        state.value = state.value.copy(friendUserId = friendToDecline)
     }
 
     fun blockFriend(currUserId: String, friendToBeBlocked: String){
         state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(FriendUserId = friendToBeBlocked)
+        state.value = state.value.copy(friendUserId = friendToBeBlocked)
     }
 
     fun unblockFriend(currUserId: String, friendToBeUnblocked: String){
         state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(FriendUserId = friendToBeUnblocked)
-
+        state.value = state.value.copy(friendUserId = friendToBeUnblocked)
     }
 
 }
 data class FriendViewState (
     val friendName: String = "",
     val currentUserId: String = "",
-    val FriendUserId: String = "",
-    val FriendEmail: String = ""
+    val friendUserId: String = "",
+    val friendEmail: String = ""
 )
