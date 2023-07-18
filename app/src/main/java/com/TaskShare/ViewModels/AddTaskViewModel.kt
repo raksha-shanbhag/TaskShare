@@ -138,15 +138,15 @@ class AddTaskViewModel: ViewModel() {
 
 // states
 data class AddTaskState (
-    val taskName: String ="",
-    val groupName: String = "Select Group Name",
+    var taskName: String ="",
+    var groupName: String = "Select Group Name",
     val groupMembers: MutableList<GroupMember> = mutableListOf(),
     val assignTo: String = "",
-    val assignees: MutableList<String> = mutableListOf(),
+    var assignees: MutableList<String> = mutableListOf(),
     val assignee: GroupMember = GroupMember(),
     //    how are we actually storing dates in DB?
-    val endDate: Date = Date(),
-    val cycle: String = "Select Cycle",
+    var endDate: Date = Date(),
+    var cycle: String = "Select Cycle",
     val groupId: String = ""
 
 )

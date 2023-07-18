@@ -27,4 +27,5 @@
 | 2023/07/17 | 3        | task detail clean up, updating and styling ui to show all assignees in my tasks        |
 | 2023/07/17 | 0.5      | Updated ui to show current assignee rather than all assignees                          |
 | 2023/07/18 | 3        | Transfer Task implemented                                                              |
+| 2023/07/18 | 0.5      | Resetting form fields in create task after task creation                               |
 

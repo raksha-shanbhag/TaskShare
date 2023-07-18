@@ -317,6 +317,12 @@ fun AddTaskScreen(context: Context) {
 
                 Button(onClick = {
                     viewModel.createTask()
+                    state.taskName = ""
+                    state.groupName = ""
+                    state.cycle = ""
+                    date.value = ""
+                    state.assignees = mutableListOf()
+                    groupMembers = mutableListOf()
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.primary_blue),
