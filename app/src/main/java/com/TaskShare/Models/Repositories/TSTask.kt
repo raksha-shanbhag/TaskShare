@@ -2,6 +2,7 @@ package com.TaskShare.Models.Repositories
 
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Task
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -14,7 +15,7 @@ class TSTasksRepository {
     private val TAG = "TSTasksRepository"
     private val db = Firebase.firestore
     private val tasks = db.collection("Tasks")
-    private val pattern = "dd-MM-yyyy"
+    private val pattern = "yyyy-MM-dd"
     private val dateFormat = SimpleDateFormat(pattern)
 
     // API Service for creating a Task
@@ -62,14 +63,20 @@ class TSTasksRepository {
             assignees.addAll(document.get("assignees") as List<String>)
 
             if (document != null) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+
                 result = Task(
                     taskId = document.id,
                     taskName = document.data?.get("taskName").toString(),
                     groupId = document.data?.get("groupId").toString(),
                     cycle = document.data?.get("cycle").toString(),
                     assignerId = document.data?.get("assignerId").toString(),
-                    startDate = dateFormat.parse(document.data?.get("startDate").toString()),
-                    lastDate = dateFormat.parse(document.data?.get("lastDate").toString()),
+                    startDate = startDate,
+                    lastDate = endDate,
                     assignees = assignees
                 )
             } else {

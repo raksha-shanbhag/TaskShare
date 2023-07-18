@@ -1,5 +1,6 @@
 package com.TaskShare.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
@@ -9,15 +10,12 @@ class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
     val tasksState = mutableStateOf(TasksViewState())
     val detailTaskState = mutableStateOf(TaskDetail())
-    val taskManager = TaskManagementService()
-    val globalUserId = TSUsersRepository.globalUserId
+    private val taskManager = TaskManagementService()
 
     // detail task
     fun setDetailTaskInfo(taskID: String){
         detailTaskState.value = detailTaskState.value.copy(taskID = taskID)
-        // pull from backend instead later
-//         val taskInfo = taskManager.getTaskByID(taskID)
-        val taskInfo = TaskViewState("Clean Kitchen", "Lamia", "inprogress", mutableListOf("Cheng", "John", "Jaishree", "Lamia"), "Jaishree", "Roommates", "14/12/2022", "Monthly", "")
+        val taskInfo = taskManager.getTaskInfoFromId(subTaskId =  taskID)
         detailTaskState.value = detailTaskState.value.copy(taskDetail = taskInfo)
     }
 
@@ -25,12 +23,13 @@ class TaskViewModel: ViewModel() {
     fun getDetailTaskInfo(): TaskViewState{
         // pull from backend instead later
         return detailTaskState.value.taskDetail
-
     }
 
     // get all my task
     fun getTasksForUser(): List<TaskViewState>{
-        return taskManager.getAllTasksForUserId(globalUserId);
+        var result = taskManager.getAllTasksForUserId(TSUsersRepository.globalUserId);
+        Log.i("Debug Raksha GetTasksForUSer", result.toString())
+        return result
     }
 }
 
