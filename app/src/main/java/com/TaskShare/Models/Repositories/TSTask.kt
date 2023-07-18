@@ -14,7 +14,7 @@ class TSTasksRepository {
     private val TAG = "TSTasksRepository"
     private val db = Firebase.firestore
     private val tasks = db.collection("Tasks")
-    private val pattern = "dd-MM-yyyy"
+    private val pattern = "yyyy-MM-dd"
     private val dateFormat = SimpleDateFormat(pattern)
 
     // API Service for creating a Task

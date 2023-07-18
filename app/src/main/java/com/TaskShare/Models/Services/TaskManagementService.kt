@@ -5,6 +5,7 @@ import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.ViewModels.TaskViewState
+import com.google.android.gms.tasks.Task
 import java.util.Date
 
 class TaskManagementService {
@@ -82,5 +83,28 @@ class TaskManagementService {
         )
 
         return taskId
+    }
+
+    fun getTaskInfoFromId(subTaskId: String) : TaskViewState {
+        // subTask Info
+        var subTaskInfo = subTaskRepository.getSubTaskInfoForId(subTaskId);
+
+        // get Task info
+        var taskInfo = taskRepository.getTask(subTaskInfo.taskId);
+
+        // get group info
+        var groupInfo = groupsRepository.getGroupFromId(taskInfo.groupId);
+
+        return TaskViewState(
+            taskName = taskInfo.taskName,
+            cycle = taskInfo.cycle,
+            assignees = taskInfo.assignees,
+            assigner = taskInfo.assignerId,
+            groupName = groupInfo.groupName,
+            assignee = subTaskInfo.assigneeId,
+            status = subTaskInfo.taskStatus.toString(),
+            id = subTaskInfo.subTaskId,
+            deadline = subTaskInfo.endDate.toString(),
+        )
     }
 }

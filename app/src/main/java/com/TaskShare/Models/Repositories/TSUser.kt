@@ -53,8 +53,8 @@ class TSUsersRepository() {
     fun getUserIdFromEmail(email: String): String {
         var result = ""
         runBlocking {
-            var documents = users.whereEqualTo("email", email).get().await()
-            for (document in documents) {
+            var documentSnapshot = users.whereEqualTo("email", email).get().await()
+            for (document in documentSnapshot.documents) {
                 result = document.id
                 break
             }
@@ -66,8 +66,8 @@ class TSUsersRepository() {
     fun getUserInfoFromEmail(email: String): User {
         var result = User()
         runBlocking {
-            var documents = users.whereEqualTo("email", email).get().await()
-            for (document in documents) {
+            var documentSnapshot = users.whereEqualTo("email", email).get().await()
+            for (document in documentSnapshot.documents) {
                 var friends = ArrayList<Friend>()
                 friends.addAll(document.get("friends") as List<Friend>)
 
