@@ -1,4 +1,4 @@
-package com.TaskShare.Models.DataObjects
+package com.TaskShare.Models.Utilities
 
 // Task Status Enumerator
 enum class TSTaskStatus(str: String) {

@@ -1,5 +1,6 @@
 package com.TaskShare.Models.DataObjects
 
+import com.TaskShare.Models.Utilities.TSTaskStatus
 import java.util.Date
 
 data class SubTask(

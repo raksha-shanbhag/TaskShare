@@ -44,7 +44,7 @@ class TSGroupsRepository {
         return documentId
     }
 
-    // API method to remove member
+    // API method to remove member @todo
     fun removeUserFromGroup(groupId: String, memberId: String) {
         runBlocking {
             groups.document(groupId)

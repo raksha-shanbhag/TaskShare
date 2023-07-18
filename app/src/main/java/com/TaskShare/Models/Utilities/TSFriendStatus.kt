@@ -1,4 +1,4 @@
-package com.TaskShare.Models.DataObjects
+package com.TaskShare.Models.Utilities
 
 enum class TSFriendStatus(str: String) {
     INCOMING("Incoming"),

@@ -2,18 +2,15 @@ package com.TaskShare.ViewModels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.TaskManagementService
-import com.example.greetingcard.screens.RenderTaskCard
-import java.util.Date
 
 class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
     val tasksState = mutableStateOf(TasksViewState())
     val detailTaskState = mutableStateOf(TaskDetail())
-
     val taskManager = TaskManagementService()
-
-
+    val globalUserId = TSUsersRepository.globalUserId
 
     // detail task
     fun setDetailTaskInfo(taskID: String){
@@ -23,6 +20,8 @@ class TaskViewModel: ViewModel() {
         val taskInfo = TaskViewState("Clean Kitchen", "Lamia", "inprogress", mutableListOf("Cheng", "John", "Jaishree", "Lamia"), "Jaishree", "Roommates", "14/12/2022", "Monthly", "")
         detailTaskState.value = detailTaskState.value.copy(taskDetail = taskInfo)
     }
+
+
     fun getDetailTaskInfo(): TaskViewState{
         // pull from backend instead later
         return detailTaskState.value.taskDetail
@@ -30,14 +29,8 @@ class TaskViewModel: ViewModel() {
     }
 
     // get all my task
-    fun getTasks(): List<TaskViewState>{
-        var task1 = TaskViewState("Clean Counters", "Jaishree", "inprogress", mutableListOf("Jaishree", "John"), "Lamia", "Roommates", "09/14/2022", "No Cycle", "")
-        var task2 = TaskViewState("Clean Room", "Jaishree", "done", mutableListOf("Jaishree"), "Lamia", "Roommates 3A", "24/10/2022", "No Cycle", "")
-        var task3 = TaskViewState("Clean Bathroom", "Cheng", "todo", mutableListOf("Cheng", "John", "Jaishree", "Lamia"), "Lamia", "Roommates", "01/14/2022", "Daily", "")
-        var task4 = TaskViewState("Clean Kitchen", "Lamia", "inprogress", mutableListOf("Lamia", "John"), "Jaishree", "Roommates", "14/12/2022", "Monthly", "")
-
-        return mutableListOf<TaskViewState>(task1, task2, task3, task4)
-
+    fun getTasksForUser(): List<TaskViewState>{
+        return taskManager.getAllTasksForUserId(globalUserId);
     }
 }
 

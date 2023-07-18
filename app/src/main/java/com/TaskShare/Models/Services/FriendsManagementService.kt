@@ -1,8 +1,7 @@
 package com.TaskShare.Models.Services
 
 import com.TaskShare.Models.DataObjects.Friend
-import com.TaskShare.Models.DataObjects.TSFriendStatus
-import com.TaskShare.Models.Repositories.TSUser
+import com.TaskShare.Models.Utilities.TSFriendStatus
 import com.TaskShare.Models.Repositories.TSUsersRepository
 
 

@@ -5,10 +5,8 @@ import com.TaskShare.Models.DataObjects.Task
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
-import com.TaskShare.ViewModels.TaskViewState
 import kotlinx.coroutines.runBlocking
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
 import java.util.Date
 
 // Repository
@@ -16,6 +14,8 @@ class TSTasksRepository {
     private val TAG = "TSTasksRepository"
     private val db = Firebase.firestore
     private val tasks = db.collection("Tasks")
+    private val pattern = "dd-MM-yyyy"
+    private val dateFormat = SimpleDateFormat(pattern)
 
     // API Service for creating a Task
     fun createTask(
@@ -57,22 +57,24 @@ class TSTasksRepository {
         var result = Task()
 
         runBlocking {
-            tasks.document(taskId).get()
-                .addOnSuccessListener{ document ->
-                    if (document.exists()) {
-                        result = Task(
-                            taskId = document.id,
-                            taskName = document.data?.get("taskName").toString(),
-                            groupId = document.data?.get("groupId").toString(),
-                            cycle = document.data?.get("cycle").toString(),
-                            assignerId = document.data?.get("assignerId").toString(),
-                            startDate = Date(), //Date(document.data?.get("startDate").toString()),
-                            lastDate = Date()//Date(document.data?.get("lastDate").toString())
-                        )
-                    }
+            var document = tasks.document(taskId).get().await()
+            var assignees = ArrayList<String>()
+            assignees.addAll(document.get("assignees") as List<String>)
 
-                }
-                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+            if (document != null) {
+                result = Task(
+                    taskId = document.id,
+                    taskName = document.data?.get("taskName").toString(),
+                    groupId = document.data?.get("groupId").toString(),
+                    cycle = document.data?.get("cycle").toString(),
+                    assignerId = document.data?.get("assignerId").toString(),
+                    startDate = dateFormat.parse(document.data?.get("startDate").toString()),
+                    lastDate = dateFormat.parse(document.data?.get("lastDate").toString()),
+                    assignees = assignees
+                )
+            } else {
+                Log.w(TAG, "Error writing document")
+            }
         }
 
         return result
@@ -91,7 +93,8 @@ class TSTasksRepository {
                     groupId = groupId,
                     cycle = document.data?.get("cycle").toString(),
                     assignerId = document.data?.get("assignerId").toString(),
-//                    startDate = document.data?.get("startDate").toString()
+                    startDate = dateFormat.parse(document.data?.get("startDate").toString()),
+                    lastDate = dateFormat.parse(document.data?.get("lastDate").toString()),
                 )
 
                 result.add(task)

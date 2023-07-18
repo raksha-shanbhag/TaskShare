@@ -1,6 +1,7 @@
 package com.TaskShare.Models.Repositories
 
 import android.util.Log
+import com.TaskShare.Models.DataObjects.Friend
 import com.TaskShare.Models.DataObjects.User
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -48,19 +49,38 @@ class TSUsersRepository() {
         return result.toMutableList()
     }
 
-    // Temporary API - get user from email (we'll just use userID)
+    // get UserId from Email
     fun getUserIdFromEmail(email: String): String {
         var result = ""
-        users.whereEqualTo("email", email).get()
-            .addOnSuccessListener{documents ->
-                for(document in documents) {
-                    result = document.id
-                    break
-                }
+        runBlocking {
+            var documents = users.whereEqualTo("email", email).get().await()
+            for (document in documents) {
+                result = document.id
+                break
             }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
+        }
+        return result
+    }
+
+    // Temporary API - get userInfo from email (we'll just use userID)
+    fun getUserInfoFromEmail(email: String): User {
+        var result = User()
+        runBlocking {
+            var documents = users.whereEqualTo("email", email).get().await()
+            for (document in documents) {
+                var friends = ArrayList<Friend>()
+                friends.addAll(document.get("friends") as List<Friend>)
+
+                result = User(
+                    firstName = document.get("firstName").toString(),
+                    lastName = document.get("lastName").toString(),
+                    userId = document.id,
+                    email = document.get("email").toString(),
+                    friends = friends
+                )
+                break
             }
+        }
         return result
     }
 
@@ -95,6 +115,7 @@ class TSUsersRepository() {
         runBlocking {
             var result = users.document(userId).get().await()
             userInfo = User(
+                userId = userId,
                 firstName = result.get("firstName").toString(),
                 lastName = result.get("lastName").toString(),
                 email = result.get("email").toString(),
@@ -154,13 +175,14 @@ class TSUsersRepository() {
                 Log.w(TAG, "Error removing activity from user.", exception)
             }
     }
-}
 
-data class Friend(
-    val userId: String = "",
-    val name: String = "",
-    var status: String = ""
-)
+    fun addFriend(userId: String, friend : Friend) {
+        runBlocking {
+            users.document(userId)
+                .update("friends", FieldValue.arrayUnion(friend))
+        }
+    }
+}
 
 data class TSUserData (
     val firstName: String = "",
