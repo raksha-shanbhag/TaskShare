@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.FriendViewModel
 import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
 
@@ -55,7 +56,7 @@ fun FriendScreen(
     onBlock: () -> Unit
 ) {
     // Getting friends data
-    val viewModel = viewModel(UserViewModel::class.java)
+    val viewModel = viewModel(FriendViewModel::class.java)
     val friends = viewModel.getFriends()
 
     val scrollState = rememberLazyListState()
@@ -125,8 +126,7 @@ fun FriendScreen(
                 }
                 items(friends.count()) { index ->
                     RenderFriendCard(
-                        firstName = friends[index].firstName,
-                        lastName = friends[index].lastName,
+                        name = friends[index].friendName,
                         onClickRemove = onRemoveFriend,
                         onClickBlock = onBlock
                     )
@@ -181,7 +181,7 @@ fun RenderTopButton(modifier: Modifier = Modifier, label: String,
 
 
 @Composable
-fun RenderFriendCard(firstName: String, lastName: String,
+fun RenderFriendCard(name: String,
                      profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                      modifier: Modifier = Modifier, onClickRemove: () -> Unit,
                      onClickBlock: () -> Unit) {
@@ -211,7 +211,7 @@ fun RenderFriendCard(firstName: String, lastName: String,
                 .fillMaxWidth()
         ) {
             Text(
-                text = "$firstName $lastName",
+                text = name,
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp

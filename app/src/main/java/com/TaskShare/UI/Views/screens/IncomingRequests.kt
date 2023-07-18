@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.FriendViewModel
 import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
 
@@ -52,7 +53,7 @@ fun IncomingRequestsScreen(
     onOutgoing: () -> Unit
 ) {
     // Get info for incoming requests
-    val viewModel = viewModel(UserViewModel::class.java)
+    val viewModel = viewModel(FriendViewModel::class.java)
     val incomingRequests = viewModel.getIncomingRequests()
 
     val scrollState = rememberLazyListState()
@@ -113,8 +114,7 @@ fun IncomingRequestsScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 items (incomingRequests.count()) { index ->
-                    RenderIncomingRequestCard(firstName = incomingRequests[index].firstName,
-                        lastName = incomingRequests[index].lastName,
+                    RenderIncomingRequestCard(name = incomingRequests[index].friendName,
                         painterResource(R.drawable.ic_account_circle),
                         onClickAccept = onAcceptRequest,
                         onClickDeny = onDenyRequest,
@@ -131,7 +131,7 @@ fun IncomingRequestsScreen(
 }
 
 @Composable
-fun RenderIncomingRequestCard(firstName: String, lastName: String,
+fun RenderIncomingRequestCard(name: String,
                               profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                               onClickAccept: () -> Unit, onClickDeny: () -> Unit,
                               onClickBlock: () -> Unit,
@@ -161,7 +161,7 @@ fun RenderIncomingRequestCard(firstName: String, lastName: String,
                 .fillMaxWidth()
         ) {
             Text(
-                text = "$firstName $lastName",
+                text = name,
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp

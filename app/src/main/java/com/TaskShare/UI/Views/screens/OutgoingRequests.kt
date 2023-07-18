@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.FriendViewModel
 import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
 
@@ -52,7 +53,7 @@ fun OutgoingRequestsScreen(
     onOutgoing: () -> Unit
 ) {
     // Get info for outgoing requests
-    val viewModel = viewModel(UserViewModel::class.java)
+    val viewModel = viewModel(FriendViewModel::class.java)
     val outgoingRequests = viewModel.getOutgoingRequests()
 
     val scrollState = rememberLazyListState()
@@ -113,8 +114,7 @@ fun OutgoingRequestsScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 items(outgoingRequests.count()) {index ->
-                    RenderOutgoingRequestCard(firstName = outgoingRequests[index].firstName,
-                        lastName = outgoingRequests[index].lastName,
+                    RenderOutgoingRequestCard(name = outgoingRequests[index].friendName,
                         onClickCancel = onCancel)
                     Spacer(modifier = Modifier.height(20.dp))
                 }
@@ -127,7 +127,7 @@ fun OutgoingRequestsScreen(
 }
 
 @Composable
-fun RenderOutgoingRequestCard(firstName: String, lastName: String,
+fun RenderOutgoingRequestCard(name: String,
                               profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                               onClickCancel: () -> Unit,
                               modifier: Modifier = Modifier) {
@@ -155,7 +155,7 @@ fun RenderOutgoingRequestCard(firstName: String, lastName: String,
                 .fillMaxWidth()
         ) {
             Text(
-                text = "$firstName $lastName",
+                text = name,
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp

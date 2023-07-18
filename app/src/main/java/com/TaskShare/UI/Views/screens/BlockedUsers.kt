@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.TaskShare.ViewModels.FriendViewModel
 import com.TaskShare.ViewModels.UserViewModel
 import com.example.greetingcard.R
 
@@ -47,7 +48,7 @@ fun BlockedUserScreen(
     onUnblockUser: () -> Unit
 ) {
     // Getting friends data
-    val viewModel = viewModel(UserViewModel::class.java)
+    val viewModel = viewModel(FriendViewModel::class.java)
     val blockedUsers = viewModel.getBlockedUsers()
 
     val scrollState = rememberLazyListState()
@@ -104,8 +105,7 @@ fun BlockedUserScreen(
                 Spacer(modifier = Modifier.height(20.dp))
             }
             items(blockedUsers.count()) {index ->
-                RenderBlockedUserCard(blockedUsers[index].firstName,
-                    blockedUsers[index].lastName,
+                RenderBlockedUserCard(blockedUsers[index].friendName,
                     onClick = onUnblockUser)
                 Spacer(modifier = Modifier.height(20.dp))
             }
@@ -117,7 +117,7 @@ fun BlockedUserScreen(
 }
 
 @Composable
-fun RenderBlockedUserCard(firstName: String, lastName: String,
+fun RenderBlockedUserCard(name: String,
                           profilePic: Painter = painterResource(id = R.drawable.ic_account_circle),
                           modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
@@ -145,7 +145,7 @@ fun RenderBlockedUserCard(firstName: String, lastName: String,
                 .fillMaxWidth()
         ) {
             Text(
-                text = "$firstName $lastName",
+                text = name,
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
