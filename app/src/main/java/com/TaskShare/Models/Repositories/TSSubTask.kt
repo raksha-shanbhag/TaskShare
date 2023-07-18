@@ -3,6 +3,7 @@ package com.TaskShare.Models.Repositories
 import android.util.Log
 import com.TaskShare.Models.DataObjects.SubTask
 import com.TaskShare.Models.Utilities.TSTaskStatus
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.runBlocking
@@ -15,8 +16,6 @@ class TSSubTasksRepository {
     private val TAG = "TSSubTasksRepository"
     private val db = Firebase.firestore
     private val subTasks = db.collection("SubTasks")
-    private val pattern = "yyyy-MM-dd"
-    private val dateFormat = SimpleDateFormat(pattern)
 
     // API to create Sub Tasks
     fun createSubTask(taskId: String, assigneeId: String, startDate: Date, endDate: Date): String {
@@ -64,13 +63,19 @@ class TSSubTasksRepository {
             Log.i("Debug Raksha check this -size- ", documentSnapshot.size().toString())
 
             for (document in documentSnapshot.documents) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+
                 var element = SubTask(
                     subTaskId = document.id,
                     taskId = document.data?.get("taskId").toString(),
                     assigneeId = document.data?.get("assigneeId").toString(),
                     taskStatus = TSTaskStatus.fromString(document.data?.get("taskStatus").toString()),
-                    startDate = dateFormat.parse(document.data?.get("startDate").toString()),
-                    endDate = dateFormat.parse(document.data?.get("endDate").toString()),
+                    startDate = startDate,
+                    endDate = endDate,
                 )
 
                 Log.i("Debug Raksha check this", element.toString())
@@ -94,13 +99,19 @@ class TSSubTasksRepository {
 //                    var subTaskComments = ArrayList<String>()
 //                    subTaskComments.addAll(document.get("comments") as List<String>)
 
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+
                 result = SubTask(
                     subTaskId = document.id,
                     taskId = document.data?.get("subTaskId").toString(),
                     assigneeId = document.data?.get("assigneeID").toString(),
                     taskStatus = TSTaskStatus.fromString(document.data?.get("assigneeID").toString()),
-                    startDate = dateFormat.parse(document.data?.get("startDate").toString()),
-                    endDate = dateFormat.parse(document.data?.get("endDate").toString()),
+                    startDate = startDate,
+                    endDate = endDate,
                 )
             } else {
                 Log.w(TAG, "Error getting documents.")
