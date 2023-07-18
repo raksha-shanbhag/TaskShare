@@ -107,7 +107,7 @@ class TSSubTasksRepository {
 
                 result = SubTask(
                     subTaskId = document.id,
-                    taskId = document.data?.get("subTaskId").toString(),
+                    taskId = document.data?.get("taskId").toString(),
                     assigneeId = document.data?.get("assigneeID").toString(),
                     taskStatus = TSTaskStatus.fromString(document.data?.get("assigneeID").toString()),
                     startDate = startDate,
