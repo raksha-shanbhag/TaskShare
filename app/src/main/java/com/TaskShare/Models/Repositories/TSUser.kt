@@ -3,6 +3,7 @@ package com.TaskShare.Models.Repositories
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Friend
 import com.TaskShare.Models.DataObjects.User
+import com.TaskShare.Models.Utilities.TSFriendStatus
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
@@ -181,6 +182,24 @@ class TSUsersRepository() {
             users.document(userId)
                 .update("friends", FieldValue.arrayUnion(friend))
         }
+    }
+    fun removeFriend(userId: String, friendId : String) {
+        runBlocking {
+            val friendUpdate = hashMapOf<String, Any>(
+                "friends" to FieldValue.arrayRemove(hashMapOf("userId" to friendId))
+            )
+
+            try {
+                users.document(userId).update(friendUpdate).await()
+            } catch (e: Throwable) {
+                Log.w(TAG, "Error removing friend.", e)
+            }
+        }
+    }
+
+    fun updateFriendshipStatus(userId: String, friendId: String, friend: Friend) {
+        removeFriend(userId,friendId)
+        addFriend(userId, friend)
     }
 }
 
