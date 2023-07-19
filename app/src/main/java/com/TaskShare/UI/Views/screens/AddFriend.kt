@@ -119,7 +119,7 @@ fun AddFriendScreen(
             Spacer(modifier = Modifier.height(20.dp))
             AddFriendButton("Send Friend Request",
                 "Send a friend request"
-            ) { viewModel.sendFriendRequest(state.currentUserId, state.friendEmail) }
+            ) { viewModel.sendFriendRequest(state.friendEmail) }
         }
     }
 }

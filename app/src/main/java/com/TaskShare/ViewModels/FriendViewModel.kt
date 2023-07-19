@@ -2,76 +2,109 @@ package com.TaskShare.ViewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
+import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.FriendsManagementService
+import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Utilities.TSFriendStatus
 
 
 
 class FriendViewModel: ViewModel() {
     val state = mutableStateOf(FriendViewState())
-    private val friendsManagementService = FriendsManagementService()
-
-
-    // Temporary vals
-    var user1 = FriendViewState("Timmy Nook")
-    var user2 = FriendViewState("Tommy Nook")
-    var user3 = FriendViewState("Mario Mario")
-    var user4 = FriendViewState("Luigi Mario")
-    var user5 = FriendViewState("Bob Smith")
-    var user6 = FriendViewState("Someone Something")
-    var user7 = FriendViewState("Ash Ketchum")
+    private val friendsManager = FriendsManagementService()
 
     fun getFriends(): List<FriendViewState>{
-        var friends = mutableListOf<FriendViewState>(user1, user2, user3, user4,
-            user5, user6, user7, user7, user7)
-
-        return friends
+      var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+           currentUserId = TSUsersRepository.globalUserId,
+           friendStatus = TSFriendStatus.FRIEND
+        )
+        val listOfFriendViewState = listOfFriends.map { friend ->
+            FriendViewState(
+                // Convert relevant properties from Friend to FriendViewState
+                // Example:
+                friendName = friend.name,
+                friendEmail = friend.email,
+            )
+        }
+        return listOfFriendViewState
     }
 
     fun getIncomingRequests(): List<FriendViewState>{
-        var incomingRequests = mutableListOf<FriendViewState>(user1, user2, user3, user4,
-            user5, user6, user7, user7, user7)
-
-        return incomingRequests
+        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+            currentUserId = TSUsersRepository.globalUserId,
+            friendStatus = TSFriendStatus.INCOMING
+        )
+        val listOfFriendViewState = listOfFriends.map { friend ->
+            FriendViewState(
+                // Convert relevant properties from Friend to FriendViewState
+                // Example:
+                friendName = friend.name,
+                friendEmail = friend.email,
+            )
+        }
+        return listOfFriendViewState
     }
 
     fun getOutgoingRequests(): List<FriendViewState>{
-        var outgoingRequests = mutableListOf<FriendViewState>(user1, user2, user3, user4,
-            user5, user6, user7, user7, user7)
-
-        return outgoingRequests
+        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+            currentUserId = TSUsersRepository.globalUserId,
+            friendStatus = TSFriendStatus.OUTGOING
+        )
+        val listOfFriendViewState = listOfFriends.map { friend ->
+            FriendViewState(
+                // Convert relevant properties from Friend to FriendViewState
+                // Example:
+                friendName = friend.name,
+                friendEmail = friend.email,
+            )
+        }
+        return listOfFriendViewState
     }
 
     fun getBlockedUsers(): List<FriendViewState>{
-        var blockedUsers = mutableListOf<FriendViewState>(user1, user2, user3, user4,
-            user5, user6, user7, user7, user7)
-
-        return blockedUsers
+        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+            currentUserId = TSUsersRepository.globalUserId,
+            friendStatus = TSFriendStatus.BLOCKED
+        )
+        val listOfFriendViewState = listOfFriends.map { friend ->
+            FriendViewState(
+                // Convert relevant properties from Friend to FriendViewState
+                // Example:
+                friendName = friend.name,
+                friendEmail = friend.email,
+            )
+        }
+        return listOfFriendViewState
     }
 
-    fun sendFriendRequest(senderId: String, receiverEmail: String){
-        state.value = state.value.copy(currentUserId = senderId)
-        state.value = state.value.copy(friendUserId = receiverEmail)
+    fun sendFriendRequest(receiverEmail: String){
+        friendsManager.sendFriendRequest(
+            senderUserId = TSUsersRepository.globalUserId,
+            receiverEmail = receiverEmail)
     }
 
-    fun acceptFriendRequest(currUserId: String, friendToAccept: String){ //lines 30 - 31 are from ChatGpt
-        state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(friendUserId = friendToAccept)
+    fun acceptFriendRequest(friendToAcceptId: String){
+        friendsManager.acceptFriendRequest(
+            currentUserId = TSUsersRepository.globalUserId,
+            incomingFriendId = friendToAcceptId)
     }
 
-    fun declineOrRemoveFriendRequest(currUserId: String, friendToDecline: String){
-        state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(friendUserId = friendToDecline)
+    fun declineOrRemoveFriendRequest(currUserId: String, friendToDeclineId: String){
+        friendsManager.removeOrDeclineFriendRequest(
+            currentUserId = TSUsersRepository.globalUserId,
+            incomingFriendId = friendToDeclineId)
     }
 
-    fun blockFriend(currUserId: String, friendToBeBlocked: String){
-        state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(friendUserId = friendToBeBlocked)
+    fun blockFriend(currUserId: String, friendToBeBlockedId: String){
+        friendsManager.blockFriend(
+            currentUserId = TSUsersRepository.globalUserId,
+            incomingFriendId = friendToBeBlockedId)
     }
 
-    fun unblockFriend(currUserId: String, friendToBeUnblocked: String){
-        state.value = state.value.copy(currentUserId = currUserId)
-        state.value = state.value.copy(friendUserId = friendToBeUnblocked)
+    fun unblockFriend(currUserId: String, friendToBeUnblockedId: String){
+        friendsManager.unblockFriend(
+            currentUserId = TSUsersRepository.globalUserId,
+            blockedFriendId = friendToBeUnblockedId)
     }
 
 }
