@@ -75,7 +75,7 @@ import java.util.Date
 
 
 @Composable
-fun AddTaskScreen(context: Context) {
+fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
     val viewModel = viewModel(AddTaskViewModel::class.java)
     val state by viewModel.state
 
@@ -323,6 +323,7 @@ fun AddTaskScreen(context: Context) {
                     date.value = ""
                     state.assignees = mutableListOf()
                     groupMembers = mutableListOf()
+                    redirectToMyTasks()
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.primary_blue),

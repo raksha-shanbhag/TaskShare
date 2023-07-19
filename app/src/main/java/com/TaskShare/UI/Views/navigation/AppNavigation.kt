@@ -202,7 +202,11 @@ private fun NavGraphBuilder.addCreateTaskRoute(navController: NavController, con
 }
 private fun NavGraphBuilder.showAddTask(navController: NavController, context: Context) {
     composable(route = LeafScreen.AddTask.route) {
-        AddTaskScreen(context)
+        AddTaskScreen(context,
+            redirectToMyTasks = {
+                navController.navigate(LeafScreen.MyTasks.route)
+            }
+        )
     }
 }
 //end of AddTask navigation
