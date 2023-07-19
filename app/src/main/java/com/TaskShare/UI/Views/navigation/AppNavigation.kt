@@ -20,6 +20,7 @@ import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.TaskViewModel
 import com.example.greetingcard.screens.AddTaskScreen
 import com.example.greetingcard.screens.CreateGroupScreen
+import com.example.greetingcard.screens.EditTaskScreen
 import com.example.greetingcard.screens.HomeScreen
 import com.example.greetingcard.screens.LoginScreen
 import com.example.greetingcard.screens.MyTasksScreen
@@ -52,7 +53,7 @@ fun AppNavGraph(
     ) {
         addLoginRoute(navController, groupViewModel)
         addHomeRoute(navController, groupViewModel)
-        addMyTasksRoute(navController, taskViewModel)
+        addMyTasksRoute(navController, taskViewModel, context)
         addCreateTaskRoute(navController, context)
         addActivityRoute(navController)
         addProfileRoute(navController)
@@ -161,13 +162,14 @@ private fun NavGraphBuilder.showCreateGroup(navController: NavController, viewMo
 //end of home navigation
 
 //myTasks navigation
-private fun NavGraphBuilder.addMyTasksRoute(navController: NavController, viewModel: TaskViewModel) {
+private fun NavGraphBuilder.addMyTasksRoute(navController: NavController, viewModel: TaskViewModel, context: Context) {
     navigation(
         route = RootScreen.MyTasks.route,
         startDestination = LeafScreen.MyTasks.route
     ) {
         showMyTasks(navController, viewModel)
         showTaskDetail(navController, viewModel)
+        showEditTask(navController, context)
     }
 }
 private fun NavGraphBuilder.showMyTasks(navController: NavController, viewModel: TaskViewModel) {
@@ -185,7 +187,9 @@ private fun NavGraphBuilder.showTaskDetail(navController: NavController, viewMod
         TaskDetailsScreen(
             onBack = {
                 navController.navigateUp()
-            }, viewModel
+            }, viewModel, editTask = {
+                navController.navigate(LeafScreen.EditTask.route)
+            }
         )
     }
 }
@@ -210,6 +214,26 @@ private fun NavGraphBuilder.showAddTask(navController: NavController, context: C
     }
 }
 //end of AddTask navigation
+
+//edit task navigation
+//private fun NavGraphBuilder.addEditTaskRoute(navController: NavController, context: Context) {
+//    composable(
+//        route = LeafScreen.EditTask.route
+//    ) {
+//        showEditTask(navController, context)
+//    }
+//}
+private fun NavGraphBuilder.showEditTask(navController: NavController, context: Context) {
+    composable(route = LeafScreen.EditTask.route) {
+        EditTaskScreen(context,
+            redirectToMyTasks = {
+                navController.navigate(LeafScreen.MyTasks.route)
+            }
+        )
+    }
+}
+//end of edit task navigation
+
 
 //activity navigation
 private fun NavGraphBuilder.addActivityRoute(navController: NavController) {

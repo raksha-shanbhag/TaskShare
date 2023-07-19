@@ -16,6 +16,7 @@ sealed class LeafScreen(val route: String) {
     object Home : LeafScreen("home")
     object MyTasks : LeafScreen("myTasks")
     object AddTask : LeafScreen("addTask")
+    object EditTask : LeafScreen("editTask")
     object Activity : LeafScreen("activity")
     object Profile : LeafScreen("profile")
     object Friends : LeafScreen("friends")

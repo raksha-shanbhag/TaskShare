@@ -61,7 +61,7 @@ import java.text.SimpleDateFormat
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
+fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: () -> Unit) {
     var taskDetail by remember {
         mutableStateOf(TaskViewState())
     }
@@ -111,12 +111,15 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
                             RoundedCornerShape(4.dp)
                         )
                         .fillMaxWidth()
-                        .padding(15.dp, 10.dp),
+                        .padding(15.dp, 10.dp)
+                        .clickable(onClick = {
+                            editTask()
+                        })
 
                 ) {
 
                     Text(
-                        text = viewModel.detailTaskState.value.taskDetail.taskName,
+                        text = taskDetail.taskName,
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
