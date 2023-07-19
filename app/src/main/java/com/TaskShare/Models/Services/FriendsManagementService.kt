@@ -61,7 +61,6 @@ class FriendsManagementService {
                 email = incomingFriendInfo.email,
                 userId = incomingFriendInfo.userId
             )
-
             usersRepository.updateFriendshipStatus(currentUserId, incomingFriendId, acceptorFriend)
         }
 
@@ -131,5 +130,14 @@ class FriendsManagementService {
         }
 
     }
+    fun getFriendsWithAnyStatus(currentUserId: String, friendStatus: TSFriendStatus? = null): List<Friend> {
+        var currentUserInfo = usersRepository.getUserInfo(currentUserId)
+        var friends = currentUserInfo.friends
 
+        return if (friendStatus != null) {
+            friends.filter { it.status == friendStatus }
+        } else {
+            friends
+        }
+    }
 }
