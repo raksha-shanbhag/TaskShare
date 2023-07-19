@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -158,7 +160,11 @@ fun RenderOutgoingRequestCard(name: String,
                 text = name,
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .widthIn(max = 150.dp)
+                    .wrapContentWidth(Alignment.Start),
+                softWrap = true
             )
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
