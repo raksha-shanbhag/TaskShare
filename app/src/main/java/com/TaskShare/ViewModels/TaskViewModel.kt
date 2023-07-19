@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.TaskManagementService
+import java.util.Date
 
 class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
@@ -57,7 +58,7 @@ data class TaskViewState (
     val assignees: MutableList<String> = mutableListOf(),
     var assignee: String = "",
     val groupName: String = "",
-    val deadline: String = "",
+    var deadline: Date = Date(),
     val cycle: String = "",
     val id: String = ""
 )

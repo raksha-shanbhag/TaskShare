@@ -55,7 +55,7 @@ import com.TaskShare.ViewModels.TaskDetail
 import com.TaskShare.ViewModels.TaskViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
-
+import java.text.SimpleDateFormat
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -75,6 +75,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
     var transferState by remember {
         mutableStateOf("")
     }
+    var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
 
     Scaffold( topBar = {
@@ -170,7 +171,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel) {
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
                         Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        RenderPills(taskDetail.deadline, R.color.banner_blue)
+                        RenderPills(simpleDateFormat.format(taskDetail.deadline), R.color.banner_blue)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()

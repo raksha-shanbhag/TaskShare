@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.TaskShare.ViewModels.TaskViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
+import java.text.SimpleDateFormat
 
 var min_width_pill = 100
 var max_width_pill = 400
@@ -85,6 +86,7 @@ fun RenderStatus(status: String){
 @Composable
 fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetail: () -> Unit){
 //    Button(onClick = showDetail){
+    var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     Row(
         modifier = Modifier
             .background(
@@ -167,7 +169,7 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                     Spacer(modifier = Modifier.height(height = 5.dp))
 
                     Text(
-                        text = taskInfo.deadline,
+                        text = simpleDateFormat.format(taskInfo.deadline),
                         fontSize = small_font_size.sp,
                         modifier = Modifier
                             .widthIn(min_width_pill.dp, max_width_pill.dp)

@@ -46,6 +46,8 @@ import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
+import java.text.SimpleDateFormat
+import java.util.Date
 
 var min_width_pill_g = 100
 var max_width_pill_g = 400
@@ -94,8 +96,9 @@ fun RenderStatusG(status: String){
 }
 
 @Composable
-fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_date: String, showDetail: () -> Unit){
+fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_date: Date, showDetail: () -> Unit){
 //    Button(onClick = showDetail){
+    var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     Row(
         modifier = Modifier
             .background(
@@ -150,7 +153,7 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
             ) {
             RenderStatusG(status)
             Spacer(modifier = Modifier.height(height = 5.dp))
-            Text(text = end_date,
+            Text(text = simpleDateFormat.format(end_date),
                 fontSize = MaterialTheme.typography.caption.fontSize,
                 modifier = Modifier
                     .widthIn(min_width_pill.dp, max_width_pill.dp)
