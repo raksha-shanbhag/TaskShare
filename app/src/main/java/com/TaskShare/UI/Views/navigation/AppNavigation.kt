@@ -169,7 +169,7 @@ private fun NavGraphBuilder.addMyTasksRoute(navController: NavController, viewMo
     ) {
         showMyTasks(navController, viewModel)
         showTaskDetail(navController, viewModel)
-        showEditTask(navController, context)
+        showEditTask(navController, context, viewModel)
     }
 }
 private fun NavGraphBuilder.showMyTasks(navController: NavController, viewModel: TaskViewModel) {
@@ -223,12 +223,12 @@ private fun NavGraphBuilder.showAddTask(navController: NavController, context: C
 //        showEditTask(navController, context)
 //    }
 //}
-private fun NavGraphBuilder.showEditTask(navController: NavController, context: Context) {
+private fun NavGraphBuilder.showEditTask(navController: NavController, context: Context, viewModel: TaskViewModel) {
     composable(route = LeafScreen.EditTask.route) {
         EditTaskScreen(context,
             redirectToMyTasks = {
                 navController.navigate(LeafScreen.MyTasks.route)
-            }
+            }, viewModel
         )
     }
 }
