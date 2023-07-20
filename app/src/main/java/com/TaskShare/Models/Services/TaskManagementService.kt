@@ -1,5 +1,6 @@
 package com.TaskShare.Models.Services
 
+import android.util.Log
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
@@ -24,12 +25,15 @@ class TaskManagementService {
         for (subTask in allSubtasks) {
             // get Task info
             var taskInfo = taskRepository.getTask(subTask.taskId)
+            Log.i("Debug Raksha tasks", taskInfo.toString())
 
             // get group info
             var groupInfo = groupsRepository.getGroupFromId(taskInfo.groupId)
+            Log.i("Debug Raksha tasks", groupInfo.toString())
 
             // assigner Info
             var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
+            Log.i("Debug Raksha tasks", assigneeInfo.toString())
 
             var task = TaskViewState(
                 taskName = taskInfo.taskName,
@@ -104,6 +108,9 @@ class TaskManagementService {
         // assignment users
         var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
         var assigneeInfo = userRepository.getUserInfo(subTaskInfo.assigneeId)
+
+        Log.i("Debug Task", taskInfo.toString())
+        Log.i("Debug Task", subTaskInfo.toString())
 
         return TaskViewState(
             taskName = taskInfo.taskName,

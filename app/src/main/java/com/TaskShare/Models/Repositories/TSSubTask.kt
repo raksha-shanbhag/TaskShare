@@ -68,12 +68,15 @@ class TSSubTasksRepository {
 
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
+                val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
+
+                Log.i("Debug Raksha Task Status -", taskStatus.toString())
 
                 var element = SubTask(
                     subTaskId = document.id,
                     taskId = document.data?.get("taskId").toString(),
                     assigneeId = document.data?.get("assigneeId").toString(),
-                    taskStatus = TSTaskStatus.fromString(document.data?.get("taskStatus").toString()),
+                    taskStatus = taskStatus,
                     startDate = startDate,
                     endDate = endDate,
                 )
@@ -100,16 +103,19 @@ class TSSubTasksRepository {
 //                    subTaskComments.addAll(document.get("comments") as List<String>)
 
                 val startDateTimestamp = document.data?.get("startDate") as? Timestamp
-                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("endDate") as? Timestamp
 
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
+                val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
+
+                Log.i("Debug Raksha Task Status -", taskStatus.toString())
 
                 result = SubTask(
                     subTaskId = document.id,
                     taskId = document.data?.get("taskId").toString(),
-                    assigneeId = document.data?.get("assigneeID").toString(),
-                    taskStatus = TSTaskStatus.fromString(document.data?.get("assigneeID").toString()),
+                    assigneeId = document.data?.get("assigneeId").toString(),
+                    taskStatus = taskStatus,
                     startDate = startDate,
                     endDate = endDate,
                 )

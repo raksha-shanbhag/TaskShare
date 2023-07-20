@@ -15,7 +15,6 @@ import java.util.Date
 //import com.TaskShare.Models.TSUser
 
 class AddTaskViewModel: ViewModel() {
-    var temporaryGlobalUserId = "xvG378qDSANqPD6Ic54vD8C2PpZ2" // remove this
     val state = mutableStateOf(AddTaskState())
     val groupManager = GroupManagementService()
     val taskManager = TaskManagementService()

@@ -102,10 +102,14 @@ class TSUsersRepository() {
         var result = ArrayList<String>()
         runBlocking {
             var document  = users.document(userId).get().await()
-            if (document != null) {
-                Log.i("Debug Raksha TS User get group", document.toString())
-                var groups = document.get("groups") as MutableList<String>
-                result.addAll(groups)
+            if (document.exists()) {
+                try {
+                    var groups = document.get("groups") as MutableList<String>
+                    Log.i("Debug Raksha TS User get group2", document.toString())
+                    result.addAll(groups)
+                } catch(e: Throwable) {
+                    Log.w("Can't find group", e)
+                }
             }
         }
 
@@ -117,7 +121,7 @@ class TSUsersRepository() {
         var userInfo = User()
         runBlocking {
             var result = users.document(userId).get().await()
-            if (result != null) {
+            if (result.exists()) {
                 userInfo = User(
                     userId = userId,
                     firstName = result.get("firstName").toString(),
