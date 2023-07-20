@@ -5,5 +5,6 @@ data class Group(
     val groupName: String ="",
     val groupDescription: String = "",
     val createdBy: String = "",
-    val groupMembers: MutableList<String> = mutableListOf()
+    val groupMembers: MutableList<String> = mutableListOf(),
+    val updateLog: MutableList<UpdateLog> = mutableListOf()
 )

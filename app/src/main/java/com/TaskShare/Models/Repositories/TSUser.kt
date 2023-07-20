@@ -102,9 +102,11 @@ class TSUsersRepository() {
         var result = ArrayList<String>()
         runBlocking {
             var document  = users.document(userId).get().await()
-            Log.i("Debug Raksha TS User get group", document.toString())
-            var groups = document.get("groups") as MutableList<String>
-            result.addAll(groups)
+            if (document != null) {
+                Log.i("Debug Raksha TS User get group", document.toString())
+                var groups = document.get("groups") as MutableList<String>
+                result.addAll(groups)
+            }
         }
 
         Log.i("Debug Raksha TS user group state", result.toString())
@@ -115,13 +117,15 @@ class TSUsersRepository() {
         var userInfo = User()
         runBlocking {
             var result = users.document(userId).get().await()
-            userInfo = User(
-                userId = userId,
-                firstName = result.get("firstName").toString(),
-                lastName = result.get("lastName").toString(),
-                email = result.get("email").toString(),
-                phoneNumber = result.get("phoneNumber").toString()
-            )
+            if (result != null) {
+                userInfo = User(
+                    userId = userId,
+                    firstName = result.get("firstName").toString(),
+                    lastName = result.get("lastName").toString(),
+                    email = result.get("email").toString(),
+                    phoneNumber = result.get("phoneNumber").toString()
+                )
+            }
         }
         return userInfo
     }

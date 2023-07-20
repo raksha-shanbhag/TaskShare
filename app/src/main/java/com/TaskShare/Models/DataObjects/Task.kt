@@ -11,5 +11,6 @@ data class Task(
     val assignerId: String = "",
     val lastDate: Date = Date(),
     val startDate: Date = Date(),
-    val assignees: MutableList<String> = mutableListOf()
+    val assignees: MutableList<String> = mutableListOf(),
+    val updateLog: MutableList<UpdateLog> = mutableListOf()
 )

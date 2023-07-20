@@ -8,5 +8,6 @@ data class User(
     val email: String = "",
     val lastName: String = "",
     val phoneNumber: String = "",
-    val friends: MutableList<Friend> = mutableListOf()
+    val friends: MutableList<Friend> = mutableListOf(),
+    val groups: MutableList<String> = mutableListOf(),
 )
