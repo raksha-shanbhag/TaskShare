@@ -3,15 +3,19 @@ package com.TaskShare.ViewModels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.Models.Repositories.TSUser
 import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.TaskShare.Models.Services.FriendsManagementService
 import com.TaskShare.Models.Services.GroupManagementService
+import com.TaskShare.Models.Utilities.TSFriendStatus
 import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
     val state = mutableStateOf(GroupViewState())
     val groupsState = mutableStateOf(GroupsViewState())
     private val groupManager = GroupManagementService()
+    private val friendsManager = FriendsManagementService()
 
     val test = mutableStateOf("");
     fun updateGroupMember(mem: String) {
@@ -117,10 +121,19 @@ class GroupViewModel: ViewModel() {
         }
          return mapOf();
 
-
     }
 
     fun getFriendsList(): List<friendItem> {
+//        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+//            currentUserId = TSUsersRepository.globalUserId,
+//            friendStatus = TSFriendStatus.FRIEND
+//        )
+//        var friends =  listOfFriends.map { friend ->
+//            friendItem(friend.email, false)
+//
+//        }
+//        return friends
+//    }
         return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
     }
 }

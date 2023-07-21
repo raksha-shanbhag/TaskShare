@@ -1,6 +1,8 @@
 package com.TaskShare.ViewModels
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +16,10 @@ import com.TaskShare.Models.Services.TaskManagementService
 import com.example.greetingcard.R
 import com.example.greetingcard.screens.RenderPills
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -68,25 +73,27 @@ class AddTaskViewModel: ViewModel() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun createTask(date: String, groupMembers: MutableList<GroupMember>) {
         // validate form data
         // call POST endpoint to send data to backend
-        var endDate = SimpleDateFormat("dd/mm/yyyy").parse(date)
-        var typeDate = endDate as Date
+        val formatter = DateTimeFormatter.ofPattern("dd/M/yyyy", Locale.ENGLISH)
 
+        var endDate = LocalDate.parse(date, formatter)
+
+        var datee = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
         updateAssignees(groupMembers)
 
 
         taskManager.createTask(
             taskName = state.value.taskName,
             groupId = state.value.groupId,
-            lastDate = typeDate,
+            lastDate = datee,
             cycle = state.value.cycle,
             assignerId = TSUsersRepository.globalUserId,
             assignees = state.value.assignees
         )
 
-        Log.i("Debug Raksha Frontend ViewModel", state.value.assignees.toString())
 
     }
 

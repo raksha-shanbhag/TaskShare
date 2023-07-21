@@ -3,8 +3,10 @@ package com.example.greetingcard.screens
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -70,6 +72,7 @@ import java.util.Calendar
 import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 
@@ -108,7 +111,8 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
 
 //        R.style.ThemeOverlay_MyApp_Dialog,
         {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            date.value = "$dayOfMonth/$month/$year"
+            var actualmonth = month + 1
+            date.value = "$dayOfMonth/$actualmonth/$year"
         }, year, month, day
     )
 
