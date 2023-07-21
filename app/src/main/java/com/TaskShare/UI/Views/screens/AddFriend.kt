@@ -168,7 +168,7 @@ fun RenderTextField(titleValue: String, labelValue: String, onValueChange: (Stri
 @Composable
 fun AddFriendButton(textValue: String, contentDesc: String,
                     onClick: () -> Unit) {
-    Button(onClick = { onClick },
+    Button(onClick = { onClick() },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
