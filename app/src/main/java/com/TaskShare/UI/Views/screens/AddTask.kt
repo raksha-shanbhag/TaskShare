@@ -187,7 +187,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                 TextField(
                     readOnly = true,
                     value = date.value,
-                    onValueChange = { },
+                    onValueChange = {viewModel.updateDeadline(date.value) },
                     label = { Text("End Date") },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -316,7 +316,9 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
 
 
                 Button(onClick = {
-                    viewModel.createTask()
+                    Log.i("Debug Jaisrheee Frontend addtasl", date.toString())
+
+                    viewModel.createTask(date.value, groupMembers)
                     state.taskName = ""
                     state.groupName = ""
                     state.cycle = ""

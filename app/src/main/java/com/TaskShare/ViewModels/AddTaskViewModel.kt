@@ -1,13 +1,22 @@
 package com.TaskShare.ViewModels
 
 import android.util.Log
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.DataObjects.Group
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
+import com.example.greetingcard.R
+import com.example.greetingcard.screens.RenderPills
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.Date
+import java.util.Locale
 
 //import com.TaskShare.Models.TSSubTask
 //import com.TaskShare.Models.TSSubTaskData
@@ -36,8 +45,8 @@ class AddTaskViewModel: ViewModel() {
 
 
     fun updateDeadline(date: String) {
-        var endDate = Date(date)
-        state.value = state.value.copy(endDate = endDate)
+        var endDate = SimpleDateFormat("dd/mm/yyyy").parse(date)
+        var typeDate = endDate as Date
     }
 
     fun updateCycle(cycle: String) {
@@ -47,25 +56,38 @@ class AddTaskViewModel: ViewModel() {
     fun updateAssignTo(assignTo: String) {
         state.value = state.value.copy(assignTo = assignTo)
     }
-    fun updateAssignees(name: String) {
-       val currentList = state.value.assignees
-        currentList.add(name)
+    fun updateAssignees(groupMembers: MutableList<GroupMember>) {
+       val currentList = mutableListOf<String>()
+
+        groupMembers.forEach { item ->
+            if (item.selected) {
+                currentList.add(item.memberId)
+            }
+        }
         state.value = state.value.copy(assignees = currentList)
+
     }
 
-    fun createTask() {
+    fun createTask(date: String, groupMembers: MutableList<GroupMember>) {
         // validate form data
         // call POST endpoint to send data to backend
+        var endDate = SimpleDateFormat("dd/mm/yyyy").parse(date)
+        var typeDate = endDate as Date
+
+        updateAssignees(groupMembers)
+
+
         taskManager.createTask(
             taskName = state.value.taskName,
             groupId = state.value.groupId,
-            lastDate = state.value.endDate,
+            lastDate = typeDate,
             cycle = state.value.cycle,
             assignerId = TSUsersRepository.globalUserId,
             assignees = state.value.assignees
         )
 
         Log.i("Debug Raksha Frontend ViewModel", state.value.assignees.toString())
+
     }
 
 //    fun createTask(){

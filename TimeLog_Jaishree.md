@@ -32,4 +32,5 @@
 | 2023/07/18 | 0.5      | format date properly in frontend                                                       |
 | 2023/07/19 | 2.5      | edit page (ip)                                                                         |
 | 2023/07/20 | 0.5      | task status display debugging                                                          |
+| 2023/07/21 | 2        | assignee task display debugging                                                        |
 
