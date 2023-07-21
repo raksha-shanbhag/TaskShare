@@ -36,8 +36,6 @@ class FriendViewModel: ViewModel() {
         )
         val listOfFriendViewState = listOfFriends.map { friend ->
             FriendViewState(
-                // Convert relevant properties from Friend to FriendViewState
-                // Example:
                 friendName = friend.name,
                 friendEmail = friend.email,
             )

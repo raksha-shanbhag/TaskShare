@@ -46,13 +46,6 @@ class FriendsManagementService {
         )
         usersRepository.addFriend(senderUserId, sendersFriend)
 
-//        var friend = FriendViewState(
-//            friendName = receiverInfo.firstName + " " + receiverInfo.lastName,
-//            currentUserId =  senderInfo.userId,
-//            friendUserId =  receiverInfo.userId,
-//            friendEmail = receiverInfo.email
-//        )
-
         return "SUCCESS"
     }
     fun acceptFriendRequest(currentUserId: String, incomingFriendId: String){
@@ -142,10 +135,11 @@ class FriendsManagementService {
         var currentUserInfo = usersRepository.getUserInfo(currentUserId)
         var friends = currentUserInfo.friends
 
-        return if (friendStatus != null) {
-            friends.filter { it.status == friendStatus }
-        } else {
-            friends
+        var friendsWithNeededStatus : List<Friend> = emptyList()
+
+        if (friendStatus != null) {
+            friendsWithNeededStatus = friends.filter { it.status == friendStatus }
         }
+        return friendsWithNeededStatus
     }
 }
