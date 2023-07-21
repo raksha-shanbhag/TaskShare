@@ -3,7 +3,7 @@ package com.TaskShare.Models.Services
 import com.TaskShare.Models.DataObjects.Friend
 import com.TaskShare.Models.Utilities.TSFriendStatus
 import com.TaskShare.Models.Repositories.TSUsersRepository
-
+import com.TaskShare.ViewModels.FriendViewState
 
 
 class FriendsManagementService {
@@ -45,6 +45,13 @@ class FriendsManagementService {
             userId = receiverInfo.userId
         )
         usersRepository.addFriend(senderUserId, sendersFriend)
+
+//        var friend = FriendViewState(
+//            friendName = receiverInfo.firstName + " " + receiverInfo.lastName,
+//            currentUserId =  senderInfo.userId,
+//            friendUserId =  receiverInfo.userId,
+//            friendEmail = receiverInfo.email
+//        )
 
         return "SUCCESS"
     }

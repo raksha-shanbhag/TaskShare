@@ -78,30 +78,35 @@ class FriendViewModel: ViewModel() {
     }
 
     fun sendFriendRequest(receiverEmail: String){
+        state.value = state.value.copy(friendEmail = receiverEmail)
         friendsManager.sendFriendRequest(
             senderUserId = TSUsersRepository.globalUserId,
             receiverEmail = receiverEmail)
     }
 
     fun acceptFriendRequest(friendToAcceptId: String){
+        state.value = state.value.copy(friendUserId = friendToAcceptId)
         friendsManager.acceptFriendRequest(
             currentUserId = TSUsersRepository.globalUserId,
             incomingFriendId = friendToAcceptId)
     }
 
-    fun declineOrRemoveFriendRequest(currUserId: String, friendToDeclineId: String){
+    fun declineOrRemoveFriendRequest(friendToDeclineId: String){
+        state.value = state.value.copy(friendUserId = friendToDeclineId)
         friendsManager.removeOrDeclineFriendRequest(
             currentUserId = TSUsersRepository.globalUserId,
             incomingFriendId = friendToDeclineId)
     }
 
-    fun blockFriend(currUserId: String, friendToBeBlockedId: String){
+    fun blockFriend(friendToBeBlockedId: String){
+        state.value = state.value.copy(friendUserId = friendToBeBlockedId)
         friendsManager.blockFriend(
             currentUserId = TSUsersRepository.globalUserId,
             incomingFriendId = friendToBeBlockedId)
     }
 
-    fun unblockFriend(currUserId: String, friendToBeUnblockedId: String){
+    fun unblockFriend(friendToBeUnblockedId: String){
+        state.value = state.value.copy(friendUserId = friendToBeUnblockedId)
         friendsManager.unblockFriend(
             currentUserId = TSUsersRepository.globalUserId,
             blockedFriendId = friendToBeUnblockedId)

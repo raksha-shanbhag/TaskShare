@@ -49,6 +49,7 @@ import com.example.greetingcard.R
 @Composable
 fun AddFriendScreen(
     onBack: () -> Unit
+
 ) {
     // Getting friends data
     val viewModel = viewModel(FriendViewModel::class.java)
@@ -117,9 +118,13 @@ fun AddFriendScreen(
                 email.value = newValue
             }
             Spacer(modifier = Modifier.height(20.dp))
+//            AddFriendButton("Send Friend Request",
+//                "Send a friend request"
+//            ) { viewModel.sendFriendRequest(email.value) }
             AddFriendButton("Send Friend Request",
-                "Send a friend request"
-            ) { viewModel.sendFriendRequest(state.friendEmail) }
+                "Send a friend request",
+                onClick = { viewModel.sendFriendRequest(email.value) }
+            )
         }
     }
 }
