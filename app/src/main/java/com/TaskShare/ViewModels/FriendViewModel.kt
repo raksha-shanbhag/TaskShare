@@ -23,6 +23,7 @@ class FriendViewModel: ViewModel() {
                 // Convert relevant properties from Friend to FriendViewState
                 // Example:
                 friendName = friend.name,
+                friendUserId = friend.userId,
                 friendEmail = friend.email,
             )
         }
@@ -37,6 +38,7 @@ class FriendViewModel: ViewModel() {
         val listOfFriendViewState = listOfFriends.map { friend ->
             FriendViewState(
                 friendName = friend.name,
+                friendUserId = friend.userId,
                 friendEmail = friend.email,
             )
         }
@@ -53,6 +55,7 @@ class FriendViewModel: ViewModel() {
                 // Convert relevant properties from Friend to FriendViewState
                 // Example:
                 friendName = friend.name,
+                friendUserId = friend.userId,
                 friendEmail = friend.email,
             )
         }
@@ -69,6 +72,7 @@ class FriendViewModel: ViewModel() {
                 // Convert relevant properties from Friend to FriendViewState
                 // Example:
                 friendName = friend.name,
+                friendUserId = friend.userId,
                 friendEmail = friend.email,
             )
         }
@@ -82,32 +86,32 @@ class FriendViewModel: ViewModel() {
             receiverEmail = receiverEmail)
     }
 
-    fun acceptFriendRequest(friendToAccept: FriendViewState){
-        /*state.value = state.value.copy(friendUserId = friendToAcceptId)
+    fun acceptFriendRequest(friendToAcceptId: String){
+        state.value = state.value.copy(friendUserId = friendToAcceptId)
         friendsManager.acceptFriendRequest(
             currentUserId = TSUsersRepository.globalUserId,
-            incomingFriendId = friendToAcceptId)*/
+            incomingFriendId = friendToAcceptId)
     }
 
-    fun declineOrRemoveFriendRequest(friendToDecline: FriendViewState){
-        /*state.value = state.value.copy(friendUserId = friendToDeclineId)
+    fun declineOrRemoveFriendRequest(friendToDeclineId: String){
+        state.value = state.value.copy(friendUserId = friendToDeclineId)
         friendsManager.removeOrDeclineFriendRequest(
             currentUserId = TSUsersRepository.globalUserId,
-            incomingFriendId = friendToDeclineId)*/
+            incomingFriendId = friendToDeclineId)
     }
 
-    fun blockFriend(friendToBeBlocked: FriendViewState){
-        /*state.value = state.value.copy(friendUserId = friendToBeBlockedId)
+    fun blockFriend(friendToBeBlockedId: String){
+        state.value = state.value.copy(friendUserId = friendToBeBlockedId)
         friendsManager.blockFriend(
             currentUserId = TSUsersRepository.globalUserId,
-            incomingFriendId = friendToBeBlockedId)*/
+            incomingFriendId = friendToBeBlockedId)
     }
 
-    fun unblockFriend(friendToBeUnblocked: FriendViewState){
-        /*state.value = state.value.copy(friendUserId = friendToBeUnblockedId)
+    fun unblockFriend(friendToBeUnblockedId: String){
+        state.value = state.value.copy(friendUserId = friendToBeUnblockedId)
         friendsManager.unblockFriend(
             currentUserId = TSUsersRepository.globalUserId,
-            blockedFriendId = friendToBeUnblockedId)*/
+            blockedFriendId = friendToBeUnblockedId)
     }
 
 }

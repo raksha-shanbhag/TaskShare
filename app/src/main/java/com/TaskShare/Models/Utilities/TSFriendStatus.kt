@@ -1,10 +1,10 @@
 package com.TaskShare.Models.Utilities
 
 enum class TSFriendStatus(str: String) {
-    INCOMING("Incoming"),
-    OUTGOING("Outgoing"),
-    FRIEND("Friend"),
-    BLOCKED("Blocked"),
+    INCOMING("INCOMING"),
+    OUTGOING("OUTGOING"),
+    FRIEND("FRIEND"),
+    BLOCKED("BLOCKED"),
     NULL("Error");
 
     var displayString: String = str
