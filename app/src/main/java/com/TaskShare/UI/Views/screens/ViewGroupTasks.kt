@@ -80,18 +80,35 @@ fun RenderStatusG(status: String){
     var bg_color = R.color.white
     var text_print = ""
 
-    if (status == "todo") {
+    if (status == "To Do") {
         text_print = "To Do"
         bg_color = R.color.progress_red
     }
-    if (status == "inprogress") {
+    else if (status == "Overdue") {
+        text_print = "Overdue"
+        bg_color = R.color.progress_red
+    }
+    else if (status == "Declined") {
+        text_print = "Declined"
+        bg_color = R.color.progress_red
+    }
+    else if (status == "In Progress") {
         text_print = "In Progress"
         bg_color = R.color.progress_yellow
     }
-    if (status == "done") {
-        text_print = "Done"
+    else if (status == "Pending Approval") {
+        text_print = "Pending Approval"
+        bg_color = R.color.progress_yellow
+    }
+    else if (status == "Complete") {
+        text_print = "Complete"
         bg_color = R.color.progress_green
     }
+    else{
+        text_print = status
+        bg_color = R.color.progress_yellow
+    }
+
     RenderPillsG(text_print, bg_color)
 }
 
