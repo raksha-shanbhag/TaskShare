@@ -115,9 +115,9 @@ fun IncomingRequestsScreen(
                 items (incomingRequests.count()) { index ->
                     RenderIncomingRequestCard(name = incomingRequests[index].friendName,
                         painterResource(R.drawable.ic_account_circle),
-                        onClickAccept = {viewModel.acceptFriendRequest(incomingRequests[index].friendUserId)},
-                        onClickDeny = {viewModel.declineOrRemoveFriendRequest(incomingRequests[index].friendUserId)},
-                        onClickBlock = {viewModel.blockFriend(incomingRequests[index].friendUserId)}
+                        onClickAccept = {viewModel.acceptFriendRequest(incomingRequests[index])},
+                        onClickDeny = {viewModel.declineOrRemoveFriendRequest(incomingRequests[index])},
+                        onClickBlock = {viewModel.blockFriend(incomingRequests[index])}
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
