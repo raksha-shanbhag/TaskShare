@@ -10,4 +10,6 @@ data class SubTask(
     val startDate : Date = Date(),
     val endDate  : Date = Date(),
     val taskStatus : TSTaskStatus = TSTaskStatus.TODO,
+    val comments: MutableList<String> = mutableListOf(),
+    val updateLog: MutableList<UpdateLog> = mutableListOf(),
 )

@@ -1,5 +1,6 @@
 package com.TaskShare.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.DataObjects.Group
@@ -63,6 +64,8 @@ class AddTaskViewModel: ViewModel() {
             assignerId = TSUsersRepository.globalUserId,
             assignees = state.value.assignees
         )
+
+        Log.i("Debug Raksha Frontend ViewModel", state.value.assignees.toString())
     }
 
 //    fun createTask(){
@@ -122,11 +125,6 @@ class AddTaskViewModel: ViewModel() {
                 )
             )
         }
-//        state.value = state.value.copy(
-//            groupMembers = mutableListOf(member1, member2, member3, member4, member5, member6)
-//        )
-//        state.value = state.value.copy(groupMembers = currentList)
-
         return result
     }
 
@@ -143,7 +141,6 @@ data class AddTaskState (
     val assignTo: String = "",
     var assignees: MutableList<String> = mutableListOf(),
     val assignee: GroupMember = GroupMember(),
-    //    how are we actually storing dates in DB?
     var endDate: Date = Date(),
     var cycle: String = "Select Cycle",
     val groupId: String = ""

@@ -65,7 +65,10 @@ import com.TaskShare.ViewModels.GroupData
 import com.TaskShare.ViewModels.GroupMember
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
+import com.TaskShare.ViewModels.TaskViewModel
+import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -75,8 +78,7 @@ import java.util.Date
 
 
 @Composable
-fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
-    val viewModel = viewModel(AddTaskViewModel::class.java)
+fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: TaskViewModel) {
     val state by viewModel.state
 
     // integrate with backend
@@ -91,6 +93,19 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
     var expandedAssignTo by remember {
         mutableStateOf(false)
     }
+    var taskDetail by remember {
+        mutableStateOf(TaskViewState())
+    }
+    var groupMembers by remember {
+        mutableStateOf(mutableListOf<GroupMember>())
+    }
+
+    var simpleDateFormat = SimpleDateFormat("dd-mm-yyyy")
+
+    // fetch data from viewmodel
+    groupMembers = viewModel.getGroupMembers()
+    taskDetail = viewModel.getDetailTaskInfo()
+
     // date picker setup
     val year: Int
     val month: Int
@@ -102,27 +117,16 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
     day = calendar.get(Calendar.DAY_OF_MONTH)
     calendar.time = Date()
 
-    val date = remember { mutableStateOf("") }
+    val date = remember { mutableStateOf(simpleDateFormat.format(taskDetail.deadline)) }
     val datePickerDialog = DatePickerDialog(
         context,
 
-//        R.style.ThemeOverlay_MyApp_Dialog,
         {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             date.value = "$dayOfMonth/$month/$year"
         }, year, month, day
     )
 
-    // variables
-    var groups by remember {
-        mutableStateOf(mutableListOf<GroupData>())
-    }
-    var groupMembers by remember {
-        mutableStateOf(mutableListOf<GroupMember>())
-    }
 
-    // fetch data from viewmodel
-    groups = viewModel.getAllGroupsForUser()
-    groupMembers = viewModel.getGroupMembers()
 
 
     Scaffold( topBar = {
@@ -138,119 +142,82 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                 .padding(0.dp, 50.dp, 0.dp, 0.dp),
             contentAlignment = Alignment.TopStart
         ) {
-            Text(text = "Edit Task")
-            
-//            Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-//
-//                TextField(value = state.taskName, onValueChange = {text -> viewModel.updateTaskName(text)},  label = {Text("Task Name")},
-//                    colors = TextFieldDefaults.textFieldColors(
-//                        backgroundColor = Color.White, textColor = Color.Black,
-//                        focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
-//                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
-//
-//                ExposedDropdownMenuBox(
-//                    expanded = expandedGroup,
-//                    onExpandedChange = {
-//                        expandedGroup = !expandedGroup
-//                    }
-//                ) {
-//                    TextField(
-//                        readOnly = true,
-//                        value = state.groupName,
-//                        onValueChange = { },
-//                        label = { Text("Group Name") },
-//                        trailingIcon = {
-//                            ExposedDropdownMenuDefaults.TrailingIcon(
-//                                expanded = expandedGroup
-//                            )
-//                        },
-//                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
-//                    )
-//                    ExposedDropdownMenu(
-//                        expanded = expandedGroup,
-//                        onDismissRequest = {
-//                            groupMembers = viewModel.getGroupMembers()
-//                            expandedGroup = false
-//                        }
-//                    ){
-//                        groups.forEach { item ->
-//                            DropdownMenuItem(
-//                                text = { Text(text = item.groupName) },
-//                                onClick = {
-//                                    viewModel.updateTaskGroup(item)
-//                                    expandedGroup = false
-//                                }
-//                            )
-//                        }
-//                    }
-//                }
-//
-//
-//                TextField(
-//                    readOnly = true,
-//                    value = date.value,
-//                    onValueChange = { },
-//                    label = { Text("End Date") },
-//                    trailingIcon = {
-//                        ExposedDropdownMenuDefaults.TrailingIcon(
-//                            expanded = false
-//                        )
-//                    },
-//                    enabled = false,
-//                    modifier = Modifier
-//                        .clickable {
-//                            datePickerDialog.show()
-//                        },
-//                    colors = TextFieldDefaults.textFieldColors(
-//                        backgroundColor = Color.White,
-//                        textColor = Color.Black,
-//                        focusedIndicatorColor = Color.Black,
-//                        cursorColor = Color.Black,
-//                        focusedLabelColor = Color.Black,
-//                        disabledPlaceholderColor = Color.Black,
-//                        disabledTextColor = Color.Black,
-//                        disabledLabelColor = Color.Black
-//                    )
-//                )
-//
-//
-//                ExposedDropdownMenuBox(
-//                    expanded = expandedCycle,
-//                    onExpandedChange = {
-//                        expandedCycle = !expandedCycle
-//                    }
-//                ) {
-//                    TextField(
-//                        readOnly = true,
-//                        value = state.cycle,
-//                        onValueChange = { },
-//                        label = { Text("Cycle") },
-//                        trailingIcon = {
-//                            ExposedDropdownMenuDefaults.TrailingIcon(
-//                                expanded = expandedCycle
-//                            )
-//                        },
-//                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
-//                    )
-//                    ExposedDropdownMenu(
-//                        expanded = expandedCycle,
-//                        onDismissRequest = {
-//                            expandedCycle = false
-//                        }
-//                    ){
-//                        repeatList.forEach { item ->
-//                            DropdownMenuItem(
-//                                text = { Text(text = item) },
-//                                onClick = {
-//                                    viewModel.updateCycle(item)
-//                                    expandedCycle = false
-//                                }
-//                            )
-//                        }
-//                    }
-//                }
-//
-//
+            Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+
+                TextField(value = taskDetail.taskName, onValueChange = {text -> viewModel.updateTaskName(text)},  label = {Text("Task Name")},
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White, textColor = Color.Black,
+                        focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
+
+                TextField(
+                    readOnly = true,
+                    value = date.value,
+                    onValueChange = { },
+                    label = { Text("End Date") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = false
+                        )
+                    },
+                    enabled = false,
+                    modifier = Modifier
+                        .clickable {
+                            datePickerDialog.show()
+                        },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White,
+                        textColor = Color.Black,
+                        focusedIndicatorColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        disabledPlaceholderColor = Color.Black,
+                        disabledTextColor = Color.Black,
+                        disabledLabelColor = Color.Black
+                    )
+                )
+
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedCycle,
+                    onExpandedChange = {
+                        expandedCycle = !expandedCycle
+                    }
+                ) {
+                    TextField(
+                        readOnly = true,
+                        value = taskDetail.cycle,
+                        onValueChange = { },
+                        label = { Text("Cycle") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = expandedCycle
+                            )
+                        },
+                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedCycle,
+                        onDismissRequest = {
+                            expandedCycle = false
+                        }
+                    ){
+                        repeatList.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(text = item) },
+                                onClick = {
+                                    viewModel.updateCycle(item)
+                                    expandedCycle = false
+                                }
+                            )
+                        }
+                    }
+                }
+                // implement status after backend is done
+
+                // implement updating assignees later
+
+
 //                ExposedDropdownMenuBox(
 //                    expanded = expandedAssignTo,
 //                    onExpandedChange = {
@@ -299,8 +266,8 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
 //                        }
 //                    }
 //                }
-//
-//
+
+
 //                FlowRow(modifier = Modifier
 //                    .fillMaxWidth()
 //                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp),
@@ -315,34 +282,34 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
 //                        }
 //                    }
 //                }
-//
-//
-//                Button(onClick = {
-//                    viewModel.createTask()
-//                    state.taskName = ""
-//                    state.groupName = ""
-//                    state.cycle = ""
-//                    date.value = ""
-//                    state.assignees = mutableListOf()
-//                    groupMembers = mutableListOf()
-//                    redirectToMyTasks()
-//                },
-//                    colors = ButtonDefaults.buttonColors(
-//                        backgroundColor = colorResource(id = R.color.primary_blue),
-//                        contentColor = Color.White),
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
-//                ) {
-//                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-//                        Text("Edit Task")
-//                    }
-//
-//                }
-//
-//
-//
-//            }
+
+
+                Button(onClick = {
+//                    viewModel.updateTask(()
+                    state.taskName = ""
+                    state.groupName = ""
+                    state.cycle = ""
+                    date.value = ""
+                    state.assignees = mutableListOf()
+                    groupMembers = mutableListOf()
+                    redirectToMyTasks()
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.primary_blue),
+                        contentColor = Color.White),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                        Text("Edit Task")
+                    }
+
+                }
+
+
+
+            }
 
         }
     })

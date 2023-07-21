@@ -3,6 +3,7 @@ package com.TaskShare.Models.Repositories
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Task
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -37,8 +38,11 @@ class TSTasksRepository {
             "groupId" to groupId,
             "assignerId" to assignerId,
             "startDate" to startDate,
-            "assignees" to assignees
+            "assignees" to assignees,
+            "creationDate" to Date()
         )
+
+        Log.i("Debug raksha create task request", data.toString())
 
         runBlocking {
             var document = tasks.add(data).await()
@@ -88,20 +92,26 @@ class TSTasksRepository {
     }
 
     // API service to get tasks for a group Id
-    suspend fun getTasksForGroupId(groupId: String): MutableList<Task> {
+    fun getTasksForGroupId(groupId: String): MutableList<Task> {
         var result = mutableListOf<Task>()
 
         runBlocking {
-            var documents = tasks.whereEqualTo("groupId", groupId).get().await()
-            for (document in documents) {
+            var documentSnapshot = tasks.whereEqualTo("groupId", groupId).get().await()
+            for (document in documentSnapshot.documents) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+
                 var task = Task(
                     taskId = document.id,
                     taskName = document.data?.get("taskName").toString(),
                     groupId = groupId,
                     cycle = document.data?.get("cycle").toString(),
                     assignerId = document.data?.get("assignerId").toString(),
-                    startDate = dateFormat.parse(document.data?.get("startDate").toString()),
-                    lastDate = dateFormat.parse(document.data?.get("lastDate").toString()),
+                    startDate = startDate,
+                    lastDate = endDate
                 )
 
                 result.add(task)
@@ -109,5 +119,14 @@ class TSTasksRepository {
         }
 
         return result
+    }
+
+    // API Service for removing a member from a Task
+    fun removeAssigneeFromTask(taskId: String, assigneeId: String) {
+        runBlocking {
+            tasks.document(taskId)
+                .update("assignees", FieldValue.arrayRemove(assigneeId))
+                .await()
+        }
     }
 }

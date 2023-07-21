@@ -48,10 +48,8 @@ class TSGroupsRepository {
     fun removeUserFromGroup(groupId: String, memberId: String) {
         runBlocking {
             groups.document(groupId)
-                .update("groupMembers", FieldValue.arrayUnion(memberId))
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
-                }
+                .update("groupMembers", FieldValue.arrayRemove(memberId))
+                .await()
         }
     }
 
@@ -60,9 +58,7 @@ class TSGroupsRepository {
         runBlocking {
             groups.document(groupId)
                 .update("groupMembers", FieldValue.arrayUnion(newMemberUserId))
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents: ", exception)
-                }
+                .await()
         }
     }
 

@@ -29,5 +29,7 @@
 | 2023/07/18 | 3        | Transfer Task implemented                                                              |
 | 2023/07/18 | 0.5      | Resetting form fields in create task after task creation                               |
 | 2023/07/18 | 5 mins   | Redirect to my tasks after creating task                                               |
-| 2023/07/18 | 30       | format date properly in frontend                                                       |
+| 2023/07/18 | 0.5      | format date properly in frontend                                                       |
+| 2023/07/19 | 2.5      | edit page (ip)                                                                         |
+| 2023/07/20 | 0.5      | task status display debugging                                                          |
 
