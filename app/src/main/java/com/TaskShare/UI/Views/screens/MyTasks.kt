@@ -246,7 +246,6 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
 @Composable
 fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
     //getting data
-//    val viewModel = viewModel(TaskViewModel::class.java)
     val state by viewModel.state
     val scrollState = rememberScrollState()
 
@@ -297,7 +296,7 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
 
                                     )
                                 },
-                            text = "0",
+                            text = "0", // TODO backend
                             fontSize = mid_font_size.sp,
                         )
                     }
@@ -309,6 +308,7 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
                     }
 
                     // pull task data
+
                     var userTasks = viewModel.getTasksForUser()
                     userTasks.forEach{
                         RenderTaskCard(it, viewModel, showDetail)

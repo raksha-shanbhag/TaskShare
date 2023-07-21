@@ -252,71 +252,93 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                     }
                 }
 
-
-                ExposedDropdownMenuBox(
-                    expanded = expandedAssignTo,
-                    onExpandedChange = {
-                        expandedAssignTo = !expandedAssignTo
-                    }
-                ) {
-                    TextField(
-                        readOnly = true,
-                        value = "Select Assignees",
-                        onValueChange = { },
-                        label = { Text("Assignees") },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = expandedAssignTo
-                            )
-                        },
-                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expandedAssignTo,
-                        onDismissRequest = {
-                            expandedAssignTo = false
-                        }
-                    ){
-                        groupMembers.forEach { item ->
-                            DropdownMenuItem(
-                                text = {
-                                    Row() {
-                                        Checkbox(
-                                            checked = item.selected,
-                                            onCheckedChange = {
-                                                item.toggle()
-                                            }
-                                        )
-
-                                        Text(text = item.memberName)
-                                    }
-                                       },
-                                onClick = {
-//                                    viewModel.updateAssignee(groupMembers.indexOf(item))
-//                                    updateSelectedGroupMember()
-//                                    item.selected = !item.selected
-                                    expandedAssignTo = false
+                
+                Column(modifier = Modifier
+                    .background(color = colorResource(id = R.color.icon_blue))
+                    .fillMaxWidth()) {
+                    Text(text = "Assign To")
+                    groupMembers.forEach { item ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = item.selected,
+                                onCheckedChange = {
+                                    item.toggle()
                                 }
                             )
+                            Text(
+                                text = item.memberName,
+                                modifier = Modifier
+                                    .clickable(
+                                        onClick = {item.toggle()}
+                                    )
+                            )
+
                         }
                     }
                 }
 
+//                ExposedDropdownMenuBox(
+//                    expanded = expandedAssignTo,
+//                    onExpandedChange = {
+//                        expandedAssignTo = !expandedAssignTo
+//                    }
+//                ) {
+//                    TextField(
+//                        readOnly = true,
+//                        value = "Select Assignees",
+//                        onValueChange = { },
+//                        label = { Text("Assignees") },
+//                        trailingIcon = {
+//                            ExposedDropdownMenuDefaults.TrailingIcon(
+//                                expanded = expandedAssignTo
+//                            )
+//                        },
+//                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
+//                    )
+////                    ExposedDropdownMenu(
+////                        expanded = expandedAssignTo,
+////                        onDismissRequest = {
+////                            expandedAssignTo = false
+////                        }
+////                    ){
+//                        groupMembers.forEach { item ->
+////                            DropdownMenuItem(
+//                                    Row() {
+//                                        Checkbox(
+//                                            checked = item.selected,
+//                                            onCheckedChange = {
+//                                                item.toggle()
+//                                            }
+//                                        )
+//                                        Text(text = item.memberName)
+//
+//                                    }
+////                                       },
+////                                onClick = {
+////                                    viewModel.updateAssignee(groupMembers.indexOf(item))
+////                                    updateSelectedGroupMember()
+////                                    item.selected = !item.selected
+////                                    expandedAssignTo = false
+////                                }
+////                            )
+////                    }
+//                }
 
-                FlowRow(modifier = Modifier
-                    .fillMaxWidth()
-                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp),
-                    horizontalArrangement = Arrangement.Center
 
-                )
-                {
-                    groupMembers.forEach { item ->
-                        if (item.selected) {
-                            RenderPills(item.memberName, R.color.icon_blue)
-                            Spacer(modifier = Modifier.padding(5.dp, 20.dp))
-                        }
-                    }
-                }
+//                FlowRow(modifier = Modifier
+//                    .fillMaxWidth()
+//                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp),
+//                    horizontalArrangement = Arrangement.Center
+//
+//                )
+//                {
+//                    groupMembers.forEach { item ->
+//                        if (item.selected) {
+//                            RenderPills(item.memberName, R.color.icon_blue)
+//                            Spacer(modifier = Modifier.padding(5.dp, 20.dp))
+//                        }
+//                    }
+//                }
 
 
                 Button(onClick = {
@@ -343,9 +365,6 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                     }
 
                 }
-
-
-
             }
 
         }
