@@ -127,8 +127,8 @@ fun FriendScreen(
                 items(friends.count()) { index ->
                     RenderFriendCard(
                         name = friends[index].friendName,
-                        onClickRemove = {viewModel.declineOrRemoveFriendRequest(friends[index])},
-                        onClickBlock = {viewModel.blockFriend(friends[index])}
+                        onClickRemove = {viewModel.declineOrRemoveFriendRequest(friends[index].friendUserId)},
+                        onClickBlock = {viewModel.blockFriend(friends[index].friendUserId)}
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
