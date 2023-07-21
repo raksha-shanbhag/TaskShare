@@ -103,11 +103,11 @@ class FriendViewModel: ViewModel() {
             incomingFriendId = friendToBeBlockedId)*/
     }
 
-    fun unblockFriend(friendToBeUnblockedId: String){
-        state.value = state.value.copy(friendUserId = friendToBeUnblockedId)
+    fun unblockFriend(friendToBeUnblocked: FriendViewState){
+        /*state.value = state.value.copy(friendUserId = friendToBeUnblockedId)
         friendsManager.unblockFriend(
             currentUserId = TSUsersRepository.globalUserId,
-            blockedFriendId = friendToBeUnblockedId)
+            blockedFriendId = friendToBeUnblockedId)*/
     }
 
 }

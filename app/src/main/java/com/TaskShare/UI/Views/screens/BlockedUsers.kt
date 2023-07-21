@@ -107,7 +107,7 @@ fun BlockedUserScreen(
             }
             items(blockedUsers.count()) {index ->
                 RenderBlockedUserCard(blockedUsers[index].friendName,
-                    onClick = { viewModel.unblockFriend(blockedUsers[index].friendUserId) })
+                    onClick = { viewModel.unblockFriend(blockedUsers[index]) })
                 Spacer(modifier = Modifier.height(20.dp))
             }
             item{
