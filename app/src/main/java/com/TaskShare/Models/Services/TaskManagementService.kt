@@ -45,7 +45,7 @@ class TaskManagementService {
                 assignee = assigneeInfo.firstName,
                 status = TSTaskStatus.toDisplay(subTask.taskStatus),
                 id = subTask.subTaskId,
-                deadline = subTask.endDate
+                deadline = taskInfo.lastDate
             )
             result.add(task)
 
@@ -83,8 +83,7 @@ class TaskManagementService {
             startDate = startDate
         )
 
-        // endDate Calculation
-        var endDate = Date()
+
 
         Log.i("Debug raksha assignees curr", curr_assignees.toString())
 
@@ -93,7 +92,7 @@ class TaskManagementService {
             taskId = taskId,
             assigneeId = curr_assignees.first(),
             startDate = startDate,
-            endDate = endDate
+            endDate = lastDate
         )
 
         return taskId
@@ -125,7 +124,7 @@ class TaskManagementService {
             assignee = assigneeInfo.firstName,
             status = TSTaskStatus.toDisplay(subTaskInfo.taskStatus),
             id = subTaskInfo.subTaskId,
-            deadline = subTaskInfo.endDate
+            deadline = taskInfo.lastDate
         )
     }
 }

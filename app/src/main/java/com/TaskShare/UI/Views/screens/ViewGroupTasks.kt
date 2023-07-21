@@ -170,7 +170,7 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
             ) {
             RenderStatusG(status)
             Spacer(modifier = Modifier.height(height = 5.dp))
-            Text(text = simpleDateFormat.format(end_date),
+            Text(text = end_date.toString(),
                 fontSize = MaterialTheme.typography.caption.fontSize,
                 modifier = Modifier
                     .widthIn(min_width_pill.dp, max_width_pill.dp)
