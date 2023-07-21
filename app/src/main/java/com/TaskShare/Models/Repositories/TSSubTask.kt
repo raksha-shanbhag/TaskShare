@@ -50,7 +50,7 @@ class TSSubTasksRepository {
             var documentSnapshot = subTasks.whereEqualTo("assigneeId", userId).get().await()
             for (document in documentSnapshot.documents) {
                 val startDateTimestamp = document.data?.get("startDate") as? Timestamp
-                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("endDate") as? Timestamp
 
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
@@ -116,7 +116,7 @@ class TSSubTasksRepository {
             var documentSnapshot = subTasks.whereEqualTo("taskId", taskId).get().await()
             for (document in documentSnapshot.documents) {
                 val startDateTimestamp = document.data?.get("startDate") as? Timestamp
-                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("endDate") as? Timestamp
 
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
