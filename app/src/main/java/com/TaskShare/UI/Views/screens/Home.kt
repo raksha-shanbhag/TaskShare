@@ -38,19 +38,20 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 
 
 @Composable
-fun RenderStatusMsg(completed: Int, total: Int) {
+fun RenderStatusMsg(incomplete: Int, total: Int) {
     var textCol = R.color.completed_tasks
     var statusMessage = "All tasks complete!"
 
-    if(completed != total) {
+    if(incomplete != 0) {
         textCol = R.color.incomplete_tasks
-        statusMessage = "$completed/$total tasks left"
+        statusMessage = "$incomplete/$total tasks left"
     }
 
     Text(text = statusMessage,
@@ -74,7 +75,7 @@ fun RenderTasksList(incompleteTasks: List<TaskViewState>) {
                     Box(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 8.dp)
-                            .size(8.dp)
+                            .size(6.dp)
                             .background(Color.Black, shape = CircleShape),
                     )
 
@@ -87,7 +88,7 @@ fun RenderTasksList(incompleteTasks: List<TaskViewState>) {
                 Box(
                     modifier = Modifier
                         .padding(start = 16.dp, end = 8.dp)
-                        .size(8.dp)
+                        .size(6.dp)
                         .background(Color.Black, shape = CircleShape),
                 )
 
@@ -116,9 +117,9 @@ fun RenderTasksList(incompleteTasks: List<TaskViewState>) {
 }
 
 @Composable
-fun RenderGroupCard(group_name: String, completedTasks: Int, tasksNum: Int, incompleteTasks: List<TaskViewState>, showDetail: () -> Unit, viewModel: GroupViewModel, id: String){
+fun RenderGroupCard(group_name: String, incompleteTasksNum: Int, tasksNum: Int, incompleteTasks: List<TaskViewState>, showDetail: () -> Unit, viewModel: GroupViewModel, id: String){
     var bg_col = R.color.pink
-    if(completedTasks == tasksNum) {
+    if(incompleteTasksNum == 0) {
         bg_col = R.color.group_progress
     }
 
@@ -163,7 +164,7 @@ fun RenderGroupCard(group_name: String, completedTasks: Int, tasksNum: Int, inco
                     .padding(2.dp, 0.dp, 0.dp, 5.dp)
             )
 
-            RenderStatusMsg(completed = completedTasks, total = tasksNum)
+            RenderStatusMsg(incomplete = incompleteTasksNum, total = tasksNum)
             RenderTasksList(incompleteTasks = incompleteTasks)
 
         }
@@ -232,12 +233,13 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(height = 10.dp))
                 //using data
                 groupState.groups.forEach{
+                    val incompleteTasks = it.tasks.filter { task -> task.status != "Complete" }
 
                     RenderGroupCard(
                         group_name = it.groupName,
-                        completedTasks = it.tasks.size - it.incompleteTasks.size,
+                        incompleteTasksNum = incompleteTasks.size,
                         tasksNum = it.tasks.size,
-                        incompleteTasks = it.incompleteTasks,
+                        incompleteTasks = incompleteTasks,
                         showDetail = showDetail,
                         viewModel = viewModel,
                         id = it.id
