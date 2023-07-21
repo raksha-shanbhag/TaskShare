@@ -26,5 +26,18 @@ enum class TSTaskStatus(str: String) {
                 else -> NULL
             }
         }
+
+        fun toDisplay(status: TSTaskStatus): String {
+            return when (status)
+            {
+                TODO -> "To Do"
+                IN_PROGRESS -> "In Progress"
+                PENDING_APPROVAL -> "Pending Approval"
+                COMPLETE -> "Complete"
+                OVERDUE -> "Overdue"
+                DECLINED -> "Declined"
+                else -> "Null"
+            }
+        }
     }
 }

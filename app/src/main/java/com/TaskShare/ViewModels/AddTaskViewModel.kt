@@ -1,5 +1,6 @@
 package com.TaskShare.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.DataObjects.Group
@@ -63,6 +64,8 @@ class AddTaskViewModel: ViewModel() {
             assignerId = TSUsersRepository.globalUserId,
             assignees = state.value.assignees
         )
+
+        Log.i("Debug Raksha Frontend ViewModel", state.value.assignees.toString())
     }
 
 //    fun createTask(){

@@ -5,6 +5,7 @@ import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.TaskShare.ViewModels.TaskViewState
 import com.google.android.gms.tasks.Task
 import java.util.Date
@@ -42,7 +43,7 @@ class TaskManagementService {
                 assigner = assignerInfo.firstName,
                 groupName = groupInfo.groupName,
                 assignee = assigneeInfo.firstName,
-                status = subTask.taskStatus.toString(),
+                status = TSTaskStatus.toDisplay(subTask.taskStatus),
                 id = subTask.subTaskId,
                 deadline = subTask.endDate
             )
@@ -64,11 +65,12 @@ class TaskManagementService {
     ) : String {
         var startDate = Date()
 
+        Log.i("Debug raksha assignees- ", assignees.toString())
         // create main task
         var curr_assignees = mutableListOf<String>()
         curr_assignees.addAll(assignees)
         if (assignees.size <=0 ){
-            assignees.add(assignerId)
+            curr_assignees.add(assignerId)
         }
 
         var taskId = taskRepository.createTask(
@@ -77,17 +79,19 @@ class TaskManagementService {
             groupId = groupId,
             lastDate = lastDate,
             cycle = cycle,
-            assignees = assignees,
+            assignees = curr_assignees,
             startDate = startDate
         )
 
         // endDate Calculation
         var endDate = Date()
 
+        Log.i("Debug raksha assignees curr", curr_assignees.toString())
+
         // create sub Tasks
         subTaskRepository.createSubTask(
             taskId = taskId,
-            assigneeId = assignees.first(),
+            assigneeId = curr_assignees.first(),
             startDate = startDate,
             endDate = endDate
         )
@@ -119,7 +123,7 @@ class TaskManagementService {
             assigner = assignerInfo.firstName,
             groupName = groupInfo.groupName,
             assignee = assigneeInfo.firstName,
-            status = subTaskInfo.taskStatus.toString(),
+            status = TSTaskStatus.toDisplay(subTaskInfo.taskStatus),
             id = subTaskInfo.subTaskId,
             deadline = subTaskInfo.endDate
         )

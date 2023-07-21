@@ -172,9 +172,14 @@ class TSUsersRepository() {
     fun addGroupToUserId(userId: String, groupId: String) {
         runBlocking {
             users.document(userId).update("groups", FieldValue.arrayUnion(groupId))
-                .addOnFailureListener { exception: Throwable ->
-                    Log.w(TAG, "Error adding groupId to user.", exception)
-                }
+                .await()
+        }
+    }
+
+    fun removeGroupForUserId(userId: String, groupId: String) {
+        runBlocking {
+            users.document(userId).update("groups", FieldValue.arrayRemove(groupId))
+                .await()
         }
     }
 

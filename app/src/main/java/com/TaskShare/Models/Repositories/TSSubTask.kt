@@ -42,26 +42,12 @@ class TSSubTasksRepository {
         return documentId
     }
 
-    // API to get all subtasks from a taskId
-    fun getAllSubTasksFromTaskId(taskId: String): MutableList<SubTask> {
-        var result = ArrayList<SubTask>()
-
-        runBlocking {
-
-        }
-        return result.toMutableList()
-    }
-
     // API to get all subtasks for a userId
     fun getAllSubtasksForUserId(userId : String): MutableList<SubTask> {
         var result = ArrayList<SubTask>()
 
         runBlocking {
-            Log.i("Debug Rak user", userId)
             var documentSnapshot = subTasks.whereEqualTo("assigneeId", userId).get().await()
-            Log.i("Debug Raksha check this -- ", documentSnapshot.toString())
-            Log.i("Debug Raksha check this -size- ", documentSnapshot.size().toString())
-
             for (document in documentSnapshot.documents) {
                 val startDateTimestamp = document.data?.get("startDate") as? Timestamp
                 val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
@@ -69,8 +55,6 @@ class TSSubTasksRepository {
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
                 val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
-
-                Log.i("Debug Raksha Task Status -", taskStatus.toString())
 
                 var element = SubTask(
                     subTaskId = document.id,
@@ -81,11 +65,8 @@ class TSSubTasksRepository {
                     endDate = endDate,
                 )
 
-                Log.i("Debug Raksha check this", element.toString())
-
                 result.add(element)
             }
-            Log.i("Debug Raksha check this", documentSnapshot.documents.toString())
         }
         return result.toMutableList()
     }
@@ -125,5 +106,34 @@ class TSSubTasksRepository {
         }
 
         return result
+    }
+
+    // API to get all subtasks for a taskId
+    fun getAllSubtasksForTaskId(taskId : String): MutableList<SubTask> {
+        var result = ArrayList<SubTask>()
+
+        runBlocking {
+            var documentSnapshot = subTasks.whereEqualTo("taskId", taskId).get().await()
+            for (document in documentSnapshot.documents) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+                val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
+
+                var element = SubTask(
+                    subTaskId = document.id,
+                    taskId = taskId,
+                    assigneeId = document.data?.get("assigneeId").toString(),
+                    taskStatus = taskStatus,
+                    startDate = startDate,
+                    endDate = endDate,
+                )
+
+                result.add(element)
+            }
+        }
+        return result.toMutableList()
     }
 }
