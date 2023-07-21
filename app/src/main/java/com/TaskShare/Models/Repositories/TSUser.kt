@@ -70,7 +70,18 @@ class TSUsersRepository() {
             var documentSnapshot = users.whereEqualTo("email", email).get().await()
             for (document in documentSnapshot.documents) {
                 var friends = ArrayList<Friend>()
-                friends.addAll(document.get("friends") as List<Friend>)
+                var friendCache = document.get("friends") as List<HashMap<String, String>>??: arrayListOf()
+
+                for (friend in friendCache) {
+                    var status = friend["status"] ?: "Error"
+
+                    friends.add(Friend(
+                        userId = friend["userId"] ?: "",
+                        name = friend["name"] ?: "",
+                        email = friend["email"] ?: "",
+                        status = TSFriendStatus.fromString(status)
+                    ))
+                }
 
                 result = User(
                     firstName = document.get("firstName").toString(),
