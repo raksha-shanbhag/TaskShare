@@ -14,10 +14,10 @@ enum class TSFriendStatus(str: String) {
         fun fromString(name: String): TSFriendStatus {
             return when (name)
             {
-                "Incoming" -> INCOMING
-                "Outgoing" -> OUTGOING
-                "Friend" -> FRIEND
-                "Blocked" -> BLOCKED
+                "INCOMING" -> INCOMING
+                "OUTGOING" -> OUTGOING
+                "FRIEND" -> FRIEND
+                "BLOCKED" -> BLOCKED
                 else -> NULL
             }
         }

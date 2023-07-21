@@ -138,11 +138,28 @@ class TSUsersRepository() {
                     firstName = result.get("firstName").toString(),
                     lastName = result.get("lastName").toString(),
                     email = result.get("email").toString(),
-                    phoneNumber = result.get("phoneNumber").toString()
+                    phoneNumber = result.get("phoneNumber").toString(),
+                    friends = parseFriendsList(result.get("friends"))
                 )
             }
         }
         return userInfo
+    }
+    private fun parseFriendsList(friendsList: Any?): MutableList<Friend> {
+        val parsedFriends: MutableList<Friend> = mutableListOf()
+        if (friendsList is List<*>) {
+            for (friend in friendsList) {
+                if (friend is Map<*, *>) {
+                    val userId = friend["userId"].toString()
+                    val statusStr = friend["status"].toString()
+                    val status = TSFriendStatus.fromString(statusStr)
+                    val name = friend["name"].toString()
+                    val email = friend["email"].toString()
+                    parsedFriends.add(Friend(userId = userId, status = status, name = name, email = email))
+                }
+            }
+        }
+        return parsedFriends
     }
 
     fun getActivitiesForUserId(userId: String): MutableList<String> {
@@ -300,10 +317,6 @@ class TSUser() {
                         Log.w(TAG, "Error removing group from user.", exception)
                     }
             }
-        }
-
-        fun Friend(userId: String, name: String, status: String): Friend {
-            return Friend(userId, name, status)
         }
     }
 
