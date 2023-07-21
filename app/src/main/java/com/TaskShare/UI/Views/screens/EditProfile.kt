@@ -219,7 +219,7 @@ fun EditProfilePictureSection(modifier: Modifier = Modifier, onClick: () -> Unit
         }
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = { onClick/*TODO: Select photo from camera to upload as profile picture*/ },
+            onClick = { onClick()},
             modifier = Modifier
                 .width(150.dp)
                 .height(45.dp),
