@@ -93,7 +93,7 @@ data class TaskViewState (
     var taskName: String = "",
     val assigner: String = "",
     val status: String = "",
-    val assignees: MutableList<String> = mutableListOf(),
+    val assignees: MutableList<GroupMember> = mutableListOf(),
     var assignee: String = "",
     val groupName: String = "",
     var deadline: Date = Date(),

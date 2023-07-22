@@ -6,6 +6,7 @@ import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Utilities.TSTaskStatus
+import com.TaskShare.ViewModels.GroupMember
 import com.TaskShare.ViewModels.TaskViewState
 import com.google.android.gms.tasks.Task
 import java.util.Date
@@ -34,12 +35,20 @@ class TaskManagementService {
 
             // assigner Info
             var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
+
+            // get all assignees and populate list of groupmember object
+            var assignees = mutableListOf<GroupMember>()
+            taskInfo.assignees.forEach { assignee ->
+                var assigneeInfo = userRepository.getUserInfo(assignee)
+                assignees.add(GroupMember(assigneeInfo.firstName, assigneeInfo.userId))
+            }
+
             Log.i("Debug Raksha tasks", assigneeInfo.toString())
 
             var task = TaskViewState(
                 taskName = taskInfo.taskName,
                 cycle = taskInfo.cycle,
-                assignees = taskInfo.assignees,
+                assignees = assignees,
                 assigner = assignerInfo.firstName,
                 groupName = groupInfo.groupName,
                 assignee = assigneeInfo.firstName,
@@ -112,13 +121,20 @@ class TaskManagementService {
         var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
         var assigneeInfo = userRepository.getUserInfo(subTaskInfo.assigneeId)
 
+        // get all assignees and populate list of groupmember object
+        var assignees = mutableListOf<GroupMember>()
+        taskInfo.assignees.forEach { assignee ->
+            var assigneeInfo = userRepository.getUserInfo(assignee)
+            assignees.add(GroupMember(assigneeInfo.firstName, assigneeInfo.userId))
+        }
+
         Log.i("Debug Task", taskInfo.toString())
         Log.i("Debug Task", subTaskInfo.toString())
 
         return TaskViewState(
             taskName = taskInfo.taskName,
             cycle = taskInfo.cycle,
-            assignees = taskInfo.assignees,
+            assignees = assignees,
             assigner = assignerInfo.firstName,
             groupName = groupInfo.groupName,
             assignee = assigneeInfo.firstName,

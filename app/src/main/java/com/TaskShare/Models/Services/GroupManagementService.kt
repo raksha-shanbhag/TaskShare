@@ -101,10 +101,17 @@ class GroupManagementService {
                 var assignerInfo = usersRepository.getUserInfo(task.assignerId)
                 var assigneeInfo = usersRepository.getUserInfo(task.assignerId)
 
+                // get all assignees and populate list of groupmember object
+                var assignees = mutableListOf<GroupMember>()
+                task.assignees.forEach { assignee ->
+                    var assigneeInfo = usersRepository.getUserInfo(assignee)
+                    assignees.add(GroupMember(assigneeInfo.firstName, assigneeInfo.userId))
+                }
+
                 var task = TaskViewState(
                     taskName = task.taskName,
                     cycle = task.cycle,
-                    assignees = task.assignees,
+                    assignees = assignees,
                     assigner = assignerInfo.firstName,
                     groupName = groupInfo.groupName,
                     assignee = assigneeInfo.firstName,

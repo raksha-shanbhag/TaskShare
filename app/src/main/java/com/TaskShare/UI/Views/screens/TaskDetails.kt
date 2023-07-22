@@ -243,9 +243,9 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             taskDetail.assignees.forEach { item ->
 //                                if (item!=myself) TODO
                                 DropdownMenuItem(
-                                    text = { Text(text = item) },
+                                    text = { Text(text = item.memberName) },
                                     onClick = {
-                                        transferState = item
+                                        transferState = item.memberName
                                         expandedTransfer = false
                                         showConfirmTransfer = true
                                     }
