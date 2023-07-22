@@ -9,22 +9,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -41,17 +40,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.TaskShare.ViewModels.TaskDetail
 import com.TaskShare.ViewModels.TaskViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
@@ -134,15 +129,15 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                 Column(modifier = Modifier
                     .fillMaxSize()
                 ) {
-                    var name_wdith = 0.35f
-                    var value_width = 0.65f
+                    var nameWidth = 0.35f
+                    var valueWidth = 0.65f
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
-                        Text(text = "Assigned to", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium,modifier = Modifier.fillMaxWidth(name_wdith))
+                        Text(text = "Assigned to", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium,modifier = Modifier.fillMaxWidth(nameWidth))
 
                         Row(modifier = Modifier
-                            .fillMaxWidth(value_width)
+                            .fillMaxWidth(valueWidth)
                             ){
                             RenderPills(taskDetail.assignee, R.color.icon_blue)
                         }
@@ -150,72 +145,54 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
-                        Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        Text(text = "Assigned by", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(nameWidth))
 
-                        Row(modifier = Modifier.fillMaxWidth(value_width)){
+                        Row(modifier = Modifier.fillMaxWidth(valueWidth)){
                             RenderPills(taskDetail.assigner, R.color.icon_blue)
                         }
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
-                        Text(text = "Group", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
-                        Row(modifier = Modifier.fillMaxWidth(value_width)){
+                        Text(text = "Group", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(nameWidth))
+                        Row(modifier = Modifier.fillMaxWidth(valueWidth)){
                             RenderPills(taskDetail.groupName, R.color.pink)
                         }
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
-                        Text(text = "Status", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        Text(text = "Status", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(nameWidth))
                         RenderStatus(taskDetail.status)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
-                        Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        Text(text = "Deadline", fontSize = small_font_size.sp,fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(nameWidth))
                         RenderPills(simpleDateFormat.format(taskDetail.deadline), R.color.banner_blue)
                     }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 3.dp)) {
-                        Text(text = "Cycle", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(name_wdith))
+                        Text(text = "Cycle", fontSize = small_font_size.sp, fontWeight = FontWeight.Medium, modifier = Modifier.fillMaxWidth(nameWidth))
                         RenderPills(taskDetail.cycle, R.color.banner_blue)
                     }
-
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 10.dp)
-                        .border(
-                            BorderStroke(
-                                2.dp,
-                                SolidColor(colorResource(id = R.color.banner_blue))
-                            ), RoundedCornerShape(4.dp)
-                        )
-                        .padding(2.dp, 5.dp)
-                        .clickable(
-                            onClick = {
-//                                showTransfer = !showTransfer
-                            }
-                        ),
-                        horizontalArrangement = Arrangement.Center
-
-                    ){
-
-                        Text (text = "Transfer Task",
-                            fontSize = small_font_size.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.fillMaxWidth(name_wdith),
-                            color = colorResource(id = R.color.banner_blue)
+                    Spacer(modifier = Modifier.height(height = 10.dp))
 
 
-                        )
-                    }
+//                  Transfer Task
                     ExposedDropdownMenuBox(
                         expanded = expandedTransfer,
                         onExpandedChange = {
                             expandedTransfer = !expandedTransfer
-                        }
+                        },
+                        modifier = Modifier
+                            .border(
+                            BorderStroke(
+                                    2.dp,
+                                    SolidColor(colorResource(id = R.color.banner_blue))
+                            )
+                        )
                     ) {
                         TextField(
                             readOnly = true,
@@ -228,7 +205,9 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
-                        )
+                            modifier = Modifier
+                                .fillMaxWidth()
+                            )
 
 
 
@@ -238,12 +217,17 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             expanded = expandedTransfer,
                             onDismissRequest = {
                                 expandedTransfer = false
-                            }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                ,
                         ){
                             taskDetail.assignees.forEach { item ->
 //                                if (item!=myself) TODO
                                 DropdownMenuItem(
                                     text = { Text(text = item.memberName) },
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
                                     onClick = {
                                         transferState = item.memberName
                                         expandedTransfer = false
@@ -253,42 +237,58 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             }
                         }
                     }
-                    if(showConfirmTransfer){
-                        Text(text = "Do you want to transfer this task to ${transferState}?")
-                        Button(onClick = {
-                            showConfirmTransfer = false
-                            viewModel.updateAssignee(transferState)
-                            transferState = ""
-                        },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = colorResource(id = R.color.primary_blue),
-                                contentColor = Color.White),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
-                        ) {
-                            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                                Text("Confirm")
+                    if(showConfirmTransfer) {
+                        Column(modifier = Modifier
+                            .fillMaxWidth()
+                           ) {
+
+
+                            Text(text = "Do you want to transfer this task to ${transferState}?",
+                                 fontSize = small_font_size.sp)
+                            Button(
+                                onClick = {
+                                    showConfirmTransfer = false
+                                    viewModel.updateAssignee(transferState)
+                                    transferState = "Transfer Task"
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = colorResource(id = R.color.primary_blue),
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Confirm")
+                                }
+
                             }
 
-                        }
+                            Button(
+                                onClick = {
+                                    transferState = ""
+                                    showConfirmTransfer = false
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = colorResource(id = R.color.progress_red),
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Cancel")
+                                }
 
-                        Button(
-                            onClick = {
-                                transferState = ""
-                                showConfirmTransfer = false
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = colorResource(id = R.color.progress_red),
-                                contentColor = Color.White),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
-                        ) {
-                            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                                Text("Cancel")
                             }
-
                         }
                     }
 

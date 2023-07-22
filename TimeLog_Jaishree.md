@@ -34,4 +34,5 @@
 | 2023/07/20 | 0.5      | task status display debugging                                                          |
 | 2023/07/21 | 2        | assignee task display debugging                                                        |
 | 2023/07/22 | 0.5      | fetching assignees properly (backend bug fix)                                          |
+| 2023/07/22 | 1        | Final styling of transfer task under task detatil                                      |
 
