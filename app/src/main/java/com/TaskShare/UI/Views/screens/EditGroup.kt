@@ -1,4 +1,4 @@
-package com.example.greetingcard.screens
+package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -31,10 +31,14 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,17 +54,26 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ViewGroupScreen(onBack: () -> Unit, showEdit: () -> Unit, viewModel: GroupViewModel) {
+fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
+    val scrollState = rememberScrollState()
     //getting data
     val state by viewModel.state
     var group = viewModel.groupsState.value.groups.find{ temp ->  temp.id == state.id}
     if(group == null) {
         group = GroupViewState()
     }
-
+    var friends by remember {
+        mutableStateOf(viewModel.getFriendsNotInGroup())
+    }
+    var groupName by remember {
+        mutableStateOf(state.groupName)
+    }
+    var groupDescription by remember {
+        mutableStateOf(state.groupDescription)
+    }
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
-            title = { Text(text = "View Group", color = Color.White, fontSize = 30.sp) },
+            title = { Text(text = "Edit Group", color = Color.White, fontSize = 30.sp) },
             colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
             navigationIcon = {
                 IconButton(
@@ -76,37 +89,22 @@ fun ViewGroupScreen(onBack: () -> Unit, showEdit: () -> Unit, viewModel: GroupVi
 
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .absolutePadding(20.dp, 20.dp, 20.dp, 0.dp)
-                        .background(
-                            colorResource(id = R.color.banner_blue),
-                            RoundedCornerShape(4.dp)
-                        )
-
-                        .padding(15.dp, 10.dp)
-                        .clickable(onClick = {
-                            showEdit()
-                        })
-
-                ) {
-
+                Column() {
                     Text(
-                        text = group.groupName,
-                        color = colorResource(id = R.color.white),
-                        fontSize = mid_font_size.sp,
+                        text = "Group Name",
+                        fontSize = MaterialTheme.typography.h6.fontSize,
+                        color = Color.Black,
+                        modifier = Modifier.absolutePadding(20.dp, 10.dp,20.dp,0.dp)
                     )
-                    Icon(
-                        painterResource(id = R.drawable.edit_icon),
-                        contentDescription = "edit task icon",
-                        modifier = Modifier.size(size = 24.dp),
-                        tint = Color.White
-                    )
+                    Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,20.dp,10.dp))
+
                 }
+                TextField(value = group.groupName, onValueChange = {text -> groupName = text},
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White, textColor = Color.Black,
+                        focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black)
+                )
 
                 Column() {
                     Text(
@@ -119,18 +117,11 @@ fun ViewGroupScreen(onBack: () -> Unit, showEdit: () -> Unit, viewModel: GroupVi
 
                 }
 
-                Text(
-                    text = group.groupDescription,
-                    fontSize = MaterialTheme.typography.subtitle1.fontSize,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .absolutePadding(20.dp, 10.dp, 20.dp, 0.dp)
-                        .background(
-                            colorResource(id = R.color.icon_blue),
-                            RoundedCornerShape(10.dp)
-                        )
-                        .padding(10.dp)
+                TextField(value = group.groupDescription, onValueChange = {text -> groupDescription = text},
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White, textColor = Color.Black,
+                        focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black)
                 )
 
                 Column() {
@@ -152,14 +143,39 @@ fun ViewGroupScreen(onBack: () -> Unit, showEdit: () -> Unit, viewModel: GroupVi
                         RoundedCornerShape(10.dp)
                     )
                     .padding(10.dp)) {
-                        items(group.groupMembers) {  currentMem ->
-                            var email = TSUsersRepository().getUserInfo(currentMem).email
-                            Text(text = " $email", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
-                        }
+
+//using data
+                    items(group.groupMembers) {  currentMem ->
+                        var email = TSUsersRepository().getUserInfo(currentMem).email
+                        Text(text = " $email", fontSize = MaterialTheme.typography.subtitle1.fontSize,)
+                    }
 
                 }
                 Column(modifier = Modifier
                     .fillMaxWidth()) {
+
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        items(friends.size) { i ->
+                            Row(modifier = Modifier
+                                .absolutePadding(60.dp, 0.dp, 0.dp, 0.dp)
+                                .fillMaxWidth()
+                                .clickable { friends = friends.mapIndexed { j, item ->
+                                    if(i == j) {
+                                        item.copy(isSelected = !item.isSelected)
+                                    } else item
+                                } }) {
+                                Text(text = friends[i].name)
+                                if(friends[i].isSelected) {
+                                    Icon(imageVector = Icons.Default.Check,
+                                        contentDescription = "selected" )
+                                } else {
+                                    Icon(painterResource(id =  R.drawable.ic_sqaure), "square")
+                                }
+                            }
+
+                        }
+                    }
+
                     Button(
                         onClick = {
                             viewModel.removeMember()

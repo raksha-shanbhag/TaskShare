@@ -123,6 +123,14 @@ class GroupViewModel: ViewModel() {
 
     }
 
+    fun removeMember(){
+        groupManager.removeMemberFromGroup(state.value.id, TSUsersRepository.globalUserId)
+    }
+
+    fun addMember(userID: String){
+        groupManager.addMemberToGroup(state.value.id, TSUsersRepository.globalUserId)
+    }
+
     fun getFriendsList(): List<friendItem> {
 //        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
 //            currentUserId = TSUsersRepository.globalUserId,
@@ -136,7 +144,29 @@ class GroupViewModel: ViewModel() {
 //    }
         return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
     }
+
+
+
+    fun getFriendsNotInGroup(): List<friendItem> {
+//        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+//            currentUserId = TSUsersRepository.globalUserId,
+//            friendStatus = TSFriendStatus.FRIEND
+//        )
+//
+//        var remaining = listOfFriends.filter { friend -> !state.value.groupMembers.contains(friend.email) }
+//
+//        var canAdd =  remaining.map { mem ->
+//            friendItem(mem.email, false)
+//
+//        }
+//
+//        return canAdd
+        return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
+
+    }
 }
+
+
 
 data class GroupViewState (
     val groupName: String ="",

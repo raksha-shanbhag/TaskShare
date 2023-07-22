@@ -30,5 +30,6 @@ sealed class LeafScreen(val route: String) {
     object CreateGroup : LeafScreen("createGroup")
     object ViewGroup : LeafScreen("viewGroup")
     object ViewGroupTasks : LeafScreen("viewGroupTasks")
+    object EditGroup: LeafScreen("editGroup")
     object TaskDetails : LeafScreen("taskDetails")
 }

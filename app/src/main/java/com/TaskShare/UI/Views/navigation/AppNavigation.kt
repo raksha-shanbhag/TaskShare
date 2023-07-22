@@ -1,6 +1,8 @@
 package com.example.greetingcard.navigation
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -12,6 +14,7 @@ import androidx.navigation.navigation
 import com.TaskShare.UI.Views.screens.AddFriendScreen
 import com.TaskShare.UI.Views.screens.BlockedUserScreen
 import com.TaskShare.UI.Views.screens.ChangePasswordScreen
+import com.TaskShare.UI.Views.screens.EditGroupScreen
 import com.TaskShare.UI.Views.screens.EditProfileScreen
 import com.TaskShare.UI.Views.screens.FriendScreen
 import com.TaskShare.UI.Views.screens.IncomingRequestsScreen
@@ -39,6 +42,7 @@ https://www.youtube.com/watch?v=gg-KBGH9T8s&t=98s
 https://www.youtube.com/watch?v=tt3dYmqJTrw
  */
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
@@ -51,7 +55,7 @@ fun AppNavGraph(
         startDestination = RootScreen.Login.route
         //startDestination = RootScreen.Home.route
     ) {
-        addLoginRoute(navController, groupViewModel)
+        addLoginRoute(navController)
         addHomeRoute(navController, groupViewModel)
         addMyTasksRoute(navController, taskViewModel, context)
         addCreateTaskRoute(navController, context)
@@ -61,7 +65,7 @@ fun AppNavGraph(
 }
 
 // Log-in navigation
-private fun NavGraphBuilder.addLoginRoute(navController: NavController, viewModel: GroupViewModel) {
+private fun NavGraphBuilder.addLoginRoute(navController: NavController) {
     navigation(
         route = RootScreen.Login.route,
         startDestination = LeafScreen.Login.route
@@ -108,6 +112,7 @@ private fun NavGraphBuilder.addHomeRoute(navController: NavController, viewModel
         showViewGroup(navController, viewModel)
         showCreateGroup(navController, viewModel)
         showViewGroupTasks(navController, viewModel)
+        showEditGroup(navController, viewModel)
     }
 }
 private fun NavGraphBuilder.showGroups(navController: NavController, viewModel: GroupViewModel) {
@@ -128,6 +133,9 @@ private fun NavGraphBuilder.showViewGroup(navController: NavController, viewMode
         ViewGroupScreen(
             onBack = {
                 navController.navigateUp()
+            },
+            showEdit = {
+                navController.navigate(LeafScreen.EditGroup.route)
             },
              viewModel
         )
@@ -152,6 +160,18 @@ private fun NavGraphBuilder.showViewGroupTasks(navController: NavController, vie
 private fun NavGraphBuilder.showCreateGroup(navController: NavController, viewModel: GroupViewModel) {
     composable(route = LeafScreen.CreateGroup.route) {
         CreateGroupScreen(
+            onBack = {
+                navController.navigateUp()
+            },
+            viewModel
+        )
+    }
+}
+
+
+private fun NavGraphBuilder.showEditGroup(navController: NavController, viewModel: GroupViewModel) {
+    composable(route = LeafScreen.EditGroup.route) {
+        EditGroupScreen(
             onBack = {
                 navController.navigateUp()
             },
@@ -196,6 +216,7 @@ private fun NavGraphBuilder.showTaskDetail(navController: NavController, viewMod
 //end of myTasks navigation
 
 //addTask navigation
+@RequiresApi(Build.VERSION_CODES.O)
 private fun NavGraphBuilder.addCreateTaskRoute(navController: NavController, context: Context) {
     navigation(
         route = RootScreen.AddTask.route,
@@ -204,6 +225,7 @@ private fun NavGraphBuilder.addCreateTaskRoute(navController: NavController, con
         showAddTask(navController, context)
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 private fun NavGraphBuilder.showAddTask(navController: NavController, context: Context) {
     composable(route = LeafScreen.AddTask.route) {
         AddTaskScreen(context,

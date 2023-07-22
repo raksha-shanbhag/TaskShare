@@ -1,7 +1,10 @@
 package com.TaskShare.Models.Repositories
 
 import android.util.Log
+import com.TaskShare.Models.DataObjects.Activity
+import com.TaskShare.Models.DataObjects.ActivityType
 import com.TaskShare.Models.DataObjects.Task
+import com.TaskShare.Models.Services.ActivityManagementService
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -50,6 +53,8 @@ class TSTasksRepository {
                     documentId = document.id
                     Log.d(TAG, document.id)
                     Log.d(TAG, "DocumentSnapshot successfully written!")
+//                    ActivityManagementService().addActivity(Activity(Date(), documentId, groupId, assignees, assignerId, ActivityType.GROUP_REQUEST))
+
                 } else {
                     Log.w(TAG, "Error writing document")
                 }
