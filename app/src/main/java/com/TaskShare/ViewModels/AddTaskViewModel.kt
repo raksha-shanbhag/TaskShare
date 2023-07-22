@@ -189,6 +189,5 @@ data class GroupMember (
 ){
     fun toggle(){
         selected=!selected
-        Log.i("Debug Jaishree selected", selected.toString())
     }
 }

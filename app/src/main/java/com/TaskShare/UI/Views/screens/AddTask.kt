@@ -130,9 +130,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
     // fetch data from viewmodel
     groups = viewModel.getAllGroupsForUser()
     groupMembers = viewModel.getGroupMembers()
-//    groupMembers.forEach { it ->
-//        selectedMembers.add(mutableStateOf(true))
-//    }
+
 
 
 
@@ -277,7 +275,6 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                                     } else{
                                         multipleChecked - index
                                     }
-                                    Log.i("Debug Jaishree selected in", groupMembers.toString())
 
                                 }
                             )
