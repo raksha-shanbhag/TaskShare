@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -188,5 +189,6 @@ data class GroupMember (
 ){
     fun toggle(){
         selected=!selected
+        Log.i("Debug Jaishree selected", selected.toString())
     }
 }
