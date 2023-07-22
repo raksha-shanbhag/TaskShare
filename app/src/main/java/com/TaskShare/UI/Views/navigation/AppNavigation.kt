@@ -363,7 +363,6 @@ private fun NavGraphBuilder.showOutgoingRequests(navController: NavController) {
     composable(route = LeafScreen.OutgoingRequests.route) {
         OutgoingRequestsScreen(
             onBack = { navController.navigate(LeafScreen.Profile.route) },
-            onCancel = { },
             onFriends = { navController.navigate(LeafScreen.Friends.route) },
             onIncoming = { navController.navigate(LeafScreen.IncomingRequests.route) },
             onOutgoing = { navController.navigate(LeafScreen.OutgoingRequests.route) }

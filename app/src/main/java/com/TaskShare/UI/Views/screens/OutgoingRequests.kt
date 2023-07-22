@@ -49,7 +49,6 @@ import com.example.greetingcard.R
 
 fun OutgoingRequestsScreen(
     onBack: () -> Unit,
-    onCancel: () -> Unit,
     onFriends: () -> Unit,
     onIncoming: () -> Unit,
     onOutgoing: () -> Unit
@@ -117,7 +116,7 @@ fun OutgoingRequestsScreen(
                 }
                 items(outgoingRequests.count()) {index ->
                     RenderOutgoingRequestCard(name = outgoingRequests[index].friendName,
-                        onClickCancel = onCancel)
+                        onClickCancel = {viewModel.declineOrRemoveFriendRequest(outgoingRequests[index].friendUserId)})
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 item {
@@ -186,7 +185,6 @@ fun RenderCancelButton(){
 fun OutgoingRequestsScreenPreview() {
     OutgoingRequestsScreen(
         onOutgoing = {},
-        onCancel = {},
         onIncoming = {},
         onFriends = {},
         onBack = {}
