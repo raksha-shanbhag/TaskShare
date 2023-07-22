@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.FriendsManagementService
 import com.TaskShare.Models.Services.GroupManagementService
+import com.TaskShare.Models.Utilities.TSFriendStatus
 import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
@@ -112,36 +113,36 @@ class GroupViewModel: ViewModel() {
     }
 
     fun getFriendsList(): List<friendItem> {
-//        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
-//            currentUserId = TSUsersRepository.globalUserId,
-//            friendStatus = TSFriendStatus.FRIEND
-//        )
-//        var friends =  listOfFriends.map { friend ->
-//            friendItem(friend.email, false)
-//
-//        }
-//        return friends
-//    }
-        return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
+        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+            currentUserId = TSUsersRepository.globalUserId,
+            friendStatus = TSFriendStatus.FRIEND
+        )
+        var friends =  listOfFriends.map { friend ->
+            friendItem(friend.email, false)
+
+        }
+        return friends
+
+       // return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
     }
 
 
 
     fun getFriendsNotInGroup(): List<friendItem> {
-//        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
-//            currentUserId = TSUsersRepository.globalUserId,
-//            friendStatus = TSFriendStatus.FRIEND
-//        )
-//
-//        var remaining = listOfFriends.filter { friend -> !state.value.groupMembers.contains(friend.email) }
-//
-//        var canAdd =  remaining.map { mem ->
-//            friendItem(mem.email, false)
-//
-//        }
-//
-//        return canAdd
-        return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
+        var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
+            currentUserId = TSUsersRepository.globalUserId,
+            friendStatus = TSFriendStatus.FRIEND
+        )
+
+        var remaining = listOfFriends.filter { friend -> !state.value.groupMembers.contains(friend.email) }
+
+        var canAdd =  remaining.map { mem ->
+            friendItem(mem.email, false)
+
+        }
+
+        return canAdd
+//        return listOf(friendItem("h33qin@uwaterloo.ca", false), friendItem("lam@lam.ca", false))
 
     }
 }
