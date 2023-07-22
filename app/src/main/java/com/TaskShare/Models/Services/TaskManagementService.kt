@@ -1,14 +1,15 @@
 package com.TaskShare.Models.Services
 
 import android.util.Log
+import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.TaskShare.Models.Utilities.ActivityType
 import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.TaskShare.ViewModels.GroupMember
 import com.TaskShare.ViewModels.TaskViewState
-import com.google.android.gms.tasks.Task
 import java.util.Date
 
 class TaskManagementService {
@@ -92,17 +93,27 @@ class TaskManagementService {
             startDate = startDate
         )
 
-
-
         Log.i("Debug raksha assignees curr", curr_assignees.toString())
 
-        // create sub Tasks
-        subTaskRepository.createSubTask(
-            taskId = taskId,
-            assigneeId = curr_assignees.first(),
-            startDate = startDate,
-            endDate = lastDate
-        )
+        if (taskId.isNotEmpty()) {
+            // create sub Tasks
+            subTaskRepository.createSubTask(
+                taskId = taskId,
+                assigneeId = curr_assignees.first(),
+                startDate = startDate,
+                endDate = lastDate
+            )
+
+            var groupName = groupsRepository.getGroupFromId(groupId).groupName
+            ActivityManagementService.addActivity(Activity(
+                taskId = taskId,
+                sourceUser = assignerId,
+                affectedUsers = curr_assignees,
+                groupId = groupId,
+                type = ActivityType.TASK_ASSIGNED,
+                details = "A new task has been assigned to you in ${groupName}"
+            ))
+        }
 
         return taskId
     }

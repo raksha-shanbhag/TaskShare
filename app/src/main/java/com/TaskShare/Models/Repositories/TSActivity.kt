@@ -2,7 +2,7 @@ package com.TaskShare.Models.Repositories
 
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Activity
-import com.TaskShare.Models.DataObjects.ActivityType
+import com.TaskShare.Models.Utilities.ActivityType
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -24,6 +24,7 @@ class TSAcivityRepository {
             "affectedUsers" to activity.affectedUsers,
             "sourceUser" to activity.sourceUser,
             "type" to activity.type.displayString,
+            "details" to activity.details
         )
 
         runBlocking {
@@ -65,10 +66,11 @@ class TSAcivityRepository {
         return Activity(
             time = (doc.get("time") as Timestamp).toDate(),
             taskId = doc.get("taskId") as String,
-            affectedUsers = doc.get("affectedUsers") as MutableList<String>,
+            affectedUsers = doc.get("affectedUsers") as MutableList<String>??: mutableListOf(),
             groupId = doc.get("groupId") as String,
             sourceUser = doc.get("sourceUser") as String,
-            type = ActivityType.fromString(doc.get("type") as String)
+            type = ActivityType.fromString(doc.get("type") as String),
+            details = doc.get("details") as String
         )
     }
 }

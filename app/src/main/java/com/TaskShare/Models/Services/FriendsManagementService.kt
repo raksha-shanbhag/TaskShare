@@ -1,9 +1,10 @@
 package com.TaskShare.Models.Services
 
+import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.DataObjects.Friend
 import com.TaskShare.Models.Utilities.TSFriendStatus
 import com.TaskShare.Models.Repositories.TSUsersRepository
-import com.TaskShare.ViewModels.FriendViewState
+import com.TaskShare.Models.Utilities.ActivityType
 
 
 class FriendsManagementService {
@@ -15,6 +16,10 @@ class FriendsManagementService {
     fun sendFriendRequest(senderUserId: String, receiverEmail: String): String {
         var receiverInfo = usersRepository.getUserInfoFromEmail(receiverEmail)
         var senderInfo = usersRepository.getUserInfo(senderUserId)
+
+        if (receiverInfo.userId.isEmpty()) {
+            return "User doesn't exist"
+        }
 
         // if receiver is already has sender as an entry ("Blocked", "Incoming", "Outgoing", "Friend")
         var ifSenderInReceiverList = receiverInfo.friends.find { friend -> friend.userId == senderUserId }
@@ -45,6 +50,13 @@ class FriendsManagementService {
             userId = receiverInfo.userId
         )
         usersRepository.addFriend(senderUserId, sendersFriend)
+
+        ActivityManagementService.addActivity(Activity(
+            sourceUser = senderUserId,
+            affectedUsers = mutableListOf(receiverInfo.userId),
+            type = ActivityType.FRIEND_REQUEST,
+            details = "${senderInfo.firstName} ${senderInfo.lastName} sent you a friends request!"
+        ))
 
         return "SUCCESS"
     }
@@ -78,6 +90,12 @@ class FriendsManagementService {
 
             usersRepository.updateFriendshipStatus(incomingFriendId,currentUserId, outgoingFriend)
 
+            ActivityManagementService.addActivity(Activity(
+                sourceUser = currentUserId,
+                affectedUsers = mutableListOf(incomingFriendId),
+                type = ActivityType.FRIEND_REQUEST,
+                details = "${currentUserInfo.firstName} ${currentUserInfo.lastName} accepted your friends request!"
+            ))
         }
     }
 

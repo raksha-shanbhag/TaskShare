@@ -1,5 +1,4 @@
 package com.TaskShare.UI.Views.screens
-import com.TaskShare.Models.Repositories.TSUser
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -21,6 +20,9 @@ class LoginBackend {
                     val user: FirebaseUser? = firebaseAuth.currentUser
                     if (user != null) {
                         TSUsersRepository.globalUserId = user.uid
+                        if (TSUsersRepository.setNotifTokenOnLogin) {
+                            TSUsersRepository.setNotifToken(TSUsersRepository.globalUserId)
+                        }
                     }
                 } else {
                     loginCompletionSource.setResult(false)

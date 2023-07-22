@@ -10,12 +10,10 @@ class ActivityViewModel: ViewModel() {
     val state = mutableStateOf(Activity())
     val activitiesState = mutableStateOf(ActivitiesViewState())
 
-    private val activityManager = ActivityManagementService()
-
     fun getAllActivitiesForUser() {
         activitiesState.value.activities.clear()
         var allActivities = mutableListOf<Activity>()
-        allActivities.addAll(activityManager.getActivitiesForUser(TSUsersRepository.globalUserId))
+        allActivities.addAll(ActivityManagementService.getActivitiesForUser(TSUsersRepository.globalUserId))
 
         for (activity in allActivities) {
             appendNewActivity(activity)
@@ -27,11 +25,6 @@ class ActivityViewModel: ViewModel() {
         currentList.add(activity)
         activitiesState.value = activitiesState.value.copy(activities = currentList)
     }
-
-    fun getActivityText(activity: Activity): String {
-        return activityManager.getActivityString(activity)
-    }
-
 }
 
 

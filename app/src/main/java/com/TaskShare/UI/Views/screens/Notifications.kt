@@ -2,9 +2,7 @@ package com.example.greetingcard.screens
 
 import android.annotation.SuppressLint
 import android.text.format.DateUtils
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -42,10 +35,8 @@ import androidx.compose.ui.unit.sp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.Models.DataObjects.Activity
-import com.TaskShare.Models.DataObjects.ActivityType
+import com.TaskShare.Models.Utilities.ActivityType
 import com.TaskShare.ViewModels.ActivityViewModel
-import com.TaskShare.ViewModels.GroupViewModel
-import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 import java.text.DateFormat
 
@@ -92,7 +83,7 @@ fun RenderActivityCard(activity: Activity, viewModel: ActivityViewModel){
         }
         Column(modifier = Modifier.widthIn(10.dp, 300.dp))
         {
-            Text(text = viewModel.getActivityText(activity),
+            Text(text = activity.details,
                 fontSize = 15.sp,
                 modifier = Modifier
                     .padding(2.dp, 0.dp, 0.dp, 5.dp)
@@ -133,7 +124,7 @@ fun NotificationScreen() {
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 Spacer(modifier = Modifier.height(height = 10.dp))
-                if(DateUtils.isToday(viewModel.activitiesState.value.activities.get(0).time.time)) {
+                if(viewModel.activitiesState.value.activities.isNotEmpty() && DateUtils.isToday(viewModel.activitiesState.value.activities[0].time.time)) {
                     Text(text = "Today",
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold,

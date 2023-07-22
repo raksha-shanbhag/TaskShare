@@ -1,16 +1,12 @@
 package com.TaskShare.Models.Repositories
 
 import android.util.Log
-import com.TaskShare.Models.DataObjects.Activity
-import com.TaskShare.Models.DataObjects.ActivityType
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import com.TaskShare.Models.DataObjects.Group
-import com.TaskShare.Models.Services.ActivityManagementService
 import kotlinx.coroutines.runBlocking
-import java.util.Date
 
 // APIs
 class TSGroupsRepository {
@@ -37,7 +33,6 @@ class TSGroupsRepository {
             if (document != null){
                 Log.d(TAG, document.id)
                 documentId = document.id
-                ActivityManagementService().addActivity(Activity(Date(), "", documentId, groupMembersIds, creatorId, ActivityType.GROUP_REQUEST))
             }
         }
 

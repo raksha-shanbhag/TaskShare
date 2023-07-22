@@ -1,10 +1,7 @@
 package com.TaskShare.Models.Repositories
 
 import android.util.Log
-import com.TaskShare.Models.DataObjects.Activity
-import com.TaskShare.Models.DataObjects.ActivityType
 import com.TaskShare.Models.DataObjects.Task
-import com.TaskShare.Models.Services.ActivityManagementService
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore

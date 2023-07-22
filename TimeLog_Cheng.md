@@ -13,5 +13,7 @@
 | 2023/06/30 | 1     | Work on prototype document                                                            |
 | 2023/07/02 | 5     | Fix backend stuff                                                                     |
 | 2023/07/15 | 1     | Fix backend stuff                                                                     |
+| 2023/07/22 | 20    | Activities and Notifications                                                          |
+| 2023/07/22 | 10    | Fix backend stuff                                                                     |
 --------------------------------------------------------------------------------------------------------------
-| ---------- | 26.5  | Total                                                                                 |
+| ---------- | 56.5  | Total                                                                                 |

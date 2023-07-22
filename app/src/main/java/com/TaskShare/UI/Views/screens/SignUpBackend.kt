@@ -1,12 +1,14 @@
 package com.TaskShare.UI.Views.screens
 
-import com.TaskShare.Models.Repositories.TSUser
-import com.TaskShare.Models.Repositories.TSUserData
+import com.TaskShare.Models.DataObjects.User
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 
 class SignUpBackend {
     private val firebaseAuth = FirebaseAuth.getInstance()
@@ -22,14 +24,14 @@ class SignUpBackend {
                     loginCompletionSource.setResult(true)
                     val user: FirebaseUser? = firebaseAuth.currentUser
                     if (user != null) {
-                        TSUser.register(user.uid,
-                            TSUserData(
+                        TSUsersRepository.register(User(
+                                userId = user.uid,
                                 firstName = firstName,
                                 lastName = lastName,
                                 email = email
-                            )
-                        )
+                            ))
                         TSUsersRepository.globalUserId = user.uid
+                        TSUsersRepository.setNotifToken(user.uid)
                     }
                 }else{
                     loginCompletionSource.setResult(false)

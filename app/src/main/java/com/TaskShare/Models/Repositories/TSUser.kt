@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
@@ -20,34 +21,22 @@ class TSUsersRepository() {
 
     companion object {
         var globalUserId: String = ""
-    }
+        var setNotifTokenOnLogin: Boolean = false
 
-    // temporary API
-    fun getUserIdFromName(username: String) : String{
-        var result = ""
-
-        users.whereEqualTo("name", username)
-            .get()
-            .addOnSuccessListener { documents ->
-                for(document in documents) {
-                    result = document.id
-                    break
-                }
+        fun setNotifToken(userId: String) {
+            runBlocking {
+                var token = FirebaseMessaging.getInstance().token.await()
+                Firebase.firestore.collection("Users").document(userId).update("notifToken", token).await()
             }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
-
-        return result
-    }
-
-    // temporary API
-    fun getUserIdsFromNames(usernames: MutableList<String>) : MutableList<String> {
-        var result = HashSet<String>()
-        for (name in usernames) {
-            result.add(getUserIdFromName(name))
         }
-        return result.toMutableList()
+
+        fun register(data: User) {
+            val ref = Firebase.firestore.collection("Users").document(data.userId)
+
+            runBlocking {
+                ref.set(data).await()
+            }
+        }
     }
 
     // get UserId from Email
@@ -69,28 +58,15 @@ class TSUsersRepository() {
         runBlocking {
             var documentSnapshot = users.whereEqualTo("email", email).get().await()
             for (document in documentSnapshot.documents) {
-                var friends = ArrayList<Friend>()
-                var friendCache = document.get("friends") as List<HashMap<String, String>>??: arrayListOf()
-
-                for (friend in friendCache) {
-                    var status = friend["status"] ?: "Error"
-
-                    friends.add(Friend(
-                        userId = friend["userId"] ?: "",
-                        name = friend["name"] ?: "",
-                        email = friend["email"] ?: "",
-                        status = TSFriendStatus.fromString(status)
-                    ))
-                }
-
                 result = User(
+                    userId = document.id,
                     firstName = document.get("firstName").toString(),
                     lastName = document.get("lastName").toString(),
-                    userId = document.id,
                     email = document.get("email").toString(),
-                    friends = friends
+                    phoneNumber = document.get("phoneNumber").toString(),
+                    friends = parseFriendsList(document.get("friends"))
                 )
-                break
+//                break
             }
         }
         return result
@@ -166,9 +142,8 @@ class TSUsersRepository() {
         var document: DocumentSnapshot? = null
 
         runBlocking {
-                document = users.document(userId).get().await()
             try {
-
+                document = users.document(userId).get().await()
             } catch (e: Throwable) {
                 Log.w("Error getting documents", e)
             }
@@ -226,8 +201,14 @@ class TSUsersRepository() {
     }
     fun removeFriend(userId: String, friendId : String) {
         runBlocking {
+            var friendInfo = getFriendInfo(userId, friendId);
             val friendUpdate = hashMapOf<String, Any>(
-                "friends" to FieldValue.arrayRemove(hashMapOf("userId" to friendId))
+                "friends" to FieldValue.arrayRemove(hashMapOf(
+                    "userId" to friendInfo.userId,
+                    "name" to friendInfo.name,
+                    "email" to friendInfo.email,
+                    "status" to friendInfo.status.toString(),
+                ))
             )
 
             try {
@@ -242,153 +223,16 @@ class TSUsersRepository() {
         removeFriend(userId,friendId)
         addFriend(userId, friend)
     }
-}
 
-data class TSUserData (
-    val firstName: String = "",
-    val lastName: String = "",
-    val email: String = "",
-    val phoneNumber: String = "",
-    val friends: MutableList<Friend> = mutableListOf(),
-    val groups: MutableList<String> = mutableListOf()
-)
-class TSUser() {
-//    private var groups: MutableList<TSGroup> = mutableListOf()
+    private fun getFriendInfo(userId: String, friendId: String): Friend {
+        var user = getUserInfo(userId);
 
-    var id = ""
-    var userData = TSUserData()
-
-    companion object {
-        private val TAG = "User"
-        var globalUser: TSUser = TSUser()
-
-        fun getFromId(id: String, recurse: Boolean = true): TSUser {
-            var user = TSUser()
-            user.id = id
-
-            runBlocking {
-                user.read(recurse)
-            }
-
-            return user
-        }
-
-        fun getIdFromEmail(email: String): String {
-            var documents: QuerySnapshot? = null
-            var result = ""
-
-            try {
-                runBlocking {
-                    documents = Firebase.firestore.collection("Users").whereEqualTo("email", email).get().await()
-                }
-            } catch (exception: Throwable) {
-                Log.w(TAG, "Error finding user.", exception)
-            }
-
-            if (documents != null) {
-                for (document in documents as QuerySnapshot) {
-                    result = document.id
-                    break
-                }
-            }
-
-            return result
-        }
-
-        fun register(id: String, data: TSUserData) {
-            val ref = Firebase.firestore.collection("Users").document(id)
-
-            runBlocking {
-                ref.set(data).await()
+        for (friend in user.friends) {
+            if (friend.userId == friendId) {
+                return friend;
             }
         }
 
-        fun updateGroup(userId: String, groupId: String, add: Boolean = true) {
-            val ref = Firebase.firestore.collection("Users").document(userId)
-
-            if (add) {
-                ref.update("groups", FieldValue.arrayUnion(groupId))
-                    .addOnFailureListener { exception: Throwable ->
-                        Log.w(TAG, "Error adding group to user.", exception)
-                    }
-            } else {
-                ref.update("Groups", FieldValue.arrayRemove(groupId))
-                    .addOnFailureListener { exception: Throwable ->
-                        Log.w(TAG, "Error removing group from user.", exception)
-                    }
-            }
-        }
-    }
-
-//    fun getGroups(): MutableList<TSGroup> {
-//        return groups;
-//    }
-
-    fun updateInfo(value: TSUserData) {
-        val dbRef = Firebase.firestore.collection("Users").document(id)
-
-        dbRef.update("firstName", value.firstName)
-        dbRef.update("lastName", value.lastName)
-        dbRef.update("email", value.email)
-        dbRef.update("phoneNumber", value.phoneNumber)
-        dbRef.update("friends", value.friends)
-    }
-
-//    fun getTasks(): List<TSSubTask> {
-//        var list: MutableList<TSSubTask> = mutableListOf()
-//
-//        for (group in groups) {
-//            list.addAll(group.getSubTasksAssignedTo(id))
-//        }
-//
-//        return list
-//    }
-
-    fun updateGroup(groupId: String, add: Boolean = true) {
-        Companion.updateGroup(id, groupId, add)
-    }
-
-//    fun getTaskStates(): List<TaskViewState> {
-//        var list: MutableList<TaskViewState> = mutableListOf()
-//        var tasks = getTasks()
-//
-//        for (task in tasks) {
-//            list.add(task.getState())
-//        }
-//
-//        return list
-//    }
-//
-//    fun createTask(taskState: AddTaskState) {
-//        // empty
-//    }
-
-    suspend fun read(recurse: Boolean = true) {
-        var document: DocumentSnapshot? = null
-
-        try {
-            document = Firebase.firestore.collection("Users").document(id).get().await()
-        } catch (exception: Throwable) {
-            Log.w(TAG, "Error getting documents.", exception)
-            return
-        }
-
-        if (document != null && document.exists()) {
-            userData = TSUserData(
-                firstName = document.get("firstName") as String,
-                lastName = document.get("lastName") as String,
-                email = document.get("email") as String,
-                phoneNumber = document.get("phoneNumber") as String,
-                groups = document.get("groups") as MutableList<String>,
-            )
-
-//            groups.clear()
-//            if (recurse) {
-//                for (groupId in userData.groups) {
-//                    var group = TSGroup.getFromId(groupId)
-//                    groups.add(group)
-//                }
-//            }
-        }
+        return Friend();
     }
 }

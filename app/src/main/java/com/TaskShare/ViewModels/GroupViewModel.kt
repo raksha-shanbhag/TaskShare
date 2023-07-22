@@ -1,14 +1,10 @@
 package com.TaskShare.ViewModels
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.TaskShare.Models.Repositories.TSUser
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.FriendsManagementService
 import com.TaskShare.Models.Services.GroupManagementService
-import com.TaskShare.Models.Utilities.TSFriendStatus
 import kotlinx.coroutines.runBlocking
 
 class GroupViewModel: ViewModel() {
@@ -50,28 +46,12 @@ class GroupViewModel: ViewModel() {
 
     // view model to get a new group
     fun createGroup(groupName : String, groupDescription: String, groupMembers: MutableList<String>) {
-        var userIds = mutableListOf<String>()
-        for (member in groupMembers) {
-            var userId = TSUser.getIdFromEmail(member)
-
-            if (!userId.isEmpty()) {
-                userIds.add(userId)
-            }
-        }
-
-        groupMembers.add(TSUsersRepository.globalUserId)
-
-        val groupId = groupManager.createGroup(
+        groupManager.createGroup(
             creatorId = TSUsersRepository.globalUserId,
             groupName = groupName,
             groupDescription = groupDescription,
             groupMemberEmails = groupMembers
         )
-
-        for (userId in userIds) {
-            TSUser.updateGroup(userId, groupId)
-        }
-        TSUser.updateGroup(userId = TSUsersRepository.globalUserId, groupId = groupId)
 
         val newGroup = GroupViewState (
             groupName = groupName,

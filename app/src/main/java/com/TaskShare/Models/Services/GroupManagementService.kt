@@ -1,14 +1,15 @@
 package com.TaskShare.Models.Services
 
+import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.TaskShare.Models.Utilities.ActivityType
 import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewState
 import com.TaskShare.ViewModels.GroupMember
-
 
 class GroupManagementService {
     private val groupsRepository = TSGroupsRepository()
@@ -26,12 +27,24 @@ class GroupManagementService {
         groupMemberEmails: MutableList<String>
     ) : String {
         var groupMemberIds = usersRepository.getUserIdsFromEmails(groupMemberEmails)
-        groupMemberIds.add(creatorId)
+
+        if (!groupMemberIds.contains(creatorId)) {
+            groupMemberIds.add(creatorId)
+        }
 
         var newGroupId = groupsRepository.createGroup(creatorId, groupName, groupDescription, groupMemberIds)
 
-        if(newGroupId.isNullOrEmpty()) {
+        if(newGroupId.isNotEmpty()) {
             usersRepository.addGroupToUserId(creatorId, newGroupId)
+            var sourceInfo = usersRepository.getUserInfo(creatorId)
+
+            ActivityManagementService.addActivity(Activity(
+                groupId = newGroupId,
+                sourceUser = creatorId,
+                affectedUsers = groupMemberIds,
+                type = ActivityType.GROUP_REQUEST,
+                details = "${sourceInfo.firstName} ${sourceInfo.lastName} added you to the group ${groupName}!"
+            ))
         }
         return newGroupId
     }
@@ -85,7 +98,6 @@ class GroupManagementService {
 
         return result
     }
-
 
     // API Service for getting tasks for a group
     fun getAllTasksForGroupId(groupId: String): MutableList<TaskViewState> {
