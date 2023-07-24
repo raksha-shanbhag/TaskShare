@@ -36,4 +36,5 @@
 | 2023/07/22 | 0.5      | fetching assignees properly (backend bug fix)                                          |
 | 2023/07/22 | 1        | Final styling of transfer task under task detatil                                      |
 | 2023/07/22 | 2        | Checkbox display of assignees under detail task                                        |
+| 2023/07/24 | 10 min   | Delete task frontend                                                                   |
 

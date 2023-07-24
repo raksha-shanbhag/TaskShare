@@ -83,11 +83,17 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
 
     // integrate with backend
     val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
+    val statusList = arrayOf("To Do", "In Progress", "Pending Approval", "Complete", "Overdue", "Declined")
+
+
     // state of the menus
     var expandedGroup by remember {
         mutableStateOf(false)
     }
     var expandedCycle by remember {
+        mutableStateOf(false)
+    }
+    var expandedStatus by remember {
         mutableStateOf(false)
     }
     var expandedAssignTo by remember {
@@ -112,17 +118,19 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
     val day: Int
 
     val calendar = Calendar.getInstance()
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-    calendar.time = Date()
+    calendar.time = taskDetail.deadline
 
-    val date = remember { mutableStateOf(simpleDateFormat.format(taskDetail.deadline)) }
+    year = calendar.get(Calendar.YEAR)
+    month = calendar.get(Calendar.MONTH) + 1
+    day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val date = remember { mutableStateOf("$day/$month/$year") }
     val datePickerDialog = DatePickerDialog(
         context,
 
         {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            date.value = "$dayOfMonth/$month/$year"
+            var actualmonth = month + 1
+            date.value = "$dayOfMonth/$actualmonth/$year"
         }, year, month, day
     )
 
@@ -144,16 +152,27 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
         ) {
             Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
-                TextField(value = taskDetail.taskName, onValueChange = {text -> viewModel.updateTaskName(text)},  label = {Text("Task Name")},
+                TextField(
+                    value = taskDetail.taskName,
+                    onValueChange = {
+                            text ->
+                        taskDetail.taskName += text
+                        Log.i("Debug Jaishree taskname", text)
+                                    },
+                    label = {Text("Task Name")},
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.White, textColor = Color.Black,
                         focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
                         focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black))
 
+                // render the right date
+//                var dateDisplayed = taskDetail.deadline.day
+                
+
                 TextField(
                     readOnly = true,
                     value = date.value,
-                    onValueChange = { },
+                    onValueChange = {},
                     label = { Text("End Date") },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -176,6 +195,42 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                         disabledLabelColor = Color.Black
                     )
                 )
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedStatus,
+                    onExpandedChange = {
+                        expandedStatus = !expandedStatus
+                    }
+                ) {
+                    TextField(
+                        readOnly = true,
+                        value = taskDetail.status,
+                        onValueChange = { },
+                        label = { Text("Status") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = expandedStatus
+                            )
+                        },
+                        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedStatus,
+                        onDismissRequest = {
+                            expandedStatus = false
+                        }
+                    ){
+                        statusList.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(text = item) },
+                                onClick = {
+                                    taskDetail.status = item
+                                    expandedStatus = false
+                                }
+                            )
+                        }
+                    }
+                }
 
 
                 ExposedDropdownMenuBox(
@@ -206,7 +261,7 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                             DropdownMenuItem(
                                 text = { Text(text = item) },
                                 onClick = {
-                                    viewModel.updateCycle(item)
+                                    taskDetail.cycle = item
                                     expandedCycle = false
                                 }
                             )

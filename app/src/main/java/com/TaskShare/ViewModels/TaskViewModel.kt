@@ -76,6 +76,10 @@ class TaskViewModel: ViewModel() {
         }
         return result
     }
+
+    fun deleteTask(taskID: String){
+        // TODO backend: delete task endpoint
+    }
 }
 
 // states
@@ -92,7 +96,7 @@ data class TaskDetail(
 data class TaskViewState (
     var taskName: String = "",
     val assigner: String = "",
-    val status: String = "",
+    var status: String = "",
     val assignees: MutableList<GroupMember> = mutableListOf(),
     var assignee: String = "",
     val groupName: String = "",

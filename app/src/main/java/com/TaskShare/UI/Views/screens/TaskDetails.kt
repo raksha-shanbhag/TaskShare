@@ -291,6 +291,36 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             }
                         }
                     }
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 10.dp)
+                        .border(
+                            BorderStroke(
+                                2.dp,
+                                SolidColor(colorResource(id = R.color.progress_red))
+                            ), RoundedCornerShape(4.dp)
+                        )
+                        .background(color = colorResource(id = R.color.progress_red))
+                        .padding(2.dp, 5.dp)
+                        .clickable(
+                            onClick = {
+//                                // delete task endpoint: TODO backend
+                                viewModel.deleteTask(taskDetail.id)
+                            }
+                        ),
+                        horizontalArrangement = Arrangement.Center
+
+                    ){
+
+                        Text (text = "Delete Task",
+                            fontSize = small_font_size.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.fillMaxWidth(nameWidth),
+                            color = colorResource(id = R.color.white)
+
+
+                        )
+                    }
 
 
                 }
