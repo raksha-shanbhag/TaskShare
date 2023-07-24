@@ -9,6 +9,7 @@ import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Utilities.ActivityType
 import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.TaskShare.ViewModels.GroupMember
+import com.TaskShare.Models.Utilities.UpdateLogger
 import com.TaskShare.ViewModels.TaskViewState
 import java.util.Date
 
@@ -17,6 +18,7 @@ class TaskManagementService {
     private val taskRepository = TSTasksRepository()
     private val subTaskRepository = TSSubTasksRepository()
     private val userRepository = TSUsersRepository()
+    private val updateLogger = UpdateLogger()
 
     // API Service for getting tasks related to a user
     fun getAllTasksForUserId(userId: String): MutableList<TaskViewState> {
@@ -75,13 +77,14 @@ class TaskManagementService {
     ) : String {
         var startDate = Date()
 
-        Log.i("Debug raksha assignees- ", assignees.toString())
         // create main task
-        var curr_assignees = mutableListOf<String>()
-        curr_assignees.addAll(assignees)
+        var currAssignees = mutableListOf<String>()
+        currAssignees.addAll(assignees)
         if (assignees.size <=0 ){
-            curr_assignees.add(assignerId)
+            currAssignees.add(assignerId)
         }
+
+        var updateLog = updateLogger.createUpdateLogArray(assignerId = assignerId)
 
         var taskId = taskRepository.createTask(
             assignerId = assignerId,
@@ -89,17 +92,19 @@ class TaskManagementService {
             groupId = groupId,
             lastDate = lastDate,
             cycle = cycle,
-            assignees = curr_assignees,
-            startDate = startDate
+            assignees = currAssignees,
+            startDate = startDate,
+            updateLog = updateLog
         )
 
-        Log.i("Debug raksha assignees curr", curr_assignees.toString())
-
         if (taskId.isNotEmpty()) {
+            // endDate Calculation
+            var endDate = Date()
+
             // create sub Tasks
             subTaskRepository.createSubTask(
                 taskId = taskId,
-                assigneeId = curr_assignees.first(),
+                assigneeId = currAssignees.first(),
                 startDate = startDate,
                 endDate = lastDate
             )
@@ -108,7 +113,7 @@ class TaskManagementService {
             ActivityManagementService.addActivity(Activity(
                 taskId = taskId,
                 sourceUser = assignerId,
-                affectedUsers = curr_assignees,
+                affectedUsers = currAssignees,
                 groupId = groupId,
                 type = ActivityType.TASK_ASSIGNED,
                 details = "A new task has been assigned to you in ${groupName}"
@@ -138,9 +143,6 @@ class TaskManagementService {
             var assigneeInfo = userRepository.getUserInfo(assignee)
             assignees.add(GroupMember(assigneeInfo.firstName, assigneeInfo.userId))
         }
-
-        Log.i("Debug Task", taskInfo.toString())
-        Log.i("Debug Task", subTaskInfo.toString())
 
         return TaskViewState(
             taskName = taskInfo.taskName,

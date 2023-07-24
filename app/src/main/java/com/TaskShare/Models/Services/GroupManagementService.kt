@@ -7,6 +7,7 @@ import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Utilities.ActivityType
 import com.TaskShare.Models.Utilities.TSTaskStatus
+import com.TaskShare.Models.Utilities.UpdateLogger
 import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewState
 import com.TaskShare.ViewModels.GroupMember
@@ -16,6 +17,7 @@ class GroupManagementService {
     private val tasksRepository = TSTasksRepository()
     private val subTasksRepository = TSSubTasksRepository()
     private val usersRepository = TSUsersRepository()
+    private val updateLogger = UpdateLogger()
 
     // API service for
     // params:- groupName, groupDescription, groupMemberEmails: Array<string>()
@@ -31,6 +33,8 @@ class GroupManagementService {
         if (!groupMemberIds.contains(creatorId)) {
             groupMemberIds.add(creatorId)
         }
+
+        var updateLog = updateLogger.createUpdateLogArray(assignerId = creatorId)
 
         var newGroupId = groupsRepository.createGroup(creatorId, groupName, groupDescription, groupMemberIds)
 
@@ -100,7 +104,7 @@ class GroupManagementService {
     }
 
     // API Service for getting tasks for a group
-    fun getAllTasksForGroupId(groupId: String): MutableList<TaskViewState> {
+    private fun getAllTasksForGroupId(groupId: String): MutableList<TaskViewState> {
         var result = mutableListOf<TaskViewState>()
         var groupTasks = tasksRepository.getTasksForGroupId(groupId = groupId)
         for (task in groupTasks){

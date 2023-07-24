@@ -2,6 +2,7 @@ package com.TaskShare.Models.Repositories
 
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Task
+import com.TaskShare.Models.DataObjects.UpdateLog
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -27,7 +28,8 @@ class TSTasksRepository {
         cycle: String,
         lastDate: Date,
         assignees: MutableList<String>,
-        startDate: Date
+        startDate: Date,
+        updateLog: MutableList<UpdateLog>
     ) : String {
         var documentId: String = ""
 
@@ -39,7 +41,9 @@ class TSTasksRepository {
             "assignerId" to assignerId,
             "startDate" to startDate,
             "assignees" to assignees,
-            "creationDate" to Date()
+            "creationDate" to Date(),
+            "updateLog" to updateLog,
+            "currentIndex" to 0
         )
 
         Log.i("Debug raksha create task request", data.toString())
