@@ -8,13 +8,13 @@ class DailyUpdateStrategy : TaskUpdateStrategy {
         return getTomorrow()
     }
 
-    override fun createNextSubtask(taskInfo: Task): Int {
+    override fun createNextSubtask(taskInfo: Task, endDate: Date): Int {
         var index = taskInfo.currentIndex
         var startDate = getTomorrow()
 
         // check if start date < endDate
-        if (startDate <= taskInfo.lastDate){
-            var endDate = getTomorrow()
+        if (startDate <= endDate){
+            var nextEndDate = getTomorrow()
             var newIndex = index + 1
 
             if (newIndex >= taskInfo.assignees.size) {
@@ -22,7 +22,7 @@ class DailyUpdateStrategy : TaskUpdateStrategy {
             }
 
             var nextAssignee = taskInfo.assignees[newIndex]
-            createSubTask(taskId =  taskInfo.taskId, assigneeId = nextAssignee, startDate = startDate, endDate = endDate)
+            createSubTask(taskId =  taskInfo.taskId, assigneeId = nextAssignee, startDate = startDate, endDate = nextEndDate)
             index = newIndex
         }
 

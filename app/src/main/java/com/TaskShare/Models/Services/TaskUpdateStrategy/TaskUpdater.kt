@@ -49,7 +49,7 @@ class TaskUpdater {
             (currentSubTaskInfo.taskStatus == TSTaskStatus.OVERDUE && newTaskStatus == TSTaskStatus.COMPLETE )
         )){
             // change index and create next task
-            index = taskUpdateStrategy.createNextSubtask(currentMainTaskInfo)
+            index = taskUpdateStrategy.createNextSubtask(currentMainTaskInfo, endDate = updateDate)
 
         }
 
