@@ -18,8 +18,6 @@ class TSTasksRepository {
     private val TAG = "TSTasksRepository"
     private val db = Firebase.firestore
     private val tasks = db.collection("Tasks")
-    private val pattern = "yyyy-MM-dd"
-    private val dateFormat = SimpleDateFormat(pattern)
 
     // API Service for creating a Task
     fun createTask(
@@ -80,6 +78,8 @@ class TSTasksRepository {
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
 
+                val index: Int = document.data?.get("currentIndex") as? Int ?: 0
+
                 result = Task(
                     taskId = document.id,
                     taskName = document.data?.get("taskName").toString(),
@@ -89,7 +89,7 @@ class TSTasksRepository {
                     startDate = startDate,
                     lastDate = endDate,
                     assignees = assignees,
-                    currentIndex = document.data?.get("currentIndex").toString().toInt()
+                    currentIndex = index
                 )
             } else {
                 Log.w(TAG, "Error writing document")
@@ -112,6 +112,8 @@ class TSTasksRepository {
                 val startDate = startDateTimestamp?.toDate()?: Date()
                 val endDate = endDateTimestamp?.toDate()?: Date()
 
+                val index: Int = document.data?.get("currentIndex") as? Int ?: 0
+
                 var task = Task(
                     taskId = document.id,
                     taskName = document.data?.get("taskName").toString(),
@@ -119,7 +121,8 @@ class TSTasksRepository {
                     cycle = document.data?.get("cycle").toString(),
                     assignerId = document.data?.get("assignerId").toString(),
                     startDate = startDate,
-                    lastDate = endDate
+                    lastDate = endDate,
+                    currentIndex = index
                 )
 
                 result.add(task)
