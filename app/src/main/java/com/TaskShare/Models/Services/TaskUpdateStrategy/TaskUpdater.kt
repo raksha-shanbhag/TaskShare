@@ -57,4 +57,8 @@ class TaskUpdater {
         taskRepository.updateTaskInfo(taskId = currentSubTaskInfo.taskId, taskName = taskName, endDate = endDate, cycle = cycle, updateIndex = index)
     }
 
+    fun getNextEndDate(startDate: Date) : Date {
+        return taskUpdateStrategy.getNextEndDate(startDate = startDate)
+    }
+
 }

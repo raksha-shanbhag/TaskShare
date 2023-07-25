@@ -6,7 +6,7 @@ import java.util.Date
 
 class WeeklyUpdateStrategy : TaskUpdateStrategy {
 
-    private fun getOneWeekFromDate(date: Date) : Date {
+    override fun getNextEndDate(date: Date) : Date {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.add(Calendar.DAY_OF_MONTH, 7)
@@ -18,7 +18,7 @@ class WeeklyUpdateStrategy : TaskUpdateStrategy {
 
         // check if start date < endDate
         if (startDate < taskInfo.lastDate){
-            var endDate = getOneWeekFromDate(startDate)
+            var endDate = getNextEndDate(startDate)
             var newIndex = index + 1
 
             if (newIndex >= taskInfo.assignees.size) {

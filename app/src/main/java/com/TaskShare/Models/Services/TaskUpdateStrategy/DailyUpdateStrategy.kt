@@ -1,8 +1,13 @@
 package com.TaskShare.Models.Services.TaskUpdateStrategy
 
 import com.TaskShare.Models.DataObjects.Task
+import java.util.Date
 
 class DailyUpdateStrategy : TaskUpdateStrategy {
+    override fun getNextEndDate(date: Date) : Date {
+        return getTomorrow()
+    }
+
     override fun createNextSubtask(taskInfo: Task): Int {
         var index = taskInfo.currentIndex
         var startDate = getTomorrow()

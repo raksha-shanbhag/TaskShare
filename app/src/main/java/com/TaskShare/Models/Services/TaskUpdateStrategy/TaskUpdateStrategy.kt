@@ -18,4 +18,6 @@ interface TaskUpdateStrategy {
         var subTasksRepository = TSSubTasksRepository()
         subTasksRepository.createSubTask(taskId, assigneeId, startDate, endDate)
     }
+
+    fun getNextEndDate(startDate: Date) : Date
 }

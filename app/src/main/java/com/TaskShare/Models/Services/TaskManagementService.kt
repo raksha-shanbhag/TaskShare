@@ -6,6 +6,7 @@ import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.TaskShare.Models.Services.TaskUpdateStrategy.TaskUpdater
 import com.TaskShare.Models.Utilities.ActivityType
 import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.TaskShare.ViewModels.GroupMember
@@ -99,7 +100,8 @@ class TaskManagementService {
 
         if (taskId.isNotEmpty()) {
             // endDate Calculation
-            var endDate = Date()
+            var taskUpdater = TaskUpdater(cycle)
+            var endDate = taskUpdater.getNextEndDate(startDate)
 
             // create sub Tasks
             subTaskRepository.createSubTask(
@@ -155,5 +157,11 @@ class TaskManagementService {
             id = subTaskInfo.subTaskId,
             deadline = subTaskInfo.endDate
         )
+    }
+
+    fun updateTask(subtaskId: String, taskName: String, endDate: Date, cycle: String, newTaskStatus: String) {
+        val taskStatus = TSTaskStatus.fromString(newTaskStatus)
+        val taskUpdater = TaskUpdater(cycle)
+        taskUpdater.updateTaskInfo(subtaskId, taskName, endDate, cycle, taskStatus)
     }
 }
