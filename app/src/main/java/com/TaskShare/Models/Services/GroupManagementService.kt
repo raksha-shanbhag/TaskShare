@@ -1,5 +1,6 @@
 package com.TaskShare.Models.Services
 
+import android.util.Log
 import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
@@ -151,21 +152,55 @@ class GroupManagementService {
         usersRepository.addGroupToUserId(userId = memberId, groupId = groupId)
     }
 
+    private fun removeMemberGroupTasks(groupId: String, memberId: String) {
+        var groupTasks = tasksRepository.getTasksForGroupId(groupId = groupId)
+        for(task in groupTasks) {
+            Log.i("Debug Raksha check group", task.toString())
+            var checkAssignee = task.assignees.find { assignee -> assignee == memberId}
+            if (checkAssignee != null) {
+                Log.i("Debug Raksha check group", checkAssignee)
+                tasksRepository.removeAssigneeFromTask(taskId = task.taskId, assigneeId = memberId)
+            }
+        }
+
+        // update user doc array
+        usersRepository.removeGroupForUserId(userId = memberId, groupId = groupId)
+    }
+
     // API to remove member from a group
     fun removeMemberFromGroup(groupId: String, memberId: String) {
         // update group doc array
         groupsRepository.removeUserFromGroup(groupId = groupId, memberId = memberId)
 
         // remove members from tasks assigned to the group
-        var groupTasks = tasksRepository.getTasksForGroupId(groupId = groupId)
-        for(task in groupTasks) {
-            var checkAssignee = task.assignees.find { assignee -> assignee == memberId}
-            if (checkAssignee != null) {
-                tasksRepository.removeAssigneeFromTask(taskId = task.taskId, assigneeId = checkAssignee)
-            }
+        removeMemberGroupTasks(groupId = groupId, memberId = memberId)
+    }
+
+    fun updateGroupInformation(
+        groupId: String,
+        groupName: String,
+        groupDescription: String,
+        groupMemberEmails: MutableList<String>
+    ) {
+        var groupInfo = groupsRepository.getGroupFromId(groupId)
+
+        var currMemberIds = groupInfo.groupMembers
+        var updateMemberIds = usersRepository.getUserIdsFromEmails(groupMemberEmails)
+
+        // add new members
+        var newMemberIds = updateMemberIds.minus(currMemberIds.toSet())
+        for (newMemberId in newMemberIds) {
+            usersRepository.addGroupToUserId(userId = newMemberId, groupId = groupId)
         }
 
-        // update user doc array
-        usersRepository.removeGroupForUserId(userId = memberId, groupId = groupId)
+        // remove old members
+        var removeMemberIds = currMemberIds.minus(updateMemberIds.toSet())
+        for (removeMemberId in removeMemberIds) {
+            removeMemberGroupTasks(groupId = groupId, memberId = removeMemberId)
+        }
+
+        // update group information
+        var updateLog = updateLogger.createUpdateLogArray(TSUsersRepository.globalUserId, "update group information")
+        groupsRepository.updateGroupInfo(groupId = groupId, groupName = groupName, groupDescription = groupDescription, updateLog = updateLog, groupMembersIds = updateMemberIds)
     }
 }

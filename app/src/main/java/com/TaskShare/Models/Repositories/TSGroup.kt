@@ -6,6 +6,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import com.TaskShare.Models.DataObjects.Group
+import com.TaskShare.Models.DataObjects.UpdateLog
 import kotlinx.coroutines.runBlocking
 
 // APIs
@@ -51,9 +52,11 @@ class TSGroupsRepository {
     // API method to add member
     fun addMemberToGroup(groupId: String, newMemberUserId: String) {
         runBlocking {
-            groups.document(groupId)
-                .update("groupMembers", FieldValue.arrayUnion(newMemberUserId))
-                .await()
+            if (newMemberUserId != null) {
+                groups.document(groupId)
+                    .update("groupMembers", FieldValue.arrayUnion(newMemberUserId))
+                    .await()
+            }
         }
     }
 
@@ -98,5 +101,20 @@ class TSGroupsRepository {
         }
 
         return result.toMutableList()
+    }
+
+    // API to update group name and group description
+    fun updateGroupInfo(groupId: String, groupName: String, groupDescription: String, updateLog: UpdateLog, groupMembersIds: MutableList<String>) {
+        runBlocking {
+            var data = hashMapOf(
+                "groupName" to groupName,
+                "groupDescription" to groupDescription,
+                "groupMembers" to groupMembersIds,
+            )
+            groups.document(groupId).update(data.toMap()).await()
+            groups.document(groupId)
+                .update("updateLog", FieldValue.arrayUnion(updateLog))
+                .await()
+        }
     }
 }

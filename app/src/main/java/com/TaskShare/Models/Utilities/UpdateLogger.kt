@@ -18,4 +18,13 @@ class UpdateLogger {
         )
         return updateLog
     }
+
+    fun createUpdateLogArray(assignerId : String, message: String) : UpdateLog {
+        var assignerInfo = userRepository.getUserInfo(assignerId)
+        return UpdateLog(
+            name = assignerInfo.firstName,
+            userId = assignerInfo.userId,
+            update = message
+        )
+    }
 }
