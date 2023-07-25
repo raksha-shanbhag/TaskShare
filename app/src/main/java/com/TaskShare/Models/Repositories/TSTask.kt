@@ -3,6 +3,7 @@ package com.TaskShare.Models.Repositories
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Task
 import com.TaskShare.Models.DataObjects.UpdateLog
+import com.TaskShare.Models.Utilities.TSTaskStatus
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -87,7 +88,8 @@ class TSTasksRepository {
                     assignerId = document.data?.get("assignerId").toString(),
                     startDate = startDate,
                     lastDate = endDate,
-                    assignees = assignees
+                    assignees = assignees,
+                    currentIndex = document.data?.get("currentIndex").toString().toInt()
                 )
             } else {
                 Log.w(TAG, "Error writing document")
@@ -133,6 +135,20 @@ class TSTasksRepository {
             tasks.document(taskId)
                 .update("assignees", FieldValue.arrayRemove(assigneeId))
                 .await()
+        }
+    }
+
+    // API Service for updating Task information
+    fun updateTaskInfo(taskId: String, taskName: String, cycle: String, endDate: Date, updateIndex: Int) {
+        var data = hashMapOf(
+            "taskName" to taskName,
+            "cycle" to cycle,
+            "endDate" to endDate,
+            "currentIndex" to updateIndex
+        )
+
+        runBlocking {
+            tasks.document(taskId).update(data.toMap()).await()
         }
     }
 }

@@ -82,9 +82,8 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
     val state by viewModel.state
 
     // integrate with backend
-    val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
-    val statusList = arrayOf("To Do", "In Progress", "Pending Approval", "Complete", "Overdue", "Declined")
-
+    val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Monthly")
+    val statusList = arrayOf("In Progress", "Complete", "Declined")
 
     // state of the menus
     var expandedGroup by remember {

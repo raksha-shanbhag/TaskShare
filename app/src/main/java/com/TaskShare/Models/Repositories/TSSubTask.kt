@@ -136,4 +136,10 @@ class TSSubTasksRepository {
         }
         return result.toMutableList()
     }
+
+    fun updateSubTaskStatus(subtaskId: String, newStatus: TSTaskStatus) {
+        runBlocking {
+            subTasks.document(subtaskId).update("taskStatus", newStatus).await()
+        }
+    }
 }

@@ -84,7 +84,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
     val state by viewModel.state
 
     // integrate with backend
-    val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Every 2 weeks")
+    val repeatList = arrayOf("No Cycle", "Daily", "Weekly", "Monthly")
     // state of the menus
     var expandedGroup by remember {
         mutableStateOf(false)
