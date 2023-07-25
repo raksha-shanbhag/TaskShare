@@ -1,5 +1,6 @@
 package com.TaskShare.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
@@ -108,6 +109,11 @@ class GroupViewModel: ViewModel() {
         groupManager.removeMemberFromGroup(state.value.id, TSUsersRepository.globalUserId)
     }
 
+    fun updateGroup(groupName: String, groupDescription: String, groupMembers: MutableList<String>) {
+        Log.i("Lamia groups ", groupMembers.toString())
+        groupManager.updateGroupInformation(state.value.id, groupName, groupDescription, groupMembers)
+    }
+
     fun addMember(userID: String){
         groupManager.addMemberToGroup(state.value.id, TSUsersRepository.globalUserId)
     }
@@ -128,13 +134,16 @@ class GroupViewModel: ViewModel() {
 
 
 
-    fun getFriendsNotInGroup(): List<friendItem> {
+    fun getFriendsNotInGroup(mems: List<String>): List<friendItem> {
         var listOfFriends =  friendsManager.getFriendsWithAnyStatus(
             currentUserId = TSUsersRepository.globalUserId,
             friendStatus = TSFriendStatus.FRIEND
         )
+        Log.i("Lamia debug ", listOfFriends.toString())
+        Log.i("Lamia mems ", mems.toString())
 
-        var remaining = listOfFriends.filter { friend -> !state.value.groupMembers.contains(friend.email) }
+        var remaining = listOfFriends.filter { friend -> !mems.contains(friend.userId) }
+        Log.i("Lamia remaing ", remaining.toString())
 
         var canAdd =  remaining.map { mem ->
             friendItem(mem.email, false)

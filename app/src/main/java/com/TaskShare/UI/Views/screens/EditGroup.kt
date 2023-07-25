@@ -63,13 +63,18 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
         group = GroupViewState()
     }
     var friends by remember {
-        mutableStateOf(viewModel.getFriendsNotInGroup())
+        mutableStateOf(viewModel.getFriendsNotInGroup(group.groupMembers))
     }
     var groupName by remember {
-        mutableStateOf(state.groupName)
+        mutableStateOf(group.groupName)
     }
     var groupDescription by remember {
-        mutableStateOf(state.groupDescription)
+        mutableStateOf(group.groupDescription)
+    }
+
+
+    var groupMembers by remember {
+        mutableStateOf(mutableListOf<String>())
     }
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -88,22 +93,23 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                 .background(Color.White)
 
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 Column() {
                     Text(
                         text = "Group Name",
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         color = Color.Black,
-                        modifier = Modifier.absolutePadding(20.dp, 10.dp,20.dp,0.dp)
+                        modifier = Modifier.absolutePadding(20.dp, 10.dp,10.dp,0.dp)
                     )
-                    Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,20.dp,10.dp))
+                    Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,10.dp,10.dp))
 
                 }
-                TextField(value = group.groupName, onValueChange = {text -> groupName = text},
+                TextField(value = groupName, onValueChange = {text -> groupName = text},
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.White, textColor = Color.Black,
                         focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
-                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black)
+                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black),
+                    modifier = Modifier.absolutePadding(20.dp, 0.dp,0.dp,0.dp)
                 )
 
                 Column() {
@@ -111,17 +117,18 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                         text = "Group Description",
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         color = Color.Black,
-                        modifier = Modifier.absolutePadding(20.dp, 10.dp,20.dp,0.dp)
+                        modifier = Modifier.absolutePadding(20.dp, 10.dp,10.dp,0.dp)
                     )
                     Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,20.dp,10.dp))
 
                 }
 
-                TextField(value = group.groupDescription, onValueChange = {text -> groupDescription = text},
+                TextField(value = groupDescription, onValueChange = {text -> groupDescription = text},
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.White, textColor = Color.Black,
                         focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
-                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black)
+                        focusedLabelColor = Color.Black, disabledPlaceholderColor = Color.Black),
+                    modifier = Modifier.absolutePadding(20.dp, 0.dp,0.dp,0.dp)
                 )
 
                 Column() {
@@ -129,15 +136,15 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                         text = "Members",
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         color = Color.Black,
-                        modifier = Modifier.absolutePadding(20.dp, 10.dp,20.dp,0.dp)
+                        modifier = Modifier.absolutePadding(20.dp, 10.dp,10.dp,0.dp)
                     )
-                    Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,20.dp,10.dp))
+                    Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,10.dp,10.dp))
 
                 }
 
                 LazyColumn(horizontalAlignment = Alignment.Start, modifier = Modifier
                     .fillMaxWidth()
-                    .absolutePadding(20.dp, 10.dp, 20.dp, 0.dp)
+                    .absolutePadding(20.dp, 10.dp, 10.dp, 0.dp)
                     .background(
                         colorResource(id = R.color.icon_blue),
                         RoundedCornerShape(10.dp)
@@ -153,6 +160,14 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                 }
                 Column(modifier = Modifier
                     .fillMaxWidth()) {
+
+                    Text(
+                        text = "Choose more members to add",
+                        fontSize = MaterialTheme.typography.h6.fontSize,
+                        color = Color.Black,
+                        modifier = Modifier.absolutePadding(20.dp, 10.dp,10.dp,0.dp)
+                    )
+                    Divider(color = Color.Black, thickness = 1.dp, modifier = Modifier.absolutePadding(20.dp, 0.dp,10.dp,10.dp))
 
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         items(friends.size) { i ->
@@ -173,6 +188,30 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                                 }
                             }
 
+                        }
+                    }
+                    Button(
+                        onClick = {
+                            var selected = friends.filter{it.isSelected}
+                            group.groupMembers.forEach { groupMembers = (groupMembers + TSUsersRepository().getUserInfo(it).email) as  MutableList<String>}
+                            selected.forEach{
+                                groupMembers = (groupMembers + it.name) as MutableList<String>
+                            }
+                            viewModel.updateGroup(groupName, groupDescription, groupMembers);
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.progress_red),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Save Changes")
                         }
                     }
 
