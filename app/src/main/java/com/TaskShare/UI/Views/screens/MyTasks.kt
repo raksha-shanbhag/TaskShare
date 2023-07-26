@@ -219,8 +219,8 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
-                    .background(Color.White)
-                    .verticalScroll(state = scrollState),
+                    .background(Color.White),
+
                 contentAlignment = Alignment.Center
             )
             {
