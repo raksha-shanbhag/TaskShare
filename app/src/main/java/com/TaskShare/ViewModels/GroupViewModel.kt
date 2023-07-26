@@ -99,7 +99,7 @@ class GroupViewModel: ViewModel() {
         val group = groupsState.value.groups.find { temp -> temp.id == id }
         if(group != null){
             val currentList = group.tasks
-            return currentList.groupBy { it.assignee }
+            return currentList.groupBy { it.assignee.memberName }
         }
          return mapOf();
 

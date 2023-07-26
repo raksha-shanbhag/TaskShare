@@ -41,4 +41,5 @@
 | 2023/07/25 | 2        | Displaying the selected assignees as selected                                          |
 | 2023/07/26 | 0.5      | Transfer task styling + front-end logic                                                |
 | 2023/07/26 | 10 mins  | Don't allow for edit task if transfer task requested                                   |
+| 2023/07/26 | 3.5      | Transfer task integration (backend -> viewmodel), style updates, logic change          |
 

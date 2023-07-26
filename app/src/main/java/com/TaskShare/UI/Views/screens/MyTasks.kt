@@ -190,7 +190,7 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                             .padding(10.dp, 2.dp)
                     )
 
-                    RenderPills(taskInfo.assignee, R.color.banner_blue)
+                    RenderPills(taskInfo.assignee.memberName, R.color.banner_blue)
                 }
             }
 
@@ -262,13 +262,6 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
                             fontSize = mid_font_size.sp,
                         )
                     }
-                    Row(Modifier.padding(10.dp)){
-                        Text(text = "Sort By: ",
-                            fontSize = mid_font_size.sp)
-                        Text(text = "Groups",
-                            fontSize = mid_font_size.sp)
-                    }
-
 
                     userTasks.forEach{
                         RenderTaskCard(it, viewModel, showDetail)

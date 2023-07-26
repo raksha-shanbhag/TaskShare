@@ -8,14 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Date
-import java.util.Locale
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-
 
 class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
@@ -41,9 +34,7 @@ class TaskViewModel: ViewModel() {
     }
 
     // TODO: integrate with backend
-    fun updateAssignee(newAssignee: String){
-        detailTaskState.value.taskDetail.assignee = newAssignee
-    }
+
 
 
     fun updateTaskName(name: String) {
@@ -91,6 +82,10 @@ class TaskViewModel: ViewModel() {
         return result
     }
 
+    fun transferTask(transferTo: GroupMember){
+        taskManager.transferTask(detailTaskState.value.taskDetail.id,transferTo.memberId , detailTaskState.value.taskDetail.assignee.memberId)
+    }
+
     fun deleteTask(taskID: String){
         // TODO backend: delete task endpoint
     }
@@ -115,6 +110,14 @@ class TaskViewModel: ViewModel() {
             assignees = getSelectedMemberIds()
         )
     }
+
+    fun declineTransfer(){
+        taskManager.declineTransfer(detailTaskState.value.taskDetail.id, TSUsersRepository.globalUserId, detailTaskState.value.taskDetail.assignee.memberId)
+    }
+
+    fun acceptTransfer(){
+        taskManager.acceptTransfer(detailTaskState.value.taskDetail.id, TSUsersRepository.globalUserId, detailTaskState.value.taskDetail.assignee.memberId)
+    }
 }
 
 // states
@@ -133,7 +136,7 @@ data class TaskViewState (
     val assigner: String = "",
     var status: String = "",
     val assignees: MutableList<GroupMember> = mutableListOf(),
-    var assignee: String = "",
+    var assignee: GroupMember = GroupMember(),
     val groupName: String = "",
     var deadline: Date = Date(),
     var cycle: String = "",

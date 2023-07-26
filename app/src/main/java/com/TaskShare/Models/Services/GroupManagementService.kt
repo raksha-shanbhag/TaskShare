@@ -131,7 +131,7 @@ class GroupManagementService {
                     assignees = assignees,
                     assigner = assignerInfo.firstName,
                     groupName = groupInfo.groupName,
-                    assignee = assigneeInfo.firstName,
+                    assignee = GroupMember(assigneeInfo.firstName, assigneeInfo.userId),
                     status = TSTaskStatus.toDisplay(subTask.taskStatus),
                     id = subTask.subTaskId,
                     deadline = subTask.endDate

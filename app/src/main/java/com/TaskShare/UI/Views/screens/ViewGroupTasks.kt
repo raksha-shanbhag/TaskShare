@@ -203,7 +203,7 @@ fun RenderTaskCardG(taskInfo: TaskViewState, showDetail: () -> Unit, groupName: 
                             .padding(10.dp, 2.dp)
                     )
 
-                    RenderPills(taskInfo.assignee, R.color.banner_blue)
+                    RenderPills(taskInfo.assignee.memberName, R.color.banner_blue)
                 }
             }
 

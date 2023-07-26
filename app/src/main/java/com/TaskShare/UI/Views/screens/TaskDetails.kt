@@ -5,7 +5,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +49,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.TaskShare.Models.Repositories.TSUsersRepository
+import com.TaskShare.ViewModels.GroupMember
 import com.TaskShare.ViewModels.TaskViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
@@ -70,8 +71,8 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
     var showConfirmTransfer by remember {
         mutableStateOf(false)
     }
-    var transferState by remember {
-        mutableStateOf("")
+    var transferToMember by remember {
+        mutableStateOf(GroupMember())
     }
     var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
@@ -154,7 +155,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         Row(modifier = Modifier
                             .fillMaxWidth(valueWidth)
                             ){
-                            RenderPills(taskDetail.assignee, R.color.icon_blue)
+                            RenderPills(taskDetail.assignee.memberName, R.color.icon_blue)
                         }
                     }
                     Row(modifier = Modifier
@@ -196,6 +197,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
 
 //                  Transfer Task
+                    if (taskDetail.status != "Transfer Requested"){
                     ExposedDropdownMenuBox(
                         expanded = expandedTransfer,
                         onExpandedChange = {
@@ -211,7 +213,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                     ) {
                         TextField(
                             readOnly = true,
-                            value = transferState,
+                            value = transferToMember.memberName,
                             onValueChange = { showConfirmTransfer = true},
                             label = { Text("Transfer Task") },
                             trailingIcon = {
@@ -238,33 +240,35 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                                 ,
                         ){
                             taskDetail.assignees.forEach { item ->
-//                                if (item!=myself) TODO
-                                DropdownMenuItem(
-                                    text = { Text(text = item.memberName) },
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    onClick = {
-                                        transferState = item.memberName
-                                        expandedTransfer = false
-                                        showConfirmTransfer = true
-                                    }
-                                )
+                                if (item.memberId!= TSUsersRepository.globalUserId){
+                                    DropdownMenuItem(
+                                        text = { Text(text = item.memberName) },
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        onClick = {
+                                            transferToMember = item
+                                            expandedTransfer = false
+                                            showConfirmTransfer = true
+                                        }
+                                    )
+                                }
                             }
                         }
-                    }
+
                     if(showConfirmTransfer) {
                         Column(modifier = Modifier
                             .fillMaxWidth()
                            ) {
 
 
-                            Text(text = "Do you want to transfer this task to ${transferState}?",
+                            Text(text = "Do you want to transfer this task to ${transferToMember.memberName}?",
                                  fontSize = small_font_size.sp)
                             Button(
                                 onClick = {
                                     showConfirmTransfer = false
-                                    viewModel.updateAssignee(transferState)
-                                    transferState = "Transfer Task"
+                                    viewModel.transferTask(transferToMember)
+
+                                    transferToMember = GroupMember()
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = colorResource(id = R.color.primary_blue),
@@ -285,7 +289,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
                             Button(
                                 onClick = {
-                                    transferState = ""
+                                    transferToMember = GroupMember()
                                     showConfirmTransfer = false
                                 },
                                 colors = ButtonDefaults.buttonColors(
@@ -305,6 +309,8 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
                             }
                         }
+                    }
+                    }
                     }
                     // uncomment if we implement delete task
 //                    Row(modifier = Modifier
@@ -345,7 +351,8 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             .padding(2.dp, 5.dp)
                             .clickable(
                                 onClick = {
-//                                // accept transfer task endpoint: TODO backend
+//                                // accept transfer task endpoint
+                                    viewModel.acceptTransfer()
 
                                 }
                             ),
@@ -368,7 +375,8 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             .padding(2.dp, 5.dp)
                             .clickable(
                                 onClick = {
-//                                // decline transfer task endpoint: TODO backend
+//                                // decline transfer task endpoint
+                                    viewModel.declineTransfer()
 
                                 }
                             ),
