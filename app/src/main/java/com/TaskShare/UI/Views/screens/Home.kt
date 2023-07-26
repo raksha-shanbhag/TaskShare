@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -198,14 +199,15 @@ fun HomeScreen(
     val groupState by viewModel.groupsState
     val scrollState = rememberScrollState()
 
-    viewModel.getAllGroupsForUser()
-    Log.i("Debug Raksha", groupState.toString())
+    LaunchedEffect(viewModel) {
+        viewModel.getAllGroupsForUser()
+    }
 
     androidx.compose.material.Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "My Groups", color = Color.White, fontSize = 30.sp) },
             colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue))
-            )
+        )
     }, content = {
         Box(
             modifier = Modifier
@@ -254,4 +256,5 @@ fun HomeScreen(
     })
 
 }
+
 

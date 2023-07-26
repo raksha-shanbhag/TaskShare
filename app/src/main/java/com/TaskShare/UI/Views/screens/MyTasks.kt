@@ -193,48 +193,10 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                     RenderPills(taskInfo.assignee, R.color.banner_blue)
                 }
             }
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(10.dp, 0.dp, 0.dp, 0.dp)
-//
-//            ) {
 
-
-                // Note: if we ever need to display all assignees, use the section below
-//                FlowRow(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                ) {
-//                    Text(
-//                        text = "Assignees: ",
-//                        fontSize = small_font_size.sp,
-//                        modifier = Modifier
-//                        .padding(0.dp, 0.dp, 10.dp, 10.dp)
-////                        .padding(10.dp, 2.dp)
-//                    )
-//
-//                    taskInfo.assignees.forEach {
-//                        Text(
-//                            text = it,
-//                            fontSize = small_font_size.sp,
-//                            color = colorResource(id = R.color.banner_blue),
-//                            modifier = Modifier
-//                                .padding(0.dp, 0.dp, 10.dp, 10.dp)
-//                                .background(
-//                                    colorResource(id = R.color.white),
-//                                    RoundedCornerShape(3.dp)
-//                                )
-//                                .padding(10.dp, 2.dp)
-//                        )
-//                    }
-//
-//                }
-//            }
         }
 
     }
-//    }
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

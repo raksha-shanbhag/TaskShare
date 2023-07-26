@@ -59,7 +59,7 @@ fun AppNavGraph(
         addHomeRoute(navController, groupViewModel)
         addMyTasksRoute(navController, taskViewModel, context)
         addCreateTaskRoute(navController, context)
-        addActivityRoute(navController)
+        addActivityRoute(navController, taskViewModel)
         addProfileRoute(navController)
     }
 }
@@ -137,7 +137,7 @@ private fun NavGraphBuilder.showViewGroup(navController: NavController, viewMode
             showEdit = {
                 navController.navigate(LeafScreen.EditGroup.route)
             },
-             viewModel
+            viewModel
         )
     }
 }
@@ -182,6 +182,7 @@ private fun NavGraphBuilder.showEditGroup(navController: NavController, viewMode
 //end of home navigation
 
 //myTasks navigation
+@RequiresApi(Build.VERSION_CODES.O)
 private fun NavGraphBuilder.addMyTasksRoute(navController: NavController, viewModel: TaskViewModel, context: Context) {
     navigation(
         route = RootScreen.MyTasks.route,
@@ -245,6 +246,7 @@ private fun NavGraphBuilder.showAddTask(navController: NavController, context: C
 //        showEditTask(navController, context)
 //    }
 //}
+@RequiresApi(Build.VERSION_CODES.O)
 private fun NavGraphBuilder.showEditTask(navController: NavController, context: Context, viewModel: TaskViewModel) {
     composable(route = LeafScreen.EditTask.route) {
         EditTaskScreen(context,
@@ -258,17 +260,22 @@ private fun NavGraphBuilder.showEditTask(navController: NavController, context: 
 
 
 //activity navigation
-private fun NavGraphBuilder.addActivityRoute(navController: NavController) {
+private fun NavGraphBuilder.addActivityRoute(navController: NavController, viewModel: TaskViewModel) {
     navigation(
         route = RootScreen.Activity.route,
         startDestination = LeafScreen.Activity.route
     ) {
-        showActivity(navController)
+        showActivity(navController, viewModel)
     }
 }
-private fun NavGraphBuilder.showActivity(navController: NavController) {
+private fun NavGraphBuilder.showActivity(navController: NavController, viewModel: TaskViewModel) {
     composable(route = LeafScreen.Activity.route) {
-        NotificationScreen()
+        NotificationScreen(
+            viewModel,
+            goToDetail = {
+                navController.navigate(LeafScreen.TaskDetails.route)
+            },
+        )
     }
 }
 //end of activity navigation

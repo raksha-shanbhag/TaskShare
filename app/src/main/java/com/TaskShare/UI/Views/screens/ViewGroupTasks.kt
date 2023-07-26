@@ -113,7 +113,7 @@ fun RenderStatusG(status: String){
 }
 
 @Composable
-fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_date: Date, showDetail: () -> Unit){
+fun RenderTaskCardG(taskInfo: TaskViewState, showDetail: () -> Unit, groupName: String){
 //    Button(onClick = showDetail){
     var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     Row(
@@ -124,7 +124,11 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
             )
             .fillMaxWidth()
             .clickable(
-                onClick = showDetail
+
+                onClick = {
+//                    viewModel.setDetailTaskInfo(taskInfo.id)
+                    showDetail()
+                }
             )
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -139,51 +143,73 @@ fun RenderTaskCardG(task_name: String, assigner: String, status: String, end_dat
                 )
                 .padding(14.dp)
         )
-
-        Column(modifier = Modifier
-            .padding(10.dp, 0.dp)
-            .widthIn(10.dp, 140.dp))
-        {
-            Text(text = task_name,
-                fontSize = MaterialTheme.typography.subtitle1.fontSize,
+        Column() {
+            Row(
                 modifier = Modifier
-                    .padding(2.dp, 0.dp, 0.dp, 5.dp)
-            )
-            Text(text = "Assigned by: $assigner",
-                fontSize = MaterialTheme.typography.caption.fontSize,
-                color = colorResource(id = R.color.banner_blue),
-                modifier = Modifier
-                    .background(
-                        colorResource(id = R.color.white),
-                        RoundedCornerShape(3.dp)
-                    )
-                    .padding(10.dp, 2.dp)
-            )
-        }
+                    .fillMaxWidth(),
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Center,
-
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-            RenderStatusG(status)
-            Spacer(modifier = Modifier.height(height = 5.dp))
-            Text(text = simpleDateFormat.format(end_date) ,
-                fontSize = MaterialTheme.typography.caption.fontSize,
-                modifier = Modifier
-                    .widthIn(min_width_pill.dp, max_width_pill.dp)
-                    .background(
-                        colorResource(id = R.color.white),
-                        RoundedCornerShape(3.dp)
+                Column(
+                    modifier = Modifier
+                        .padding(10.dp, 0.dp)
+                        .widthIn(10.dp, 140.dp)
+                )
+                {
+                    Text(
+                        text = taskInfo.taskName,
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .padding(2.dp, 0.dp, 0.dp, 5.dp)
                     )
-                    .padding(10.dp, 2.dp)
-            )
+                    Text(
+                        text = groupName,
+                        fontSize = small_font_size.sp,
+                        color = colorResource(id = R.color.banner_blue),
+                        modifier = Modifier
+                            .background(
+                                colorResource(id = R.color.white),
+                                RoundedCornerShape(3.dp)
+                            )
+                            .padding(10.dp, 2.dp)
+                    )
+
+                    Text(
+                        text = "Assignees",
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .padding(2.dp, 0.dp, 0.dp, 5.dp)
+                    )
+                }
+
+                Column(
+
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center,
+
+                    ) {
+                    RenderStatus(taskInfo.status)
+                    Spacer(modifier = Modifier.height(height = 5.dp))
+
+                    Text(
+                        text = simpleDateFormat.format(taskInfo.deadline),
+                        fontSize = small_font_size.sp,
+                        modifier = Modifier
+                            .widthIn(min_width_pill.dp, max_width_pill.dp)
+                            .background(
+                                colorResource(id = R.color.white),
+                                RoundedCornerShape(3.dp)
+                            )
+                            .padding(10.dp, 2.dp)
+                    )
+
+                    RenderPills(taskInfo.assignee, R.color.banner_blue)
+                }
+            }
+
         }
 
     }
-//    }
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -240,7 +266,7 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: Gro
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold)
                     it.value.forEach{
-                        RenderTaskCardG(it.taskName, it.assigner, it.status, it.deadline, showEdit)
+                        RenderTaskCardG(it, showEdit, group.groupName)
                         Spacer(modifier = Modifier.height(height = 10.dp))
                     }
                 }
