@@ -256,11 +256,6 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, showTaskDetail
                     if(group.tasks.size == 0) {
                         Text(text = "No tasks have been created",
                             fontSize = mid_font_size.sp)
-                    } else {
-                        Text(text = "Sort By: ",
-                            fontSize = mid_font_size.sp)
-                        Text(text = "Assignee",
-                            fontSize = mid_font_size.sp)
                     }
                 }
 
