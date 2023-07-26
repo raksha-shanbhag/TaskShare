@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
@@ -72,6 +75,8 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
     }
     var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
+    val scrollState = rememberScrollState()
+
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -93,7 +98,11 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                 .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
+
+            ) {
                 taskDetail = viewModel.getDetailTaskInfo()
                 // Task Name
                 Row(
@@ -128,6 +137,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                 // Task Details
                 Column(modifier = Modifier
                     .fillMaxSize()
+
                 ) {
                     var nameWidth = 0.35f
                     var valueWidth = 0.65f
@@ -291,35 +301,85 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             }
                         }
                     }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 10.dp)
-                        .border(
-                            BorderStroke(
-                                2.dp,
-                                SolidColor(colorResource(id = R.color.progress_red))
-                            ), RoundedCornerShape(4.dp)
-                        )
-                        .background(color = colorResource(id = R.color.progress_red))
-                        .padding(2.dp, 5.dp)
-                        .clickable(
-                            onClick = {
-//                                // delete task endpoint: TODO backend
-                                viewModel.deleteTask(taskDetail.id)
-                            }
-                        ),
-                        horizontalArrangement = Arrangement.Center
+                    // uncomment if we implement delete task
+//                    Row(modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(0.dp, 10.dp)
+//                        .border(
+//                            BorderStroke(
+//                                2.dp,
+//                                SolidColor(colorResource(id = R.color.progress_red))
+//                            ), RoundedCornerShape(4.dp)
+//                        )
+//                        .background(color = colorResource(id = R.color.progress_red))
+//                        .padding(2.dp, 5.dp)
+//                        .clickable(
+//                            onClick = {
+//                                viewModel.deleteTask(taskDetail.id)
+//                            }
+//                        ),
+//                        horizontalArrangement = Arrangement.Center
+//
+//                    ){
+//
+//                        Text (text = "Delete Task",
+//                            fontSize = small_font_size.sp,
+//                            fontWeight = FontWeight.Medium,
+//                            modifier = Modifier.fillMaxWidth(nameWidth),
+//                            color = colorResource(id = R.color.white)
+//
+//
+//                        )
+//                    }
 
-                    ){
+                    if (taskDetail.status == "Transfer Requested"){
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp, 10.dp)
+                            .background(color = colorResource(id = R.color.progress_green))
+                            .padding(2.dp, 5.dp)
+                            .clickable(
+                                onClick = {
+//                                // accept transfer task endpoint: TODO backend
 
-                        Text (text = "Delete Task",
-                            fontSize = small_font_size.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.fillMaxWidth(nameWidth),
-                            color = colorResource(id = R.color.white)
+                                }
+                            ),
+                            horizontalArrangement = Arrangement.Center
+
+                        ){
+
+                            Text (text = "Accept Transfer",
+                                fontSize = small_font_size.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colorResource(id = R.color.white)
 
 
-                        )
+                            )
+                        }
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp, 10.dp)
+                            .background(color = colorResource(id = R.color.progress_red))
+                            .padding(2.dp, 5.dp)
+                            .clickable(
+                                onClick = {
+//                                // decline transfer task endpoint: TODO backend
+
+                                }
+                            ),
+                            horizontalArrangement = Arrangement.Center
+
+                        ){
+
+                            Text (text = "Decline Transfer",
+                                fontSize = small_font_size.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = colorResource(id = R.color.white)
+
+
+                            )
+                        }
+
                     }
 
 

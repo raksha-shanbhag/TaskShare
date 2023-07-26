@@ -57,12 +57,17 @@ class TaskViewModel: ViewModel() {
         return result
     }
 
+    fun getActiveTasksLen(): Int{
+        // todo: Backend
+        return 0
+    }
+
     fun getGroupMembers() : MutableList<GroupMember> {
-        if (state.value.groupId == ""){
+        if (detailTaskState.value.taskDetail.groupId == ""){
             return ArrayList<GroupMember>()
         }
 
-        var members = groupManager.getGroupMembersFromGroupID(state.value.groupId)
+        var members = groupManager.getGroupMembersFromGroupID(detailTaskState.value.taskDetail.groupId)
         var result = mutableListOf<GroupMember>()
 
         for (member in members) {
@@ -102,5 +107,6 @@ data class TaskViewState (
     val groupName: String = "",
     var deadline: Date = Date(),
     var cycle: String = "",
-    val id: String = ""
+    val id: String = "",
+    val groupId: String = ""
 )

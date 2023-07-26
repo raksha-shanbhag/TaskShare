@@ -37,4 +37,7 @@
 | 2023/07/22 | 1        | Final styling of transfer task under task detatil                                      |
 | 2023/07/22 | 2        | Checkbox display of assignees under detail task                                        |
 | 2023/07/24 | 10 min   | Delete task frontend                                                                   |
+| 2023/07/24 | 15 mins  | Back button from edit, make my tasks scrollable, edit task bug fixes                   |
+| 2023/07/25 | 2        | Displaying the selected assignees as selected                                          |
+| 2023/07/26 | 0.5      | Transfer task styling + front-end logic                                                |
 

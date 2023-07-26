@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -98,7 +99,6 @@ fun RenderStatus(status: String){
     RenderPills(text_print, bg_color)
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetail: () -> Unit){
 //    Button(onClick = showDetail){
@@ -134,10 +134,7 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-//                    .background(
-//                        colorResource(id = R.color.progress_green),
-//                    )
-//                    ,
+
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -173,10 +170,7 @@ fun RenderTaskCard(taskInfo: TaskViewState,  viewModel: TaskViewModel, showDetai
                 }
 
                 Column(
-//                    modifier = Modifier.background(
-//                        colorResource(id = R.color.progress_yellow),
-//                    ),
-//                        .fillMaxWidth(),
+
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Center,
 
@@ -267,7 +261,13 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
                 contentAlignment = Alignment.Center
             )
             {
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(state = scrollState)) {
+                    // pull task data
+
+                    var userTasks = viewModel.getTasksForUser()
+
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -296,7 +296,7 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
 
                                     )
                                 },
-                            text = "0", // TODO backend
+                            text = viewModel.getActiveTasksLen().toString(), // TODO backend
                             fontSize = mid_font_size.sp,
                         )
                     }
@@ -307,9 +307,7 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
                             fontSize = mid_font_size.sp)
                     }
 
-                    // pull task data
 
-                    var userTasks = viewModel.getTasksForUser()
                     userTasks.forEach{
                         RenderTaskCard(it, viewModel, showDetail)
                         Spacer(modifier = Modifier.height(height = 10.dp))

@@ -58,6 +58,7 @@ class TaskManagementService {
                 assignee = assigneeInfo.firstName,
                 status = TSTaskStatus.toDisplay(subTask.taskStatus),
                 id = subTask.subTaskId,
+                groupId = groupInfo.id,
                 deadline = subTask.endDate
             )
             result.add(task)
@@ -155,6 +156,7 @@ class TaskManagementService {
             assignee = assigneeInfo.firstName,
             status = TSTaskStatus.toDisplay(subTaskInfo.taskStatus),
             id = subTaskInfo.subTaskId,
+            groupId = groupInfo.id,
             deadline = subTaskInfo.endDate
         )
     }

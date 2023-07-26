@@ -68,7 +68,6 @@ import com.TaskShare.ViewModels.GroupViewState
 import com.TaskShare.ViewModels.TaskViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -105,11 +104,28 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
         mutableStateOf(mutableListOf<GroupMember>())
     }
 
-    var simpleDateFormat = SimpleDateFormat("dd-mm-yyyy")
+    var taskName by remember {
+        mutableStateOf("")
+    }
+    var multipleChecked by remember { mutableStateOf(emptySet<Int>())}
+
 
     // fetch data from viewmodel
     groupMembers = viewModel.getGroupMembers()
+
     taskDetail = viewModel.getDetailTaskInfo()
+    taskName = taskDetail.taskName
+
+    groupMembers.forEachIndexed() { index, member ->
+
+        if (taskDetail.assignees.any{it.memberId == member.memberId}){
+
+            multipleChecked += index
+            groupMembers[index].selected = true
+
+        }
+    }
+
 
     // date picker setup
     val year: Int
@@ -140,6 +156,12 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
         CenterAlignedTopAppBar(
             title = { Text(text = "Edit Task", color = Color.White, fontSize = 30.sp) },
             colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = colorResource(id = R.color.primary_blue)),
+            navigationIcon = {
+                IconButton(
+                    onClick = redirectToMyTasks ) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "", tint = Color.White)
+                }
+            }
         )
     }, content = {
         Box(
@@ -152,11 +174,10 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
             Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
                 TextField(
-                    value = taskDetail.taskName,
+                    value = taskName,
                     onValueChange = {
                             text ->
-                        taskDetail.taskName += text
-                        Log.i("Debug Jaishree taskname", text)
+                        taskName = text
                                     },
                     label = {Text("Task Name")},
                     colors = TextFieldDefaults.textFieldColors(
@@ -267,9 +288,35 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                         }
                     }
                 }
-                // implement status after backend is done
 
-                // implement updating assignees later
+                // updating assignees later
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)) {
+                    Text(text = "Assign To")
+                    groupMembers.forEachIndexed {index, item ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+
+                                checked = multipleChecked.contains(index),
+                                onCheckedChange = {
+                                    item.toggle()
+                                    multipleChecked = if(it){
+                                        multipleChecked + index
+                                    } else{
+                                        multipleChecked - index
+                                    }
+
+                                }
+                            )
+                            Text(
+                                text = item.memberName
+                            )
+
+                        }
+                    }
+                }
+
 
 
 //                ExposedDropdownMenuBox(
