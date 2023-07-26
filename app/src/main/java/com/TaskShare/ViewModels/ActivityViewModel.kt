@@ -1,5 +1,6 @@
 package com.TaskShare.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.DataObjects.Activity
@@ -24,6 +25,14 @@ class ActivityViewModel: ViewModel() {
         val currentList = activitiesState.value.activities
         currentList.add(activity)
         activitiesState.value = activitiesState.value.copy(activities = currentList)
+    }
+
+    fun setNotificationEnabled(enable: Boolean) {
+        ActivityManagementService.setActivityNotify(enable);
+    }
+
+    fun getNotificationEnabled(): Boolean {
+        return ActivityManagementService.getActivityNotify()
     }
 }
 

@@ -53,5 +53,9 @@ class ActivityManagementService {
         fun setActivityNotify(notify: Boolean) {
             TSUsersRepository.setNotifEnabled(TSUsersRepository.globalUserId, notify)
         }
+
+        fun getActivityNotify(): Boolean {
+            return TSUsersRepository.isNotifEnabled(TSUsersRepository.globalUserId)
+        }
     }
 }

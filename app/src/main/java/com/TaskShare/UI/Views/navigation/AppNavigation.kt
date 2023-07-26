@@ -56,7 +56,7 @@ fun AppNavGraph(
         //startDestination = RootScreen.Home.route
     ) {
         addLoginRoute(navController)
-        addHomeRoute(navController, groupViewModel)
+        addHomeRoute(navController, groupViewModel, taskViewModel)
         addMyTasksRoute(navController, taskViewModel, context)
         addCreateTaskRoute(navController, context)
         addActivityRoute(navController, taskViewModel)
@@ -103,7 +103,7 @@ private fun NavGraphBuilder.showSignUp(navController: NavController) {
 
 
 //home navigation
-private fun NavGraphBuilder.addHomeRoute(navController: NavController, viewModel: GroupViewModel) {
+private fun NavGraphBuilder.addHomeRoute(navController: NavController, viewModel: GroupViewModel, taskViewModel: TaskViewModel) {
     navigation(
         route = RootScreen.Home.route,
         startDestination = LeafScreen.Home.route
@@ -111,7 +111,7 @@ private fun NavGraphBuilder.addHomeRoute(navController: NavController, viewModel
         showGroups(navController, viewModel)
         showViewGroup(navController, viewModel)
         showCreateGroup(navController, viewModel)
-        showViewGroupTasks(navController, viewModel)
+        showViewGroupTasks(navController, viewModel, taskViewModel)
         showEditGroup(navController, viewModel)
     }
 }
@@ -143,7 +143,7 @@ private fun NavGraphBuilder.showViewGroup(navController: NavController, viewMode
 }
 
 
-private fun NavGraphBuilder.showViewGroupTasks(navController: NavController, viewModel: GroupViewModel) {
+private fun NavGraphBuilder.showViewGroupTasks(navController: NavController, viewModel: GroupViewModel, taskViewModel: TaskViewModel) {
     composable(route = LeafScreen.ViewGroupTasks.route) {
         ViewGroupTasksScreen(
             onBack = {
@@ -152,7 +152,11 @@ private fun NavGraphBuilder.showViewGroupTasks(navController: NavController, vie
             showEdit = {
                 navController.navigate(LeafScreen.ViewGroup.route)
             },
-            viewModel
+            showTaskDetail = {
+                navController.navigate(LeafScreen.TaskDetails.route)
+            },
+            viewModel,
+            taskViewModel
         )
     }
 }

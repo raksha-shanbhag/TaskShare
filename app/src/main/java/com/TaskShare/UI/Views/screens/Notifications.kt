@@ -144,7 +144,7 @@ fun NotificationScreen(taskViewModel: TaskViewModel, goToDetail: () -> Unit) {
                 .verticalScroll(state = scrollState),
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                val checkedState = remember { mutableStateOf(true) }
+                val checkedState = remember { mutableStateOf(viewModel.getNotificationEnabled()) }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     Text(text = "Notifications Enabled",
                         fontSize = MaterialTheme.typography.subtitle1.fontSize,
@@ -154,9 +154,10 @@ fun NotificationScreen(taskViewModel: TaskViewModel, goToDetail: () -> Unit) {
                     Switch(
                         checked = checkedState.value,
                         onCheckedChange = {
-                            checkedState.value = it },
+                            checkedState.value = it
+                            viewModel.setNotificationEnabled(it)},
                         colors  = SwitchDefaults.colors(
-                            checkedTrackColor = colorResource(id = R.color.grey),
+                            checkedTrackColor = colorResource(id = R.color.banner_blue),
                             checkedThumbColor = colorResource(id = R.color.banner_blue),
                             uncheckedThumbColor = colorResource(id = R.color.banner_blue)
 
@@ -193,9 +194,11 @@ fun NotificationScreen(taskViewModel: TaskViewModel, goToDetail: () -> Unit) {
                     }
                 }
 
+                Spacer(modifier = Modifier.height(height = 30.dp))
             }
 
         }
+
     })
 
 }

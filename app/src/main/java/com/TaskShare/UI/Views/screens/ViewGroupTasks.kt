@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.TaskShare.ViewModels.GroupViewModel
 import com.TaskShare.ViewModels.GroupViewState
+import com.TaskShare.ViewModels.TaskViewModel
 import com.TaskShare.ViewModels.TaskViewState
 import com.example.greetingcard.R
 import java.text.SimpleDateFormat
@@ -113,8 +114,7 @@ fun RenderStatusG(status: String){
 }
 
 @Composable
-fun RenderTaskCardG(taskInfo: TaskViewState, showDetail: () -> Unit, groupName: String){
-//    Button(onClick = showDetail){
+fun RenderTaskCardG(taskInfo: TaskViewState, showDetail: () -> Unit, groupName: String, taskViewModel: TaskViewModel){
     var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
     Row(
         modifier = Modifier
@@ -126,7 +126,7 @@ fun RenderTaskCardG(taskInfo: TaskViewState, showDetail: () -> Unit, groupName: 
             .clickable(
 
                 onClick = {
-//                    viewModel.setDetailTaskInfo(taskInfo.id)
+                    taskViewModel.setDetailTaskInfo(taskInfo.id)
                     showDetail()
                 }
             )
@@ -213,7 +213,7 @@ fun RenderTaskCardG(taskInfo: TaskViewState, showDetail: () -> Unit, groupName: 
 }
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: GroupViewModel) {
+fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, showTaskDetail: () -> Unit, viewModel: GroupViewModel, taskViewModel: TaskViewModel) {
     //getting data
     val state by viewModel.state
     val scrollState = rememberScrollState()
@@ -266,10 +266,11 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, viewModel: Gro
                         fontSize = MaterialTheme.typography.h6.fontSize,
                         fontWeight = FontWeight.Bold)
                     it.value.forEach{
-                        RenderTaskCardG(it, showEdit, group.groupName)
+                        RenderTaskCardG(it, showTaskDetail, group.groupName, taskViewModel)
                         Spacer(modifier = Modifier.height(height = 10.dp))
                     }
                 }
+                Spacer(modifier = Modifier.height(height = 30.dp))
             }
 
         }
