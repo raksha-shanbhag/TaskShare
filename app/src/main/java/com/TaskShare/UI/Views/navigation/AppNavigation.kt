@@ -296,7 +296,6 @@ private fun NavGraphBuilder.showProfile(navController: NavController) {
             onEditProfile = { navController.navigate(LeafScreen.EditProfile.route) },
             onChangePassword = { navController.navigate(LeafScreen.ChangePassword.route) },
             onSeeBlockedAccs = { navController.navigate(LeafScreen.BlockedAccounts.route) },
-            onLogOut = { },
         )
     }
 }

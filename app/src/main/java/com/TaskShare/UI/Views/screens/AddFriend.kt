@@ -123,7 +123,10 @@ fun AddFriendScreen(
 //            ) { viewModel.sendFriendRequest(email.value) }
             AddFriendButton("Send Friend Request",
                 "Send a friend request",
-                onClick = { viewModel.sendFriendRequest(email.value) }
+                onClick = {
+                    viewModel.sendFriendRequest(email.value)
+                    onBack()
+                }
             )
         }
     }

@@ -124,7 +124,7 @@ fun ChangePasswordScreen(
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ){
-                ClickableForgotPasswordText()
+                //ClickableForgotPasswordText()
             }
 
             Spacer(modifier = Modifier.height(50.dp))

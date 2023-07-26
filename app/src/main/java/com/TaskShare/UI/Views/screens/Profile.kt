@@ -56,7 +56,6 @@ fun ProfileScreen(
     onEditProfile: () -> Unit,
     onChangePassword: () -> Unit,
     onSeeBlockedAccs: () -> Unit,
-    onLogOut: () -> Unit,
 ) {
     val primaryBlue = colorResource(id = R.color.primary_blue)
     val backgroundBlue = colorResource(id = R.color.background_blue)
@@ -69,7 +68,7 @@ fun ProfileScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(385.dp)
+                .size(370.dp)
                 .background(Color.White)
                 //.shadow(elevation = 2.dp, clip = true)
         )
@@ -111,10 +110,6 @@ fun ProfileScreen(
                 onSeeBlockedAccs)
 
             Spacer(modifier = Modifier.height(20.dp))
-            SettingButton("Log Out",
-                "Log Out",
-                Icons.Default.ExitToApp,
-                onLogOut)
         }
     }
 }
@@ -191,8 +186,7 @@ fun ProfileSection(modifier: Modifier = Modifier) {
 
         // Temporarily commented
         ProfileDescription(name = "${firstName.value} ${lastName.value}",
-            email = email.value,
-            bio = "Short optional biography about the user.")
+            email = email.value)
 
         // Temporary to view preview
         /*ProfileDescription(name = "Firstname Lastname",
@@ -255,7 +249,7 @@ fun ProfileImage(image: Painter, modifier: Modifier) {
 
 // Write the user's name, email, and biography.
 @Composable
-fun ProfileDescription(name: String, email: String, bio: String,
+fun ProfileDescription(name: String, email: String,
                       modifier: Modifier = Modifier) {
 
     val letterSpacing = 0.5.sp
@@ -280,12 +274,6 @@ fun ProfileDescription(name: String, email: String, bio: String,
             lineHeight = lineHeight
         )
         Spacer(modifier = Modifier.height(7.dp))
-        Text(
-            text = bio,
-            letterSpacing = letterSpacing,
-            lineHeight = lineHeight,
-            fontWeight = FontWeight.SemiBold
-        )
     }
 }
 
@@ -297,6 +285,5 @@ fun ProfileScreenPreview() {
         onEditProfile = { },
         onChangePassword = { },
         onSeeBlockedAccs = { },
-        onLogOut = { },
     )
 }

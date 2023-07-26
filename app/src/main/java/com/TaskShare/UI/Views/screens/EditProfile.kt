@@ -218,7 +218,7 @@ fun EditProfilePictureSection(modifier: Modifier = Modifier, onClick: () -> Unit
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Button(
+        /*Button(
             onClick = { onClick()},
             modifier = Modifier
                 .width(150.dp)
@@ -239,7 +239,7 @@ fun EditProfilePictureSection(modifier: Modifier = Modifier, onClick: () -> Unit
                     color = Color.Black
                 )
             }
-        }
+        }*/
     }
 }
 

@@ -137,7 +137,7 @@ fun LoginScreen(
             }
 
             Spacer(modifier = Modifier.height(15.dp))
-            ClickableForgotPasswordText()
+            //ClickableForgotPasswordText()
 
             Spacer(modifier = Modifier.height(5.dp))
             ClickableSignUpText(onSignUpClick)
