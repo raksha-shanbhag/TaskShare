@@ -118,7 +118,7 @@ class TaskManagementService {
                 details = "You are invited to participate in the task ${taskName} from ${groupName}"
             ))
 
-            createSubTaskActivity(subtaskId)
+            createSubTaskActivity(subtaskId = subtaskId, sourceUser = assignerId, destUser = currAssignees.first(), type = "created")
         }
 
         return taskId

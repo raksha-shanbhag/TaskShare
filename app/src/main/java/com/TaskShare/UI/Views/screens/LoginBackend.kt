@@ -22,9 +22,7 @@ class LoginBackend {
                     val user: FirebaseUser? = firebaseAuth.currentUser
                     if (user != null) {
                         TSUsersRepository.globalUserId = user.uid
-                        if (TSUsersRepository.setNotifTokenOnLogin) {
-                            TSUsersRepository.setNotifToken(TSUsersRepository.globalUserId)
-                        }
+                        TSUsersRepository.setNotifToken(TSUsersRepository.globalUserId)
                         NotificationsService.notifEnabled = TSUsersRepository.isNotifEnabled(TSUsersRepository.globalUserId)
                     }
                 } else {
