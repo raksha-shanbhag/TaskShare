@@ -1,9 +1,11 @@
 package com.TaskShare.UI.Views.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -30,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.TaskShare.UI.Views.screens.SignUpBackend
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -39,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.R
 import com.example.greetingcard.screens.ClickableForgotPasswordText
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -127,13 +133,52 @@ fun ChangePasswordScreen(
             }
 
             Spacer(modifier = Modifier.height(50.dp))
-//            RenderSaveButton("Save",
-//                "Save changes to profile",
-//                onSavePassword(oldpassword, newPassword, confirmedPassword)
-//            )
+            RenderChangePasswordButton("Save",
+                "Save changes to profile",
+                newPassword.value,
+                onBack
+            )
         }
 
     }
+}
+
+@Composable
+fun RenderChangePasswordButton(textValue: String, contentDesc: String, newPassword: String,
+                               onBack: () -> Unit) {
+    Button(
+        onClick = {
+            val signUpBackend = SignUpBackend()
+            val changePassword = signUpBackend.changePassword(newPassword)
+            changePassword.addOnCompleteListener{
+                    task ->
+                if (task.isSuccessful) {
+                    onBack()
+                }
+            }
+                  },
+        modifier = Modifier
+            .width(200.dp)
+            .height(45.dp),
+        contentPadding = PaddingValues(10.dp),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(2.dp, colorResource(id = R.color.primary_blue)),
+        colors = ButtonDefaults.buttonColors(Color.White),
+    ){
+        Row(modifier = Modifier
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = textValue,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp,
+                color = colorResource(id = R.color.primary_blue)
+            )
+        }
+    }
+
 }
 
 @Composable

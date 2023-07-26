@@ -40,4 +40,24 @@ class SignUpBackend {
 
         return loginCompletionSource.task
     }
+    fun changePassword(newPassword: String): Task<Boolean> {
+        val passwordChangeCompletionSource = TaskCompletionSource<Boolean>()
+
+        val user: FirebaseUser? = firebaseAuth.currentUser
+        if (user != null) {
+            user.updatePassword(newPassword)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        passwordChangeCompletionSource.setResult(true)
+                    } else {
+                        passwordChangeCompletionSource.setResult(false)
+                    }
+                }
+        } else {
+            // User not logged in or user reference is null
+            passwordChangeCompletionSource.setResult(false)
+        }
+
+        return passwordChangeCompletionSource.task
+    }
 }

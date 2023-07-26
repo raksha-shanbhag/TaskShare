@@ -20,6 +20,9 @@ class FriendsManagementService {
         if (receiverInfo.userId.isEmpty()) {
             return "User doesn't exist"
         }
+        if (senderInfo.email == receiverEmail){
+            return "Unable to send friend request to yourself"
+        }
 
         // if receiver is already has sender as an entry ("Blocked", "Incoming", "Outgoing", "Friend")
         var ifSenderInReceiverList = receiverInfo.friends.find { friend -> friend.userId == senderUserId }
