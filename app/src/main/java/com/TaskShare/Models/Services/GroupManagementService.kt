@@ -116,7 +116,7 @@ class GroupManagementService {
 
                 // assigner Info
                 var assignerInfo = usersRepository.getUserInfo(task.assignerId)
-                var assigneeInfo = usersRepository.getUserInfo(task.assignerId)
+                var assigneeInfo = usersRepository.getUserInfo(subTask.assigneeId)
 
                 // get all assignees and populate list of groupmember object
                 var assignees = mutableListOf<GroupMember>()
