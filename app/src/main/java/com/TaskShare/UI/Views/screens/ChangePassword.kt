@@ -44,13 +44,12 @@ import com.example.greetingcard.screens.ClickableForgotPasswordText
 @Composable
 fun ChangePasswordScreen(
     onBack: () -> Unit,
-    onSavePassword: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
     // Variables to hold the user's password
-    val password = remember { mutableStateOf("") }
+    val oldpassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
     val confirmedPassword = remember { mutableStateOf("") }
 
@@ -109,7 +108,7 @@ fun ChangePasswordScreen(
             Spacer(modifier = Modifier.height(30.dp))
 
             RenderTextFields("Current Password") { newValue ->
-                password.value = newValue
+                oldpassword.value = newValue
             }
             Spacer(modifier = Modifier.height(15.dp))
             RenderTextFields("New Password") { newValue ->
@@ -128,8 +127,10 @@ fun ChangePasswordScreen(
             }
 
             Spacer(modifier = Modifier.height(50.dp))
-            RenderSaveButton("Save",
-                "Save changes to profile", onSavePassword)
+//            RenderSaveButton("Save",
+//                "Save changes to profile",
+//                onSavePassword(oldpassword, newPassword, confirmedPassword)
+//            )
         }
 
     }
@@ -167,6 +168,5 @@ fun RenderTextFields(labelValue: String, onValueChange: (String) -> Unit) {
 fun ChangePasswordScreenPreview() {
     ChangePasswordScreen(
         onBack = { /*TODO*/ },
-        onSavePassword = { /*TODO*/ }
     )
 }

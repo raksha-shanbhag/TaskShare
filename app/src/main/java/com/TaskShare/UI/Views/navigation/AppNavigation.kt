@@ -326,7 +326,6 @@ private fun NavGraphBuilder.showChangePassword(navController: NavController) {
     composable(route = LeafScreen.ChangePassword.route) {
         ChangePasswordScreen(
             onBack = { navController.navigateUp() },
-            onSavePassword = {}
         )
     }
 }
