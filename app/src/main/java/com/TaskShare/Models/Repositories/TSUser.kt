@@ -43,7 +43,7 @@ class TSUsersRepository() {
 
             runBlocking {
                 var document = Firebase.firestore.collection("Users").document(userId).get().await()
-                enabled = document.get("notifEnabled") as Boolean
+                enabled = document.get("notifEnabled") as Boolean??: false
             }
 
             return enabled

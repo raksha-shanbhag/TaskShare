@@ -1,4 +1,5 @@
 package com.TaskShare.UI.Views.screens
+
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.NotificationsService
 import com.google.android.gms.tasks.Task
@@ -23,8 +24,8 @@ class LoginBackend {
                         TSUsersRepository.globalUserId = user.uid
                         if (TSUsersRepository.setNotifTokenOnLogin) {
                             TSUsersRepository.setNotifToken(TSUsersRepository.globalUserId)
-                            NotificationsService.notifEnabled = TSUsersRepository.isNotifEnabled(TSUsersRepository.globalUserId)
                         }
+                        NotificationsService.notifEnabled = TSUsersRepository.isNotifEnabled(TSUsersRepository.globalUserId)
                     }
                 } else {
                     loginCompletionSource.setResult(false)

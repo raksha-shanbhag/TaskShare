@@ -49,5 +49,9 @@ class ActivityManagementService {
             activities.sortByDescending{ it.time }
             return activities
         }
+
+        fun setActivityNotify(notify: Boolean) {
+            TSUsersRepository.setNotifEnabled(TSUsersRepository.globalUserId, notify)
+        }
     }
 }

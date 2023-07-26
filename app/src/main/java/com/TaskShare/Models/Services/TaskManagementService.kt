@@ -140,12 +140,20 @@ class TaskManagementService {
             else -> {"Error"}
         }
 
+        var activityType = when (type) {
+            "created" -> ActivityType.TASK_ASSIGNED
+            "requested", "accepted", "declined" -> ActivityType.TASK_TRANSFER
+            "updated" -> ActivityType.TASK_CHANGED
+            "due", "overdue" -> ActivityType.TASK_DUE
+            else -> ActivityType.NULL
+        }
+
         ActivityManagementService.addActivity(Activity(
             taskId = subtaskId,
             sourceUser = source,
             affectedUsers = dest,
             groupId = task.groupId,
-            type = ActivityType.TASK_ASSIGNED,
+            type = activityType,
             details = details
         ))
     }
