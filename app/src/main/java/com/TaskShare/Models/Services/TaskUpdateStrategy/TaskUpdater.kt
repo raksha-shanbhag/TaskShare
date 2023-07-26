@@ -2,6 +2,7 @@ package com.TaskShare.Models.Services.TaskUpdateStrategy
 
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
+import com.TaskShare.Models.Services.TaskManagementService
 import com.TaskShare.Models.Utilities.TSTaskStatus
 import java.util.Date
 
@@ -39,6 +40,7 @@ class TaskUpdater {
         // update subTask status if not the below conditions
         if (!(currentSubTaskInfo.taskStatus == TSTaskStatus.OVERDUE && newTaskStatus == TSTaskStatus.IN_PROGRESS) ) {
             subTaskRepository.updateSubTaskStatus(subtaskId = subtaskId, newStatus = newTaskStatus)
+            TaskManagementService().createSubTaskActivity(subtaskId = subtaskId, type = "overdue")
         }
 
         // create sub task if previous status was overdue and current is complete,

@@ -3,6 +3,7 @@ package com.TaskShare.Models.Repositories
 import android.util.Log
 import com.TaskShare.Models.DataObjects.Friend
 import com.TaskShare.Models.DataObjects.User
+import com.TaskShare.Models.Services.NotificationsService
 import com.TaskShare.Models.Utilities.TSFriendStatus
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
@@ -28,6 +29,24 @@ class TSUsersRepository() {
                 var token = FirebaseMessaging.getInstance().token.await()
                 Firebase.firestore.collection("Users").document(userId).update("notifToken", token).await()
             }
+        }
+
+        fun setNotifEnabled(userId: String, enabled: Boolean) {
+            runBlocking {
+                Firebase.firestore.collection("Users").document(userId).update("notifEnabled", enabled).await()
+                NotificationsService.notifEnabled = enabled
+            }
+        }
+
+        fun isNotifEnabled(userId: String): Boolean {
+            var enabled = false
+
+            runBlocking {
+                var document = Firebase.firestore.collection("Users").document(userId).get().await()
+                enabled = document.get("notifEnabled") as Boolean
+            }
+
+            return enabled
         }
 
         fun register(data: User) {

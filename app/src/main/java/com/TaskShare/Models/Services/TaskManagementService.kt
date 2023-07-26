@@ -100,7 +100,7 @@ class TaskManagementService {
             var endDate = taskUpdater.getNextEndDate(startDate)
 
             // create sub Tasks
-            subTaskRepository.createSubTask(
+            var subtaskId = subTaskRepository.createSubTask(
                 taskId = taskId,
                 assigneeId = currAssignees.first(),
                 startDate = startDate,
@@ -114,11 +114,40 @@ class TaskManagementService {
                 affectedUsers = currAssignees,
                 groupId = groupId,
                 type = ActivityType.TASK_ASSIGNED,
-                details = "A new task has been assigned to you in ${groupName}"
+                details = "You are invited to participate in the task ${taskName} from ${groupName}"
             ))
+
+            createSubTaskActivity(subtaskId)
         }
 
         return taskId
+    }
+
+    fun createSubTaskActivity(subtaskId: String, sourceUser:String = "", destUser:String = "", type: String = "created") {
+        var subtask = subTaskRepository.getSubTaskInfoForId(subtaskId)
+        var task = taskRepository.getTask(subtask.taskId)
+
+        var source = if (sourceUser.isEmpty()) task.assignerId else sourceUser
+        var dest = if (destUser.isEmpty()) mutableListOf(subtask.assigneeId) else mutableListOf(destUser)
+        var details = when (type) {
+            "created" -> "A new instance of ${task.taskName} has been assigned to you"
+            "updated" -> "The details of the task ${task.taskName} has been updated"
+            "due" -> "The task ${task.taskName} is due soon"
+            "overdue" -> "The task ${task.taskName} is overdue!"
+            "requested" -> "A new instance of ${task.taskName} has been assigned to you"
+            "accepted" -> "Your transfer request for ${task.taskName} has been accepted"
+            "declined" -> "Your transfer request for ${task.taskName} has been declined"
+            else -> {"Error"}
+        }
+
+        ActivityManagementService.addActivity(Activity(
+            taskId = subtaskId,
+            sourceUser = source,
+            affectedUsers = dest,
+            groupId = task.groupId,
+            type = ActivityType.TASK_ASSIGNED,
+            details = details
+        ))
     }
 
     fun getTaskInfoFromId(subTaskId: String) : TaskViewState {
@@ -160,6 +189,7 @@ class TaskManagementService {
         val taskStatus = TSTaskStatus.fromString(newTaskStatus)
         val taskUpdater = TaskUpdater(cycle)
         taskUpdater.updateTaskInfo(subtaskId, taskName, endDate, cycle, taskStatus)
+        createSubTaskActivity(subtaskId = subtaskId, sourceUser = TSUsersRepository.globalUserId, type = "updated")
     }
 
     // Params - transferToUserId is the user who received the task transfer
@@ -172,6 +202,7 @@ class TaskManagementService {
             taskTransferAssignee =  transferToUserId,
             status = TSTaskStatus.TRANSFER
         )
+        createSubTaskActivity(subtaskId = subtaskId, sourceUser = assigneeId, destUser = transferToUserId, type = "requested")
     }
 
     // Params - transferToUserId is the user who received the task transfer
@@ -183,6 +214,7 @@ class TaskManagementService {
             taskTransferAssignee =  null,
             status = TSTaskStatus.TODO
         )
+        createSubTaskActivity(subtaskId = subtaskId, sourceUser = transferToUserId, destUser = assigneeId, type = "accepted")
     }
 
 
@@ -195,5 +227,6 @@ class TaskManagementService {
             taskTransferAssignee =  null,
             status = TSTaskStatus.TODO
         )
+        createSubTaskActivity(subtaskId = subtaskId, sourceUser = transferToUserId, destUser = assigneeId, type = "declined")
     }
 }

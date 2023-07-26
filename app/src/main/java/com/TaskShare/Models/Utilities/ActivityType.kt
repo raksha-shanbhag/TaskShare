@@ -5,6 +5,7 @@ enum class ActivityType(str: String) {
     FRIEND_REQUEST("Friend Request"),
     GROUP_REQUEST("Group Request"),
     TASK_ASSIGNED("Task Assigned"),
+    TASK_TRANSFER("Task Transfer Request"),
     TASK_CHANGED("Task Changed"),
     TASK_DUE("Task Due");
 
@@ -18,6 +19,7 @@ enum class ActivityType(str: String) {
                 "Friend Request" -> FRIEND_REQUEST
                 "Group Request" -> GROUP_REQUEST
                 "Task Assigned" -> TASK_ASSIGNED
+                "Task Transfer Request" -> TASK_TRANSFER
                 "Task Changed" -> TASK_CHANGED
                 "Task Due" -> TASK_DUE
                 else -> NULL

@@ -23,6 +23,7 @@ class NotificationsService(): FirebaseMessagingService() {
         const val CHANNEL_ID = "TaskShare_channel"
         const val CHANNEL_NAME = "TaskShare_Notifications"
         const val CHANNEL_DESC = "Sends notifications for activities"
+        var notifEnabled = false
     }
 
     override fun onNewToken(token: String) {
@@ -37,6 +38,10 @@ class NotificationsService(): FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
+
+        if (!notifEnabled) {
+            return
+        }
 
         val intent = Intent(this, MainActivity::class.java)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

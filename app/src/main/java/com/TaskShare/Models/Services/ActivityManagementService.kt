@@ -50,26 +50,4 @@ class ActivityManagementService {
             return activities
         }
     }
-
-    fun getActivityString(activity: Activity): String {
-        if (activity.type == ActivityType.FRIEND_REQUEST) {
-            var userInfo = usersRepository.getUserInfo(activity.sourceUser)
-            return "${userInfo.firstName} sent you a friends request!"
-        } else if (activity.type == ActivityType.GROUP_REQUEST) {
-            var userInfo = usersRepository.getUserInfo(activity.sourceUser)
-            var groupInfo = groupsRepository.getGroupFromId(activity.groupId)
-            return "${userInfo.firstName} added you to the group ${groupInfo.groupName}!"
-        } else if (activity.type == ActivityType.TASK_ASSIGNED) {
-            return "A new task has been assigned to you!"
-        } else if (activity.type == ActivityType.TASK_CHANGED) {
-            var taskInfo = taskRepository.getTask(activity.taskId)
-            return "${taskInfo.taskName} has been updated!"
-        } else if (activity.type == ActivityType.TASK_DUE) {
-            var taskInfo = taskRepository.getTask(activity.taskId)
-            return "${taskInfo.taskName} is due soon!"
-
-        }
-
-        return "ERROR"
-    }
 }

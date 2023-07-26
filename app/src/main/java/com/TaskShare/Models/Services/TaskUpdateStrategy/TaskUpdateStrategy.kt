@@ -3,6 +3,7 @@ package com.TaskShare.Models.Services.TaskUpdateStrategy
 import java.util.Date
 import com.TaskShare.Models.DataObjects.Task
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
+import com.TaskShare.Models.Services.TaskManagementService
 import java.util.Calendar
 
 interface TaskUpdateStrategy {
@@ -16,7 +17,8 @@ interface TaskUpdateStrategy {
 
     fun createSubTask(taskId: String, assigneeId: String, startDate: Date, endDate: Date) {
         var subTasksRepository = TSSubTasksRepository()
-        subTasksRepository.createSubTask(taskId, assigneeId, startDate, endDate)
+        var subtaskId = subTasksRepository.createSubTask(taskId, assigneeId, startDate, endDate)
+        TaskManagementService().createSubTaskActivity(subtaskId)
     }
 
     fun getNextEndDate(startDate: Date) : Date
