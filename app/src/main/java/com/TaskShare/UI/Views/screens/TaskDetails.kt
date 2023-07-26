@@ -90,6 +90,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
             }
         )
     }, content = {
+        viewModel.testEditTask()
 
         Box(
             modifier = Modifier

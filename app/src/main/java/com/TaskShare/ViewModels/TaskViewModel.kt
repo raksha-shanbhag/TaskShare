@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
+import com.TaskShare.Models.Services.TaskUpdateStrategy.TaskUpdater
+import com.TaskShare.Models.Utilities.TSTaskStatus
 import java.util.Date
 
 class TaskViewModel: ViewModel() {
@@ -14,6 +16,7 @@ class TaskViewModel: ViewModel() {
     val detailTaskState = mutableStateOf(TaskDetail())
     private val groupManager = GroupManagementService()
     private val taskManager = TaskManagementService()
+    private val taskUpdater = TaskUpdater("No Cycle") // default value,updated
 
 
     // detail task
@@ -85,9 +88,18 @@ class TaskViewModel: ViewModel() {
     fun deleteTask(taskID: String){
         // TODO backend: delete task endpoint
     }
+
+    fun testEditTask(){
+        Log.i("Debug J ", detailTaskState.value.toString())
+
+        Log.i("Debug J ", "Calling Edit")
+        taskUpdater.updateTaskInfo(detailTaskState.value.taskDetail.id, "Task Updated", detailTaskState.value.taskDetail.deadline, detailTaskState.value.taskDetail.cycle, TSTaskStatus.fromString(detailTaskState.value.taskDetail.status))
+        Log.i("Debug J ", "Completed Edit")
+        Log.i("Debug J ", detailTaskState.value.toString())
+    }
 }
 
-// states
+// statest
 
 data class TasksViewState (
     val tasks: MutableList<TaskViewState> = mutableListOf()

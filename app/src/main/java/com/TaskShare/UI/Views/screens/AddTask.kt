@@ -220,7 +220,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                     )
                 )
 
-
+                Log.i("Debug Jaishree state cycle", state.cycle)
                 ExposedDropdownMenuBox(
                     expanded = expandedCycle,
                     onExpandedChange = {
@@ -230,6 +230,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                     TextField(
                         readOnly = true,
                         value = state.cycle,
+
                         onValueChange = { },
                         label = { Text("Cycle") },
                         trailingIcon = {
@@ -289,7 +290,6 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
 
 
                 Button(onClick = {
-
                     viewModel.createTask(date.value, groupMembers)
                     state.taskName = ""
                     state.groupName = ""

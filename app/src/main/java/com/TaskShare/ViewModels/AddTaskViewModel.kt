@@ -78,6 +78,7 @@ class AddTaskViewModel: ViewModel() {
     fun createTask(date: String, groupMembers: MutableList<GroupMember>) {
         // validate form data
         // call POST endpoint to send data to backend
+        Log.i("Debug Jaishreecreate bestate cycle", state.value.cycle)
         val formatter = DateTimeFormatter.ofPattern("dd/M/yyyy", Locale.ENGLISH)
 
         var endDate = LocalDate.parse(date, formatter)

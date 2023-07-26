@@ -1,5 +1,6 @@
 package com.TaskShare.Models.Services.TaskUpdateStrategy
 
+import android.util.Log
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Utilities.TSTaskStatus
@@ -50,6 +51,7 @@ class TaskUpdater {
         )){
             // change index and create next task
             index = taskUpdateStrategy.createNextSubtask(currentMainTaskInfo, endDate = updateDate)
+            Log.i("Debug J", "Successfuly Updated")
 
         }
 
