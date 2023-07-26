@@ -40,7 +40,10 @@ class GroupManagementService {
         var newGroupId = groupsRepository.createGroup(creatorId, groupName, groupDescription, groupMemberIds)
 
         if(newGroupId.isNotEmpty()) {
-            usersRepository.addGroupToUserId(creatorId, newGroupId)
+            for (user in groupMemberIds) {
+                usersRepository.addGroupToUserId(user, newGroupId)
+            }
+
             var sourceInfo = usersRepository.getUserInfo(creatorId)
 
             ActivityManagementService.addActivity(Activity(
