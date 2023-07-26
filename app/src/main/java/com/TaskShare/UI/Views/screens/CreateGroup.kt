@@ -90,8 +90,7 @@ fun CreateGroupScreen(onBack: () -> Unit, onDone: () -> Unit,  viewModel: GroupV
                 .fillMaxSize()
                 .absolutePadding(0.dp, 20.dp, 0.dp, 0.dp)
                 .background(Color.White)
-                .padding(0.dp, 50.dp, 0.dp, 0.dp)
-                .verticalScroll(state = scrollState),
+                .padding(0.dp, 50.dp, 0.dp, 0.dp),
             contentAlignment = Alignment.TopStart
         ) {
             Column ( verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {

@@ -91,8 +91,7 @@ fun EditGroupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: GroupView
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
-                .verticalScroll(state = scrollState),
+                .background(Color.White),
 
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
