@@ -55,6 +55,11 @@ fun RenderStatusMsg(incomplete: Int, total: Int) {
         statusMessage = "$incomplete/$total tasks left"
     }
 
+
+    if (total == 0) {
+        statusMessage = "No tasks created"
+    }
+
     Text(text = statusMessage,
         color = colorResource(id = textCol),
         fontSize = small_font_size.sp,

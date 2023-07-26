@@ -220,6 +220,7 @@ fun EditGroupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: GroupView
                     Button(
                         onClick = {
                             viewModel.removeMember()
+                            onDone()
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = colorResource(id = R.color.progress_red),

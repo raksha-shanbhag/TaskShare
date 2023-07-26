@@ -158,28 +158,6 @@ fun ViewGroupScreen(onBack: () -> Unit, showEdit: () -> Unit, viewModel: GroupVi
                         }
 
                 }
-                Column(modifier = Modifier
-                    .fillMaxWidth()) {
-                    Button(
-                        onClick = {
-                            viewModel.removeMember()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(id = R.color.progress_red),
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Leave Group")
-                        }
-                    }
-                }
             }
         }
     })
