@@ -8,7 +8,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
 import java.util.Date
 
 // APIs
@@ -47,7 +46,9 @@ class TSSubTasksRepository {
         var result = ArrayList<SubTask>()
 
         runBlocking {
+            // assigned Tasks
             var documentSnapshot = subTasks.whereEqualTo("assigneeId", userId).get().await()
+
             for (document in documentSnapshot.documents) {
                 val startDateTimestamp = document.data?.get("startDate") as? Timestamp
                 val endDateTimestamp = document.data?.get("endDate") as? Timestamp
@@ -63,6 +64,30 @@ class TSSubTasksRepository {
                     taskStatus = taskStatus,
                     startDate = startDate,
                     endDate = endDate,
+                )
+
+                result.add(element)
+            }
+
+            // transferred tasks
+            var transferredDocumentSnapshot = subTasks.whereEqualTo("taskTransferAssignee", userId).get().await()
+
+            for (document in transferredDocumentSnapshot.documents) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("endDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+                val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
+
+                var element = SubTask(
+                    subTaskId = document.id,
+                    taskId = document.data?.get("taskId").toString(),
+                    assigneeId = document.data?.get("assigneeId").toString(),
+                    taskStatus = taskStatus,
+                    startDate = startDate,
+                    endDate = endDate,
+                    taskTransferAssignee = userId
                 )
 
                 result.add(element)
@@ -141,5 +166,45 @@ class TSSubTasksRepository {
         runBlocking {
             subTasks.document(subtaskId).update("taskStatus", newStatus).await()
         }
+    }
+
+    // API to transfer task
+    fun updateSubtaskTransfer(subtaskId: String, status: TSTaskStatus, taskTransferAssignee: String?, assigneeId: String) {
+        runBlocking {
+            var data = hashMapOf(
+                "taskStatus" to status,
+                "taskTransferAssignee" to taskTransferAssignee,
+                "assigneeId" to assigneeId
+            )
+            subTasks.document(subtaskId).update(data.toMap()).await()
+        }
+    }
+
+    fun getSubtasksForListOfTaskIds(taskIds : MutableList<String>) : MutableList<SubTask> {
+        var result = ArrayList<SubTask>()
+        runBlocking {
+            var documentSnapshot = subTasks.whereIn("taskId", listOf(taskIds)).get().await()
+            for (document in documentSnapshot.documents) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("endDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+                val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
+
+                var element = SubTask(
+                    subTaskId = document.id,
+                    taskId = document.data?.get("taskId").toString(),
+                    assigneeId = document.data?.get("assigneeId").toString(),
+                    taskStatus = taskStatus,
+                    startDate = startDate,
+                    endDate = endDate,
+                )
+
+                result.add(element)
+            }
+        }
+
+        return result.toMutableList()
     }
 }

@@ -2,13 +2,12 @@ package com.TaskShare.Models.Utilities
 
 // Task Status Enumerator
 enum class TSTaskStatus(str: String) {
-    NULL("Error"),
     TODO("To Do"),
     IN_PROGRESS("In Progress"),
-    PENDING_APPROVAL("Pending Approval"),
     COMPLETE("Complete"),
     OVERDUE("Overdue"),
-    DECLINED("Declined");
+    DECLINED("Declined"),
+    TRANSFER("Transfer Requested");
 
     var displayString: String = str
 
@@ -17,13 +16,12 @@ enum class TSTaskStatus(str: String) {
         fun fromString(name: String): TSTaskStatus {
             return when (name)
             {
-                "To Do" -> TODO
                 "In Progress" -> IN_PROGRESS
-                "Pending Approval" -> PENDING_APPROVAL
                 "Complete" -> COMPLETE
                 "Overdue" -> OVERDUE
                 "Declined" ->  DECLINED
-                else -> NULL
+                "Transfer Requested" -> TRANSFER
+                else -> TODO
             }
         }
 
@@ -32,11 +30,10 @@ enum class TSTaskStatus(str: String) {
             {
                 TODO -> "To Do"
                 IN_PROGRESS -> "In Progress"
-                PENDING_APPROVAL -> "Pending Approval"
                 COMPLETE -> "Complete"
                 OVERDUE -> "Overdue"
                 DECLINED -> "Declined"
-                else -> "Null"
+                TRANSFER -> "Transfer Requested"
             }
         }
     }

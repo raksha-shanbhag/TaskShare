@@ -1,6 +1,5 @@
 package com.TaskShare.Models.Services
 
-import android.util.Log
 import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
@@ -31,23 +30,19 @@ class TaskManagementService {
         for (subTask in allSubtasks) {
             // get Task info
             var taskInfo = taskRepository.getTask(subTask.taskId)
-            Log.i("Debug Raksha tasks", taskInfo.toString())
 
             // get group info
             var groupInfo = groupsRepository.getGroupFromId(taskInfo.groupId)
-            Log.i("Debug Raksha tasks", groupInfo.toString())
 
             // assigner Info
             var assignerInfo = userRepository.getUserInfo(taskInfo.assignerId)
 
-            // get all assignees and populate list of groupmember object
+            // get all assignees and populate list of group member object
             var assignees = mutableListOf<GroupMember>()
             taskInfo.assignees.forEach { assignee ->
                 var assigneeInfo = userRepository.getUserInfo(assignee)
                 assignees.add(GroupMember(assigneeInfo.firstName, assigneeInfo.userId))
             }
-
-            Log.i("Debug Raksha tasks", assigneeInfo.toString())
 
             var task = TaskViewState(
                 taskName = taskInfo.taskName,
@@ -165,5 +160,40 @@ class TaskManagementService {
         val taskStatus = TSTaskStatus.fromString(newTaskStatus)
         val taskUpdater = TaskUpdater(cycle)
         taskUpdater.updateTaskInfo(subtaskId, taskName, endDate, cycle, taskStatus)
+    }
+
+    // Params - transferToUserId is the user who received the task transfer
+    // assigneeId is current assignee
+    fun transferTask(subtaskId: String, transferToUserId: String, assigneeId: String) {
+        // change task status to "Transfer Requested" and create new field for subtaskId
+        subTaskRepository.updateSubtaskTransfer(
+            subtaskId = subtaskId,
+            assigneeId = assigneeId,
+            taskTransferAssignee =  transferToUserId,
+            status = TSTaskStatus.TRANSFER
+        )
+    }
+
+    // Params - transferToUserId is the user who received the task transfer
+    // assigneeId is current assignee
+    fun acceptTransfer(subtaskId: String, transferToUserId: String, assigneeId: String) {
+        subTaskRepository.updateSubtaskTransfer(
+            subtaskId = subtaskId,
+            assigneeId = transferToUserId,
+            taskTransferAssignee =  null,
+            status = TSTaskStatus.TODO
+        )
+    }
+
+
+    // Params - transferToUserId is the user who received the task transfer
+    // assigneeId is current assignee
+    fun declineTransfer(subtaskId: String, transferToUserId: String, assigneeId: String) {
+        subTaskRepository.updateSubtaskTransfer(
+            subtaskId = subtaskId,
+            assigneeId = assigneeId,
+            taskTransferAssignee =  null,
+            status = TSTaskStatus.TODO
+        )
     }
 }

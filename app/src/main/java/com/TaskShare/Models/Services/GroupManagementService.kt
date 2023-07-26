@@ -153,12 +153,10 @@ class GroupManagementService {
     }
 
     private fun removeMemberGroupTasks(groupId: String, memberId: String) {
-        var groupTasks = tasksRepository.getTasksForGroupId(groupId = groupId)
+        var groupTasks = tasksRepository.getGroupTasksForAssignee(groupId = groupId, assigneeId = memberId)
         for(task in groupTasks) {
-            Log.i("Debug Raksha check group", task.toString())
             var checkAssignee = task.assignees.find { assignee -> assignee == memberId}
             if (checkAssignee != null) {
-                Log.i("Debug Raksha check group", checkAssignee)
                 tasksRepository.removeAssigneeFromTask(taskId = task.taskId, assigneeId = memberId)
             }
         }

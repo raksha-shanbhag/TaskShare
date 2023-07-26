@@ -132,6 +132,58 @@ class TSTasksRepository {
         return result
     }
 
+    // APIs to get group Tasks for Assignee Id
+    fun getGroupTasksForAssignee(groupId: String, assigneeId: String): MutableList<Task> {
+        var result = mutableListOf<Task>()
+
+        runBlocking {
+            var documentSnapshot = tasks
+                .whereEqualTo("groupId", groupId)
+                .whereArrayContains("assignees", assigneeId)
+                .get().await()
+
+            for (document in documentSnapshot.documents) {
+                val startDateTimestamp = document.data?.get("startDate") as? Timestamp
+                val endDateTimestamp = document.data?.get("lastDate") as? Timestamp
+
+                val startDate = startDateTimestamp?.toDate()?: Date()
+                val endDate = endDateTimestamp?.toDate()?: Date()
+
+                val index: Int = document.data?.get("currentIndex") as? Int ?: 0
+
+                var task = Task(
+                    taskId = document.id,
+                    taskName = document.data?.get("taskName").toString(),
+                    groupId = groupId,
+                    cycle = document.data?.get("cycle").toString(),
+                    assignerId = document.data?.get("assignerId").toString(),
+                    startDate = startDate,
+                    lastDate = endDate,
+                    currentIndex = index
+                )
+
+                result.add(task)
+            }
+        }
+
+        return result
+    }
+
+    // API to get taskIds
+    fun getTaskIdsForGroupId(groupId: String): MutableList<String> {
+        var result = mutableListOf<String>()
+
+        runBlocking {
+            var documentSnapshot = tasks.whereEqualTo("groupId", groupId).get().await()
+            for (document in documentSnapshot.documents) {
+                result.add(document.id)
+            }
+
+        }
+
+        return result
+    }
+
     // API Service for removing a member from a Task
     fun removeAssigneeFromTask(taskId: String, assigneeId: String) {
         runBlocking {

@@ -12,4 +12,5 @@ data class SubTask(
     val taskStatus : TSTaskStatus = TSTaskStatus.TODO,
     val comments: MutableList<String> = mutableListOf(),
     val updateLog: MutableList<UpdateLog> = mutableListOf(),
+    val taskTransferAssignee: String? = null // user receiving transfer
 )
