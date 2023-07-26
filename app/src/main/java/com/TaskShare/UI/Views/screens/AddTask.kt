@@ -96,6 +96,10 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
         mutableStateOf(false)
     }
 
+    var taskName by remember {
+        mutableStateOf("")
+    }
+
     // date picker setup
     val year: Int
     val month: Int
@@ -149,7 +153,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
         ) {
             Column (verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
-                TextField(value = state.taskName, onValueChange = {text -> viewModel.updateTaskName(text)},  label = {Text("Task Name")},
+                TextField(value = taskName, onValueChange = {text -> taskName = text},  label = {Text("Task Name")},
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color.White, textColor = Color.Black,
                         focusedIndicatorColor = Color.Black, cursorColor = Color.Black,
@@ -196,7 +200,7 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                 TextField(
                     readOnly = true,
                     value = date.value,
-                    onValueChange = {viewModel.updateDeadline(date.value) },
+                    onValueChange = {},
                     label = { Text("End Date") },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -290,8 +294,8 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
 
                 Button(onClick = {
 
-                    viewModel.createTask(date.value, groupMembers)
-                    state.taskName = ""
+                    viewModel.createTask(date.value, groupMembers, taskName)
+                    taskName = ""
                     state.groupName = ""
                     state.cycle = ""
                     date.value = ""

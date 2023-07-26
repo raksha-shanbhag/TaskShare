@@ -75,7 +75,7 @@ class AddTaskViewModel: ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createTask(date: String, groupMembers: MutableList<GroupMember>) {
+    fun createTask(date: String, groupMembers: MutableList<GroupMember>, taskName: String) {
         // validate form data
         // call POST endpoint to send data to backend
         val formatter = DateTimeFormatter.ofPattern("dd/M/yyyy", Locale.ENGLISH)
@@ -87,7 +87,7 @@ class AddTaskViewModel: ViewModel() {
 
 
         taskManager.createTask(
-            taskName = state.value.taskName,
+            taskName = taskName,
             groupId = state.value.groupId,
             lastDate = datee,
             cycle = state.value.cycle,

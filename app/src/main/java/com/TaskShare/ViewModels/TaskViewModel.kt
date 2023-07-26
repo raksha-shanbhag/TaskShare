@@ -26,9 +26,7 @@ class TaskViewModel: ViewModel() {
     fun setDetailTaskInfo(taskID: String){
         detailTaskState.value = detailTaskState.value.copy(taskID = taskID)
         val taskInfo = taskManager.getTaskInfoFromId(subTaskId =  taskID)
-        Log.i("Debug Raksha TaskInfo", taskInfo.toString())
         detailTaskState.value = detailTaskState.value.copy(taskDetail = taskInfo)
-        Log.i("Debug Raksha TaskInfo detail", detailTaskState.value.taskDetail.toString())
     }
 
 
@@ -55,7 +53,6 @@ class TaskViewModel: ViewModel() {
     // get all my task
     fun getTasksForUser(): List<TaskViewState>{
         var result = taskManager.getAllTasksForUserId(TSUsersRepository.globalUserId);
-        Log.i("Debug Raksha GetTasksForUSer", result.toString())
         return result
     }
 
@@ -96,14 +93,12 @@ class TaskViewModel: ViewModel() {
         for (member in groupMembers) {
             if(member.selected) result.add(member.memberId)
         }
-        Log.i("Debug J gm", groupMembers.toString())
-        Log.i("Debug J result", result.toString())
+
         return result
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateTask(groupMembers: MutableList<GroupMember>, taskName: String, date: String) {
-        Log.i("Debug Raksha Backend Edit", date)
         val formatter = DateTimeFormatter.ofPattern("dd/M/yyyy", Locale.ENGLISH)
         var endDate = LocalDate.parse(date, formatter)
         var datee = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant())

@@ -31,14 +31,7 @@ class TaskUpdater {
         var currentSubTaskInfo = subTaskRepository.getSubTaskInfoForId(subtaskId)
         var currentMainTaskInfo = taskRepository.getTask(currentSubTaskInfo.taskId)
         var index = currentMainTaskInfo.currentIndex
-
-        Log.i("Debug Edit Raksha", subtaskId)
-        Log.i("Debug Edit Raksha", endDate.toString())
-        Log.i("Debug Edit Raksha", cycle)
-        Log.i("Debug Edit Raksha", taskName)
-        Log.i("Debug Edit Raksha",  newTaskStatus.toString())
-        Log.i("Debug Edit Raksha",  assignees.toString())
-
+        
 
         // check update date
         var updateDate = endDate
