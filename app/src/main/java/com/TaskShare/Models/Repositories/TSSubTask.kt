@@ -115,7 +115,6 @@ class TSSubTasksRepository {
                 val endDate = endDateTimestamp?.toDate()?: Date()
                 val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
 
-                Log.i("Debug Raksha Task Status -", taskStatus.toString())
 
                 result = SubTask(
                     subTaskId = document.id,
@@ -215,11 +214,9 @@ class TSSubTasksRepository {
                 .whereEqualTo("assigneeId", userId)
                 .get().await()
 
-            Log.i("Debug Raksha Number", documentSnapshot.documents.toString())
 
             for (document in documentSnapshot.documents) {
                 val taskStatus = TSTaskStatus.valueOf(document.data?.get("taskStatus").toString())
-                Log.i("Debug Raksha Number Debug", taskStatus.toString())
                 if (taskStatus != TSTaskStatus.COMPLETE && taskStatus != TSTaskStatus.DECLINED) {
                     result += 1
                 }

@@ -46,6 +46,12 @@ exports.notifyActivity = onDocumentCreated("Activities/{activityId}", async (eve
     }
 
     if (userTokens.length > 0) {
+        console.log("Sending notification to devices:");
+
+        for (var i = 0; i < userTokens.length; i++) {
+            console.log(userTokens[i]);
+        }
+
         admin.messaging().sendEachForMulticast(
             {
                 tokens: userTokens,

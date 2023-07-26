@@ -111,7 +111,6 @@ class TSUsersRepository() {
             if (document.exists()) {
                 try {
                     var groups = document.get("groups") as MutableList<String>
-                    Log.i("Debug Raksha TS User get group2", document.toString())
                     result.addAll(groups)
                 } catch(e: Throwable) {
                     Log.w("Can't find group", e)
@@ -119,7 +118,6 @@ class TSUsersRepository() {
             }
         }
 
-        Log.i("Debug Raksha TS user group state", result.toString())
         return result.toMutableList()
     }
 
