@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
@@ -54,7 +55,7 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
+fun EditGroupScreen(onBack: () -> Unit, onDone: () -> Unit, viewModel: GroupViewModel) {
     val scrollState = rememberScrollState()
     //getting data
     val state by viewModel.state
@@ -91,6 +92,7 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
+                .verticalScroll(state = scrollState),
 
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
@@ -198,6 +200,7 @@ fun EditGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                                 groupMembers = (groupMembers + it.name) as MutableList<String>
                             }
                             viewModel.updateGroup(groupName, groupDescription, groupMembers);
+                            onDone()
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = colorResource(id = R.color.progress_red),

@@ -53,7 +53,7 @@ import com.example.greetingcard.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
+fun CreateGroupScreen(onBack: () -> Unit, onDone: () -> Unit,  viewModel: GroupViewModel) {
     var groupName by remember {
         mutableStateOf("")
     }
@@ -73,6 +73,8 @@ fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
         mutableStateOf(viewModel.getFriendsList())
     }
 
+    val scrollState = rememberScrollState()
+
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             title = { Text(text = "Create Group", color = Color.White, fontSize = 30.sp) },
@@ -88,7 +90,8 @@ fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                 .fillMaxSize()
                 .absolutePadding(0.dp, 20.dp, 0.dp, 0.dp)
                 .background(Color.White)
-                .padding(0.dp, 50.dp, 0.dp, 0.dp),
+                .padding(0.dp, 50.dp, 0.dp, 0.dp)
+                .verticalScroll(state = scrollState),
             contentAlignment = Alignment.TopStart
         ) {
             Column ( verticalArrangement = Arrangement.spacedBy(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -128,7 +131,7 @@ fun CreateGroupScreen(onBack: () -> Unit, viewModel: GroupViewModel) {
                     groupMembers = (mutableListOf<String>())
                     groupName = ""
                     groupDescription = ""
-                    onBack
+                    onDone()
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.banner_blue),

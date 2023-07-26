@@ -167,6 +167,9 @@ private fun NavGraphBuilder.showCreateGroup(navController: NavController, viewMo
             onBack = {
                 navController.navigateUp()
             },
+            onDone = {
+                navController.navigate(RootScreen.Home.route)
+            },
             viewModel
         )
     }
@@ -178,6 +181,9 @@ private fun NavGraphBuilder.showEditGroup(navController: NavController, viewMode
         EditGroupScreen(
             onBack = {
                 navController.navigateUp()
+            },
+            onDone = {
+                navController.navigate(RootScreen.Home.route)
             },
             viewModel
         )
