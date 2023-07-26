@@ -8,7 +8,11 @@ import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
@@ -32,8 +36,6 @@ class TaskViewModel: ViewModel() {
         // pull from backend instead later
         return detailTaskState.value.taskDetail
     }
-
-    // TODO: integrate with backend
 
 
 
@@ -90,24 +92,29 @@ class TaskViewModel: ViewModel() {
         // TODO backend: delete task endpoint
     }
 
-    fun getSelectedMemberIds() : MutableList<String> {
+    fun getSelectedMemberIds(groupMembers: MutableList<GroupMember>) : MutableList<String> {
         var result = mutableListOf<String>()
-        for (member in detailTaskState.value.taskDetail.assignees) {
+        for (member in groupMembers) {
             if(member.selected) result.add(member.memberId)
         }
+        Log.i("Debug J gm", groupMembers.toString())
+        Log.i("Debug J result", result.toString())
         return result
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun updateTask() {
-        Log.i("Debug Raksha Backend Edit", detailTaskState.value.toString())
+    fun updateTask(groupMembers: MutableList<GroupMember>, taskName: String, date: String) {
+        Log.i("Debug Raksha Backend Edit", date)
+        val formatter = DateTimeFormatter.ofPattern("dd/M/yyyy", Locale.ENGLISH)
+        var endDate = LocalDate.parse(date, formatter)
+        var datee = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
         taskManager.updateTask(
             subtaskId = detailTaskState.value.taskID,
-            taskName = detailTaskState.value.taskDetail.taskName,
-            endDate = detailTaskState.value.taskDetail.deadline,
+            taskName = taskName,
+            endDate = datee,
             newTaskStatus = detailTaskState.value.taskDetail.status,
             cycle = detailTaskState.value.taskDetail.cycle,
-            assignees = getSelectedMemberIds()
+            assignees = getSelectedMemberIds(groupMembers)
         )
     }
 

@@ -112,22 +112,26 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
     }
     var multipleChecked by remember { mutableStateOf(emptySet<Int>())}
 
+    LaunchedEffect(viewModel) {
+        // fetch data from viewmodel
+        groupMembers = viewModel.getGroupMembers()
 
-    // fetch data from viewmodel
-    groupMembers = viewModel.getGroupMembers()
+        taskDetail = viewModel.getDetailTaskInfo()
+        taskName = taskDetail.taskName
 
-    taskDetail = viewModel.getDetailTaskInfo()
-    taskName = taskDetail.taskName
+        groupMembers.forEachIndexed() { index, member ->
 
-    groupMembers.forEachIndexed() { index, member ->
+            if (taskDetail.assignees.any{it.memberId == member.memberId}){
 
-        if (taskDetail.assignees.any{it.memberId == member.memberId}){
+                multipleChecked += index
+                groupMembers[index].selected = true
 
-            multipleChecked += index
-            groupMembers[index].selected = true
-
+            }
+            Log.i("debug j fe", groupMembers.toString())
         }
     }
+
+
 
 
     // date picker setup
@@ -292,7 +296,7 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                     }
                 }
 
-                // updating assignees later
+                // updating assignees
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .absolutePadding(60.dp, 0.dp, 60.dp, 0.dp)) {
@@ -321,7 +325,7 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                 }
 
                 Button(onClick = {
-                    viewModel.updateTask()
+                    viewModel.updateTask(groupMembers, taskName, date.value)
                     state.taskName = ""
                     state.groupName = ""
                     state.cycle = ""

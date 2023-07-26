@@ -268,7 +268,7 @@ fun MyTasksScreen(showDetail: () -> Unit, viewModel: TaskViewModel) {
                         RenderTaskCard(it, viewModel, showDetail)
                         Spacer(modifier = Modifier.height(height = 10.dp))
                     }
-
+                    Spacer(modifier = Modifier.height(height = 30.dp))
                 }
             }
         }

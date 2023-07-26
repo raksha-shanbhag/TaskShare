@@ -214,17 +214,23 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         TextField(
                             readOnly = true,
                             value = transferToMember.memberName,
-                            onValueChange = { showConfirmTransfer = true},
+                            onValueChange = { showConfirmTransfer = true },
                             label = { Text("Transfer Task") },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(
                                     expanded = expandedTransfer
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White, textColor = Color.Black, focusedIndicatorColor = Color.Black, cursorColor = Color.Black, focusedLabelColor = Color.Black),
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = Color.White,
+                                textColor = Color.Black,
+                                focusedIndicatorColor = Color.Black,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                            )
+                        )
 
 
 
@@ -236,11 +242,10 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                                 expandedTransfer = false
                             },
                             modifier = Modifier
-                                .fillMaxWidth()
-                                ,
-                        ){
+                                .fillMaxWidth(),
+                        ) {
                             taskDetail.assignees.forEach { item ->
-                                if (item.memberId!= TSUsersRepository.globalUserId){
+                                if (item.memberId != TSUsersRepository.globalUserId) {
                                     DropdownMenuItem(
                                         text = { Text(text = item.memberName) },
                                         modifier = Modifier
@@ -254,7 +259,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                                 }
                             }
                         }
-
+                    }
                     if(showConfirmTransfer) {
                         Column(modifier = Modifier
                             .fillMaxWidth()
@@ -310,7 +315,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                             }
                         }
                     }
-                    }
+
                     }
                     // uncomment if we implement delete task
 //                    Row(modifier = Modifier
