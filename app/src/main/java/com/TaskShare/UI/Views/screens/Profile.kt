@@ -92,12 +92,13 @@ fun ProfileScreen(
             ProfileSection()
 
             Spacer(modifier = Modifier.height(30.dp))
-            SettingButton("Edit Profile",
-                "Edit Profile",
-                Icons.Default.Edit,
-                onEditProfile)
 
-            Spacer(modifier = Modifier.height(20.dp))
+//            SettingButton("Edit Profile",
+//                "Edit Profile",
+//                Icons.Default.Edit,
+//                onEditProfile)
+//            Spacer(modifier = Modifier.height(20.dp))
+
             SettingButton("Change Password",
                 "Change Password",
                 Icons.Default.Edit,
