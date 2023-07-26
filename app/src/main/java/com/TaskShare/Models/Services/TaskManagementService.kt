@@ -1,5 +1,6 @@
 package com.TaskShare.Models.Services
 
+import android.util.Log
 import com.TaskShare.Models.DataObjects.Activity
 import com.TaskShare.Models.Repositories.TSGroupsRepository
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
@@ -236,5 +237,9 @@ class TaskManagementService {
             status = TSTaskStatus.TODO
         )
         createSubTaskActivity(subtaskId = subtaskId, sourceUser = transferToUserId, destUser = assigneeId, type = "declined")
+    }
+
+    fun getActiveTasksNumberForUserId(userId: String) : Int {
+        return subTaskRepository.getActiveTasksNumber(userId = userId)
     }
 }

@@ -60,8 +60,7 @@ class TaskViewModel: ViewModel() {
     }
 
     fun getActiveTasksLen(): Int{
-        // todo: Backend
-        return 0
+        return taskManager.getActiveTasksNumberForUserId(TSUsersRepository.globalUserId)
     }
 
     fun getGroupMembers() : MutableList<GroupMember> {
@@ -92,7 +91,7 @@ class TaskViewModel: ViewModel() {
         // TODO backend: delete task endpoint
     }
 
-    fun getSelectedMemberIds(groupMembers: MutableList<GroupMember>) : MutableList<String> {
+    private fun getSelectedMemberIds(groupMembers: MutableList<GroupMember>) : MutableList<String> {
         var result = mutableListOf<String>()
         for (member in groupMembers) {
             if(member.selected) result.add(member.memberId)
