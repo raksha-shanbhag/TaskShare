@@ -127,7 +127,6 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                 groupMembers[index].selected = true
 
             }
-            Log.i("debug j fe", groupMembers.toString())
         }
     }
 

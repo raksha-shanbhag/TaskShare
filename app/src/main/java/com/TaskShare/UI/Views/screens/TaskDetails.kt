@@ -197,7 +197,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
 
 //                  Transfer Task
-                    if (taskDetail.status != "Transfer Requested"){
+                    if ((taskDetail.status != "Transfer Requested") ||(taskDetail.status != "Complete") || (taskDetail.status != "Decline")){
                     ExposedDropdownMenuBox(
                         expanded = expandedTransfer,
                         onExpandedChange = {

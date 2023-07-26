@@ -110,7 +110,6 @@ class GroupViewModel: ViewModel() {
     }
 
     fun updateGroup(groupName: String, groupDescription: String, groupMembers: MutableList<String>) {
-        Log.i("Lamia groups ", groupMembers.toString())
         groupManager.updateGroupInformation(state.value.id, groupName, groupDescription, groupMembers)
     }
 
@@ -139,11 +138,8 @@ class GroupViewModel: ViewModel() {
             currentUserId = TSUsersRepository.globalUserId,
             friendStatus = TSFriendStatus.FRIEND
         )
-        Log.i("Lamia debug ", listOfFriends.toString())
-        Log.i("Lamia mems ", mems.toString())
 
         var remaining = listOfFriends.filter { friend -> !mems.contains(friend.userId) }
-        Log.i("Lamia remaing ", remaining.toString())
 
         var canAdd =  remaining.map { mem ->
             friendItem(mem.email, false)

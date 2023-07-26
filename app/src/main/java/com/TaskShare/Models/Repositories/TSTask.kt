@@ -45,7 +45,6 @@ class TSTasksRepository {
             "currentIndex" to 0
         )
 
-        Log.i("Debug raksha create task request", data.toString())
 
         runBlocking {
             var document = tasks.add(data).await()

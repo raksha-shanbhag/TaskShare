@@ -253,10 +253,10 @@ fun ViewGroupTasksScreen(onBack: () -> Unit,showEdit: () -> Unit, showTaskDetail
 
 
                 Row(Modifier.padding(10.dp)){
-                    Text(text = "Sort By: ",
-                        fontSize = mid_font_size.sp)
-                    Text(text = "Assignee",
-                        fontSize = mid_font_size.sp)
+                    if(group.tasks.size == 0) {
+                        Text(text = "No tasks have been created",
+                            fontSize = mid_font_size.sp)
+                    }
                 }
 
                 //using data
