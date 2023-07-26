@@ -16,3 +16,5 @@
 | 2023//07//17 | 9     | Added view models, finished up front-end for screens, and added modifications to screens for back-end      |
 | 2023//07//20 | 3     | Helped debug back-end for friends function                                                                 |
 | 2023//07//21 | 2     | Worked on design pattern document                                                                          |
+| 2023//07//26 | 3     | Updated screens and removed unnecessary functions                                                          |
+| 2023//07//26 | 3     | Worked on project demo                                                                                     |
