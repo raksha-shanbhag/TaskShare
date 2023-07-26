@@ -117,7 +117,10 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         .fillMaxWidth()
                         .padding(15.dp, 10.dp)
                         .clickable(onClick = {
-                            editTask()
+                            if (taskDetail.status != "Transfer Requested"){
+                                editTask()
+                            }
+
                         })
 
                 ) {
@@ -127,12 +130,14 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
-                    Icon(
-                        painterResource(id = R.drawable.edit_icon),
-                        contentDescription = "edit task icon",
-                        modifier = Modifier.size(size = 24.dp),
-                        tint = Color.White
-                    )
+                    if (taskDetail.status != "Transfer Requested") {
+                        Icon(
+                            painterResource(id = R.drawable.edit_icon),
+                            contentDescription = "edit task icon",
+                            modifier = Modifier.size(size = 24.dp),
+                            tint = Color.White
+                        )
+                    }
                 }
                 // Task Details
                 Column(modifier = Modifier
