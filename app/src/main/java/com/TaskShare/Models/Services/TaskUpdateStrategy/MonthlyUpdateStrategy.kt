@@ -6,7 +6,7 @@ import java.util.Date
 
 
 class MonthlyUpdateStrategy : TaskUpdateStrategy {
-    private fun getOneMonthFromDate(date: Date): Date {
+    override fun getNextEndDate(date: Date): Date {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.add(Calendar.MONTH, 1)
@@ -19,7 +19,7 @@ class MonthlyUpdateStrategy : TaskUpdateStrategy {
 
         // check if start date < endDate
         if (startDate < endDate){
-            var endDate = getOneMonthFromDate(startDate)
+            var nextEndDate = getNextEndDate(startDate)
             var newIndex = index + 1
 
             if (newIndex >= taskInfo.assignees.size) {
@@ -27,7 +27,7 @@ class MonthlyUpdateStrategy : TaskUpdateStrategy {
             }
 
             var nextAssignee = taskInfo.assignees[newIndex]
-            createSubTask(taskId =  taskInfo.taskId, assigneeId = nextAssignee, startDate = startDate, endDate = endDate)
+            createSubTask(taskId =  taskInfo.taskId, assigneeId = nextAssignee, startDate = startDate, endDate = nextEndDate)
             index = newIndex
         }
 
