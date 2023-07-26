@@ -14,7 +14,11 @@
 | 2023//07//15 | 5     | Added screens to view friends list, blocked list, add friends, block users, and edit profile               |
 | 2023//07//16 | 8     | Designed new screens related to friends requests (incoming, outgoing) and implemented screens in front-end |
 | 2023//07//17 | 9     | Added view models, finished up front-end for screens, and added modifications to screens for back-end      |
-| 2023//07//20 | 3     | Helped debug back-end for friends function                                                                 |
+| 2023//07//18 | 5     | Reorganized and updated functions for friend view model and updated text wrapping for cards                |
+| 2023//07//20 | 3     | Helped debug back-end for add friends function                                                             |
 | 2023//07//21 | 2     | Worked on design pattern document                                                                          |
+| 2023//07//21 | 3     | Updated parameters for incoming, remove, and unblock functions and help debug remove friends functionality |
+| 2023//07//22 | 2     | Updated cancel function for outgoing requests and helped debug                                             |
 | 2023//07//26 | 3     | Updated screens and removed unnecessary functions                                                          |
+| 2023//07//26 | 2     | Helped debug update password function                                                                      |
 | 2023//07//26 | 3     | Worked on project demo                                                                                     |
