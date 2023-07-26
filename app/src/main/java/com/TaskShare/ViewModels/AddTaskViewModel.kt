@@ -98,30 +98,6 @@ class AddTaskViewModel: ViewModel() {
 
     }
 
-//    fun createTask(){
-//        // validate form data
-//        // call POST endpoint to send data to backend
-//        var taskId = TSTask.createTask(
-//            TSTaskData(
-//                TSUser.globalUser.getGroups()[0].id,
-//                state.value.taskName,
-//                TSUser.globalUser.id,
-//                state.value.assignees,
-//                mutableListOf(),
-//                state.value.cycle
-//            )
-//        )
-//        TSUser.globalUser.getGroups()[0].updateTask(taskId)
-//
-//        TSSubTask.createSubTask(
-//            TSSubTaskData(
-//                taskId,
-//                state.value.assignees[0],
-//                comments = mutableListOf("test", "comment")
-//            )
-//        )
-//    }
-
     fun getAllGroupsForUser() : MutableList<GroupData> {
         var groups = groupManager.getGroupsForUserId(TSUsersRepository.globalUserId)
         var result = ArrayList<GroupData>()

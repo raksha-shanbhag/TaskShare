@@ -194,12 +194,13 @@ class TSTasksRepository {
     }
 
     // API Service for updating Task information
-    fun updateTaskInfo(taskId: String, taskName: String, cycle: String, endDate: Date, updateIndex: Int) {
+    fun updateTaskInfo(taskId: String, taskName: String, cycle: String, endDate: Date, updateIndex: Int, assignees: MutableList<String>) {
         var data = hashMapOf(
             "taskName" to taskName,
             "cycle" to cycle,
-            "endDate" to endDate,
-            "currentIndex" to updateIndex
+            "lastDate" to endDate,
+            "currentIndex" to updateIndex,
+            "assignees" to assignees
         )
 
         runBlocking {

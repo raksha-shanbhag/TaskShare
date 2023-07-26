@@ -3,8 +3,10 @@ package com.example.greetingcard.screens
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -72,6 +74,7 @@ import java.util.Calendar
 import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 
@@ -318,7 +321,7 @@ fun EditTaskScreen(context: Context, redirectToMyTasks: ()-> Unit, viewModel: Ta
                 }
 
                 Button(onClick = {
-//                    viewModel.updateTask(()
+                    viewModel.updateTask()
                     state.taskName = ""
                     state.groupName = ""
                     state.cycle = ""

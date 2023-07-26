@@ -1,5 +1,6 @@
 package com.TaskShare.Models.Services.TaskUpdateStrategy
 
+import android.util.Log
 import com.TaskShare.Models.Repositories.TSSubTasksRepository
 import com.TaskShare.Models.Repositories.TSTasksRepository
 import com.TaskShare.Models.Services.TaskManagementService
@@ -25,11 +26,19 @@ class TaskUpdater {
         }
     }
 
-    fun updateTaskInfo(subtaskId: String, taskName: String, endDate: Date, cycle: String, newTaskStatus: TSTaskStatus) {
+    fun updateTaskInfo(subtaskId: String, taskName: String, endDate: Date, cycle: String, newTaskStatus: TSTaskStatus, assignees: MutableList<String>) {
         // update task
         var currentSubTaskInfo = subTaskRepository.getSubTaskInfoForId(subtaskId)
         var currentMainTaskInfo = taskRepository.getTask(currentSubTaskInfo.taskId)
         var index = currentMainTaskInfo.currentIndex
+
+        Log.i("Debug Edit Raksha", subtaskId)
+        Log.i("Debug Edit Raksha", endDate.toString())
+        Log.i("Debug Edit Raksha", cycle)
+        Log.i("Debug Edit Raksha", taskName)
+        Log.i("Debug Edit Raksha",  newTaskStatus.toString())
+        Log.i("Debug Edit Raksha",  assignees.toString())
+
 
         // check update date
         var updateDate = endDate
@@ -51,12 +60,12 @@ class TaskUpdater {
             (currentSubTaskInfo.taskStatus == TSTaskStatus.OVERDUE && newTaskStatus == TSTaskStatus.COMPLETE )
         )){
             // change index and create next task
-            index = taskUpdateStrategy.createNextSubtask(currentMainTaskInfo, endDate = updateDate)
+            index = taskUpdateStrategy.createNextSubtask(currentMainTaskInfo, endDate = updateDate, assignees = assignees)
 
         }
 
         // update task and rotation Index
-        taskRepository.updateTaskInfo(taskId = currentSubTaskInfo.taskId, taskName = taskName, endDate = endDate, cycle = cycle, updateIndex = index)
+        taskRepository.updateTaskInfo(taskId = currentSubTaskInfo.taskId, taskName = taskName, endDate = endDate, cycle = cycle, updateIndex = index, assignees = assignees)
     }
 
     fun getNextEndDate(startDate: Date) : Date {

@@ -13,7 +13,7 @@ class MonthlyUpdateStrategy : TaskUpdateStrategy {
         return calendar.time
     }
 
-    override fun createNextSubtask(taskInfo: Task, endDate: Date): Int {
+    override fun createNextSubtask(taskInfo: Task, endDate: Date, newAssignees: MutableList<String>): Int {
         var index = taskInfo.currentIndex
         var startDate = getTomorrow()
 
@@ -22,11 +22,11 @@ class MonthlyUpdateStrategy : TaskUpdateStrategy {
             var nextEndDate = getNextEndDate(startDate)
             var newIndex = index + 1
 
-            if (newIndex >= taskInfo.assignees.size) {
+            if (newIndex >= newAssignees.size) {
                 newIndex = 0
             }
 
-            var nextAssignee = taskInfo.assignees[newIndex]
+            var nextAssignee = newAssignees[newIndex]
             createSubTask(taskId =  taskInfo.taskId, assigneeId = nextAssignee, startDate = startDate, endDate = nextEndDate)
             index = newIndex
         }

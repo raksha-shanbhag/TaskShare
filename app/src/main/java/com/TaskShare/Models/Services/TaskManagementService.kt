@@ -193,10 +193,10 @@ class TaskManagementService {
         )
     }
 
-    fun updateTask(subtaskId: String, taskName: String, endDate: Date, cycle: String, newTaskStatus: String) {
+    fun updateTask(subtaskId: String, taskName: String, endDate: Date, cycle: String, newTaskStatus: String, assignees: MutableList<String>) {
         val taskStatus = TSTaskStatus.fromString(newTaskStatus)
         val taskUpdater = TaskUpdater(cycle)
-        taskUpdater.updateTaskInfo(subtaskId, taskName, endDate, cycle, taskStatus)
+        taskUpdater.updateTaskInfo(subtaskId = subtaskId, taskName = taskName, endDate = endDate, cycle = cycle, assignees = assignees, newTaskStatus = taskStatus)
         createSubTaskActivity(subtaskId = subtaskId, sourceUser = TSUsersRepository.globalUserId, type = "updated")
     }
 

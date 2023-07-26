@@ -1,12 +1,21 @@
 package com.TaskShare.ViewModels
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.TaskShare.Models.Repositories.TSUsersRepository
 import com.TaskShare.Models.Services.GroupManagementService
 import com.TaskShare.Models.Services.TaskManagementService
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+
 
 class TaskViewModel: ViewModel() {
     val state = mutableStateOf(AddTaskState())
@@ -84,6 +93,27 @@ class TaskViewModel: ViewModel() {
 
     fun deleteTask(taskID: String){
         // TODO backend: delete task endpoint
+    }
+
+    fun getSelectedMemberIds() : MutableList<String> {
+        var result = mutableListOf<String>()
+        for (member in detailTaskState.value.taskDetail.assignees) {
+            if(member.selected) result.add(member.memberId)
+        }
+        return result
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateTask() {
+        Log.i("Debug Raksha Backend Edit", detailTaskState.value.toString())
+        taskManager.updateTask(
+            subtaskId = detailTaskState.value.taskID,
+            taskName = detailTaskState.value.taskDetail.taskName,
+            endDate = detailTaskState.value.taskDetail.deadline,
+            newTaskStatus = detailTaskState.value.taskDetail.status,
+            cycle = detailTaskState.value.taskDetail.cycle,
+            assignees = getSelectedMemberIds()
+        )
     }
 }
 

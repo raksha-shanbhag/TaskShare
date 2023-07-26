@@ -7,7 +7,7 @@ import com.TaskShare.Models.Services.TaskManagementService
 import java.util.Calendar
 
 interface TaskUpdateStrategy {
-    fun createNextSubtask(taskInfo: Task, endDate: Date) : Int
+    fun createNextSubtask(taskInfo: Task, endDate: Date, assignees: MutableList<String>) : Int
 
     fun getTomorrow(): Date {
         val calendar = Calendar.getInstance()
