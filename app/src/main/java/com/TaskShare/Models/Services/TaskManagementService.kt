@@ -105,7 +105,7 @@ class TaskManagementService {
                 taskId = taskId,
                 assigneeId = currAssignees.first(),
                 startDate = startDate,
-                endDate = lastDate
+                endDate = endDate
             )
 
             var groupName = groupsRepository.getGroupFromId(groupId).groupName
