@@ -78,6 +78,8 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
     val scrollState = rememberScrollState()
 
+    val noEditStatus = mutableListOf<String>("Transfer Requested", "Declined", "Complete")
+
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -118,7 +120,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         .fillMaxWidth()
                         .padding(15.dp, 10.dp)
                         .clickable(onClick = {
-                            if (taskDetail.status != "Transfer Requested"){
+                            if ((taskDetail.status !in noEditStatus )){
                                 editTask()
                             }
 
@@ -131,7 +133,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
-                    if (taskDetail.status != "Transfer Requested") {
+                    if ((taskDetail.status !in noEditStatus )) {
                         Icon(
                             painterResource(id = R.drawable.edit_icon),
                             contentDescription = "edit task icon",
@@ -197,7 +199,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
 
 //                  Transfer Task
-                    if ((taskDetail.status != "Transfer Requested") ||(taskDetail.status != "Complete") || (taskDetail.status != "Decline")){
+                    if ((taskDetail.status !in noEditStatus )){
                     ExposedDropdownMenuBox(
                         expanded = expandedTransfer,
                         onExpandedChange = {
@@ -348,7 +350,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 //                        )
 //                    }
 
-                    if (taskDetail.status == "Transfer Requested"){
+                    if (taskDetail.status == "Transfer Requested")  {
                         Row(modifier = Modifier
                             .fillMaxWidth()
                             .padding(0.dp, 10.dp)

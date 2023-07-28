@@ -149,7 +149,7 @@ data class AddTaskState (
     val assignee: GroupMember = GroupMember(),
     var endDate: Date = Date(),
     var cycle: String = "Select Cycle",
-    val groupId: String = ""
+    var groupId: String = ""
 
 )
 

@@ -301,7 +301,8 @@ fun AddTaskScreen(context: Context, redirectToMyTasks: ()-> Unit) {
                     date.value = ""
                     state.assignees = mutableListOf()
                     groupMembers = mutableListOf()
-                    redirectToMyTasks()
+                    state.groupId = ""
+//                    redirectToMyTasks()
                 },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(id = R.color.primary_blue),
