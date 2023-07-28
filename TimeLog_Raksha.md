@@ -19,9 +19,9 @@
 | 2023/07/17  |   3 hrs  | Testing + debugging cloud scheduler   | Dev  |
 | 2023/07/17  |   45 mins  | Group meeting + status update   | Doc  |
 | 2023/08/18  |   2hrs 30 mins  | Friend management Service setup + Send friend request APIs (pair program with Nour) | Dev |
-| 2023/07/  |    2hrs 35 mins    | Create Task and Get user Tasks API + debugging   | Dev  |
-| 2023/07/  |    2hrs 50 mins | group management service with group Tasks + debugging | Dev  |
-| 2023/07/  |  4hrs | Edit group information + Remove/Add member APIs | Dev  |
+| 2023/07/19  |    2hrs 35 mins    | Create Task and Get user Tasks API + debugging   | Dev  |
+| 2023/07/20  |    2hrs 50 mins | group management service with group Tasks + debugging | Dev  |
+| 2023/07/21  |  4hrs | Edit group information + Remove/Add member APIs | Dev  |
 | 2023/07/24  | 3hrs | Edit Task + Create Task APIs with Strategy pattern based on cadence  | Dev  |
 | 2023/07/25  | 2hrs | Debugging strategy pattern setup | Dev  |
 | 2023/07/25  | 2hrs | Transfer Task | Dev  |
