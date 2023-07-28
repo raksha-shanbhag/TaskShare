@@ -42,6 +42,6 @@
 | 2023/07/26 | 0.5      | Transfer task styling + front-end logic                                                |
 | 2023/07/26 | 10 mins  | Don't allow for edit task if transfer task requested                                   |
 | 2023/07/26 | 3.5      | Transfer task integration (backend -> viewmodel), style updates, logic change          |
-| 2023/07/26 | 0.5      | Reducing lag in screens                                                                |
-| 2023/07/27 | 1        | Frontend bug fixes on limiting edits based on task status                              |
+| 2023/07/26 | 1        | Reducing lag in screens                                                                |
+| 2023/07/27 | 0.5      | Frontend bug fixes on limiting edits based on task status                              |
 
