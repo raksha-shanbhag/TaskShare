@@ -2,6 +2,8 @@ package com.example.greetingcard
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -29,6 +31,7 @@ https://www.youtube.com/watch?v=tt3dYmqJTrw
 
  */
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(context: Context) {
@@ -75,7 +78,7 @@ private fun BottomNavBar(
         )
         BottomNavigationItem(
             selected = currentSelectedScreen == RootScreen.MyTasks,
-            onClick = { navController.navigateToRootScreen(RootScreen.MyTasks) },
+            onClick = { navController.switchTabs(RootScreen.MyTasks.route) },
             alwaysShowLabel = true,
             label = {
                 Text(text = "My Tasks", fontSize = 9.sp)
@@ -88,7 +91,7 @@ private fun BottomNavBar(
         )
         BottomNavigationItem(
             selected = currentSelectedScreen == RootScreen.AddTask,
-            onClick = { navController.navigateToRootScreen(RootScreen.AddTask) },
+            onClick = { navController.switchTabs(RootScreen.AddTask.route) },
             alwaysShowLabel = true,
             label = {
                 Text(text = "Add Task", fontSize = 9.sp)
@@ -173,3 +176,12 @@ private fun NavController.navigateToRootScreen(rootScreen: RootScreen) {
     }
 }
 
+fun NavController.switchTabs(route: String) {
+    navigate(route) {
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}

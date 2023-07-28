@@ -33,6 +33,7 @@ import com.example.greetingcard.screens.SignUpScreen
 import com.example.greetingcard.screens.TaskDetailsScreen
 import com.example.greetingcard.screens.ViewGroupScreen
 import com.example.greetingcard.screens.ViewGroupTasksScreen
+import com.example.greetingcard.switchTabs
 
 
 /*
@@ -241,7 +242,7 @@ private fun NavGraphBuilder.showAddTask(navController: NavController, context: C
     composable(route = LeafScreen.AddTask.route) {
         AddTaskScreen(context,
             redirectToMyTasks = {
-                navController.navigate(LeafScreen.MyTasks.route)
+                navController.switchTabs(LeafScreen.MyTasks.route)
             }
         )
     }
@@ -261,7 +262,7 @@ private fun NavGraphBuilder.showEditTask(navController: NavController, context: 
     composable(route = LeafScreen.EditTask.route) {
         EditTaskScreen(context,
             redirectToMyTasks = {
-                navController.navigate(LeafScreen.MyTasks.route)
+                navController.switchTabs(LeafScreen.MyTasks.route)
             }, viewModel
         )
     }
