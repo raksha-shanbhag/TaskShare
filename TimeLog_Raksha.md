@@ -32,3 +32,5 @@
 | 2023/08/27 | 3 hrs | deployment of cloud scheduler| Dev|
 | 2023/07/28   | 4hrs   | final project proposal doc | Doc  |
 
+Total hours - 76 hours 40 mins
+
