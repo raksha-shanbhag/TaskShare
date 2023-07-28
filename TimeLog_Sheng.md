@@ -22,3 +22,5 @@
 | 2023//07//26 | 3     | Updated screens and removed unnecessary functions                                                          |
 | 2023//07//26 | 2     | Helped debug update password function                                                                      |
 | 2023//07//26 | 3     | Worked on project demo                                                                                     |
+| 2023//07//27 | 1     | Started Arch + Design document                                                                             |
+| 2023//07//28 | 3.5   | Worked on Arch + Design document                                                                           |
