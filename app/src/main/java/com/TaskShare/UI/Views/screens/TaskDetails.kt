@@ -120,7 +120,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         .fillMaxWidth()
                         .padding(15.dp, 10.dp)
                         .clickable(onClick = {
-                            if ((taskDetail.status !in noEditStatus )){
+                            if ((taskDetail.status !in noEditStatus ) && TSUsersRepository.globalUserId == taskDetail.assignee.memberId){
                                 editTask()
                             }
 
@@ -133,7 +133,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
                         color = colorResource(id = R.color.white),
                         fontSize = mid_font_size.sp,
                     )
-                    if ((taskDetail.status !in noEditStatus )) {
+                    if ((taskDetail.status !in noEditStatus ) && TSUsersRepository.globalUserId == taskDetail.assignee.memberId) {
                         Icon(
                             painterResource(id = R.drawable.edit_icon),
                             contentDescription = "edit task icon",
@@ -199,7 +199,7 @@ fun TaskDetailsScreen(onBack: () -> Unit, viewModel: TaskViewModel, editTask: ()
 
 
 //                  Transfer Task
-                    if ((taskDetail.status !in noEditStatus )){
+                    if ((taskDetail.status !in noEditStatus ) && TSUsersRepository.globalUserId == taskDetail.assignee.memberId){
                     ExposedDropdownMenuBox(
                         expanded = expandedTransfer,
                         onExpandedChange = {

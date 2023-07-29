@@ -30,7 +30,8 @@
 | 2023/07/26  |  1hr  | bug fixes for task length + edit task feature | Dev  |
 | 2023/07/26  | 3 hrs   | video recording + compilation  | Doc  |
 | 2023/08/27 | 3 hrs | deployment of cloud scheduler| Dev|
-| 2023/07/28   | 4hrs   | final project proposal doc | Doc  |
+| 2023/07/28   | 20 mins   | Edit screen bug fix| Doc  |
+| 2023/07/28   | 5 hrs   | final project proposal doc | Doc  |
 
-Total hours - 76 hours 40 mins
+Total hours - 78 hours
 
